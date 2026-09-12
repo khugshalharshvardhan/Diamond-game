@@ -118,6 +118,53 @@ window.DH = window.DH || {};
       Object.keys(this.screens).forEach((k) => this.screens[k].classList.toggle('on', k === name));
       if (name === 'menu') this.refreshSaveLine();
       if (name === 'select') { this._focusFirstHero(); this._animatePortraits(); }
+      this._enter(this.screens[name]);
+      if (name === 'select') this._stagger('#roster .hero-card', 0.055);
+    }
+
+    /* ---- transitions.
+
+       GSAP is used where it is present and skipped entirely where it is not:
+       the game must never depend on a vendored library being there. Only the
+       INCOMING screen animates — animating the outgoing one would make every
+       state change async and open races between, say, pause and resume.
+
+       Anyone who has asked their system for less motion gets none. */
+
+    _motionOK() {
+      if (!window.gsap) return false;
+      return !(window.matchMedia &&
+               window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    _enter(el) {
+      if (!el || !this._motionOK()) return;
+      window.gsap.fromTo(el,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.26, ease: 'power2.out', overwrite: true, clearProps: 'opacity,transform' });
+    }
+
+    _stagger(selector, step) {
+      if (!this._motionOK()) return;
+      const items = document.querySelectorAll(selector);
+      if (!items.length) return;
+      window.gsap.fromTo(items,
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out',
+          stagger: step, overwrite: true, clearProps: 'opacity,transform' });
+    }
+
+    /* Targets the inner disc, never .map-node itself: the node is centred with
+       translate(-50%,-50%) and a scale tween on it would fight that transform
+       and make the nodes jump off their islands. */
+    _pop(selector, step) {
+      if (!this._motionOK()) return;
+      const items = document.querySelectorAll(selector);
+      if (!items.length) return;
+      window.gsap.fromTo(items,
+        { opacity: 0, scale: 0.55 },
+        { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2)',
+          stagger: step, overwrite: true, clearProps: 'opacity,transform' });
     }
 
     hideAll() {
@@ -438,6 +485,7 @@ window.DH = window.DH || {};
       }).join('');
 
       this._drawMapPath(unlocked);
+      this._pop('#map-nodes .map-node > *', 0.06);
     }
 
     /* The route. Segments up to the last unlocked level draw solid; the rest

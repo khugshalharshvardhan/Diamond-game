@@ -215,6 +215,10 @@
   </section>
 </div>
 
+<!-- Vendored, not linked from a CDN: the game has to run from file:// with no
+     network. Everything that uses it degrades gracefully if it is absent. -->
+<script src="js/vendor/gsap.min.js"></script>
+
 <script src="js/core/Utils.js"></script>
 <script src="js/systems/Assets.js"></script>
 <script src="js/core/Sprite.js"></script>
