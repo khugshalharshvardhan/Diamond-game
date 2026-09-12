@@ -65,6 +65,9 @@ canvas{ display:block; width:100%; height:100%; }
 .hud-row{
   display:flex; align-items:flex-start; justify-content:space-between;
   padding:1.4em 1.6em;
+  /* Clear the fullscreen control in the corner so the diamond counter is
+     never sitting underneath it. */
+  padding-right:4.2em;
 }
 
 .vitals{ display:flex; gap:.75em; align-items:center; }
@@ -384,15 +387,16 @@ h2{ font-size:clamp(1.3rem,3.2vw,2.1rem); font-weight:700; letter-spacing:-.02em
 
 /* ---------------------------------------------------------- world map */
 
-/* The map plate is the supplied skyward scene. It is a painted location, not a
-   map illustration: it has no nodes, paths or numbers of its own. Everything
-   below is real UI drawn on top, driven by the save, so what it says about
-   progress is always true. */
+/* The plate is the supplied skyward scene: a painted location, not a map
+   illustration — no nodes, paths or numbers of its own. Everything below is
+   real UI drawn on top and driven by the save, so what it says about progress
+   is always true. */
 
 #screen-map{
   padding:0;
   justify-content:flex-start;
   background:var(--ink);
+  font-size:clamp(10px, min(1.85vw, 3.29vh), 21px);
 }
 #map-art{
   position:absolute; inset:0;
@@ -400,33 +404,60 @@ h2{ font-size:clamp(1.3rem,3.2vw,2.1rem); font-weight:700; letter-spacing:-.02em
   object-fit:cover;
   z-index:0;
 }
-/* Enough scrim for white text and node cards to hold up over a bright sky. */
+/* Enough scrim at top and bottom for the chrome to hold up over a bright sky,
+   while the middle stays clear so the islands read. */
 #screen-map::after{
   content:"";
   position:absolute; inset:0;
-  background:linear-gradient(180deg, rgba(6,10,23,.72) 0%, rgba(6,10,23,.35) 30%, rgba(6,10,23,.72) 100%);
+  background:linear-gradient(180deg, rgba(6,10,23,.80) 0%, rgba(6,10,23,.18) 26%,
+                                     rgba(6,10,23,.18) 68%, rgba(6,10,23,.82) 100%);
   z-index:1;
   pointer-events:none;
 }
 #screen-map > *:not(#map-art){ position:relative; z-index:2; }
 
-.map-bar{
+/* ---- top bar: back, title, counters */
+
+.map-top{
   width:100%;
-  display:flex; align-items:center; gap:1em;
-  padding:1.1em 1.4em;
+  display:flex; align-items:center; gap:.7em;
+  padding:.85em 1em;
+  padding-right:3.4em;              /* clears the fullscreen control */
 }
+.map-back{
+  flex:none;
+  width:2.35em; height:2.35em;
+  display:grid; place-items:center;
+  padding:0;
+  background:linear-gradient(180deg,#2b6fd6,#164a9c);
+  border:2px solid rgba(255,255,255,.75);
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow:0 .15em .5em rgba(0,0,0,.6);
+  transition:transform .14s, filter .14s;
+}
+.map-back:hover{ transform:scale(1.07); filter:brightness(1.12); }
+.map-back:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+.map-back img{ width:1.15em; height:1.15em; object-fit:contain; }
+
 .map-title{
   flex:1;
-  font-size:clamp(.95rem,2.1vw,1.5rem);
-  text-align:center;
-  text-shadow:0 2px 12px rgba(0,0,0,.9);
+  font-size:1.15em; font-weight:800;
+  letter-spacing:.08em; text-transform:uppercase;
+  text-align:left;
+  text-shadow:0 .12em .5em rgba(0,0,0,.95);
 }
-.map-purse{
-  font-weight:700; font-variant-numeric:tabular-nums;
-  font-size:clamp(.7rem,1.5vw,.95rem);
-  text-shadow:0 2px 10px rgba(0,0,0,.9);
+
+.map-counts{ display:flex; align-items:center; gap:.9em; flex:none; }
+.map-count{
+  display:flex; align-items:center; gap:.32em;
+  font-weight:800; font-size:.92em;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 .12em .5em rgba(0,0,0,.95);
 }
-.map-back{ flex:none; }
+.map-count img{ width:1.25em; height:1.25em; object-fit:contain; }
+
+/* ---- the route */
 
 #map-path{
   position:absolute; inset:0;
@@ -436,109 +467,111 @@ h2{ font-size:clamp(1.3rem,3.2vw,2.1rem); font-weight:700; letter-spacing:-.02em
   overflow:visible;
 }
 .map-link{
-  stroke:rgba(159,179,232,.45);
-  stroke-width:.5;
-  stroke-dasharray:2 2.2;
-  vector-effect:non-scaling-stroke;
+  stroke:rgba(226,238,255,.66);
+  stroke-width:4.5;
+  stroke-dasharray:1 12;
   stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
 }
-.map-link.on{
-  stroke:var(--facet);
-  stroke-dasharray:none;
-  stroke-width:.7;
-}
+.map-link.on{ stroke:rgba(255,255,255,.9); }
+
+/* ---- nodes */
 
 #map-nodes{ position:absolute; inset:0; z-index:3; }
 
 .map-node{
   position:absolute;
   transform:translate(-50%,-50%);
-  display:flex; flex-direction:column; align-items:center; gap:.5em;
+  display:grid; place-items:center;
   padding:0; font:inherit; color:inherit;
   background:none; border:0;
   cursor:pointer;
 }
-.map-node:disabled{ cursor:not-allowed; }
+.map-node:disabled{ cursor:default; }
 
 .map-disc{
-  width:clamp(38px,5.2vw,64px); height:clamp(38px,5.2vw,64px);
+  width:2.5em; height:2.5em;
   display:grid; place-items:center;
-  font-size:clamp(1rem,2.2vw,1.5rem); font-weight:800;
-  color:var(--ink);
-  background:linear-gradient(160deg,#bff4ff,var(--facet-dk));
-  border:3px solid #fff;
   border-radius:50%;
-  box-shadow:0 6px 20px rgba(0,0,0,.6);
-  transition:transform .16s, box-shadow .16s;
+  border:.14em solid rgba(255,255,255,.9);
+  box-shadow:0 .22em .55em rgba(0,0,0,.65);
+  transition:transform .15s, filter .15s;
 }
-.map-node:hover:not(:disabled) .map-disc{ transform:scale(1.09); }
+.map-node:not(:disabled):hover .map-disc{ transform:scale(1.12); filter:brightness(1.12); }
 .map-node:focus-visible{ outline:none; }
-.map-node:focus-visible .map-disc{ outline:3px solid #fff; outline-offset:4px; }
+.map-node:focus-visible .map-disc{ outline:.16em solid #fff; outline-offset:.2em; }
 
-.map-card{
-  display:flex; flex-direction:column; align-items:center; gap:.1em;
-  padding:.35em .7em;
-  background:rgba(6,10,23,.86);
-  border:1px solid rgba(127,230,255,.25);
-  border-radius:5px;
-  white-space:nowrap;
-}
-.map-name{ font-size:clamp(.6rem,1.2vw,.8rem); font-weight:700; }
-.map-badge{
-  font-size:clamp(.5rem,1vw,.66rem);
-  letter-spacing:.12em; text-transform:uppercase;
-  color:var(--muted);
+.map-num{
+  font-size:1.05em; font-weight:800;
+  color:#fff;
+  text-shadow:0 .08em .18em rgba(0,0,0,.6);
 }
 
-/* Each state carries a word in .map-badge as well as a colour and a shape. */
-.map-node[data-state="current"] .map-disc{
-  background:linear-gradient(160deg,#ffe58a,#f0a51f);
-  animation:map-pulse 2.2s ease-in-out infinite;
+/* Cleared — green with a drawn tick. */
+.map-node[data-state="done"] .map-disc{ background:linear-gradient(180deg,#62d64a,#2f9b2a); }
+.map-tick{
+  width:.85em; height:.5em;
+  border-left:.2em solid #fff;
+  border-bottom:.2em solid #fff;
+  transform:rotate(-45deg) translate(.06em,-.1em);
 }
-.map-node[data-state="current"] .map-badge{ color:#ffd86b; }
-.map-node[data-state="current"] .map-card{ border-color:#ffd86b; }
 
-.map-node[data-state="open"] .map-badge{ color:var(--facet); }
-
+/* Open and current — blue. Current also gets the pointer beneath it. */
+.map-node[data-state="current"] .map-disc,
+.map-node[data-state="open"] .map-disc,
 .map-node[data-state="soon"] .map-disc{
-  background:linear-gradient(160deg,#4a5680,#2b3350);
-  color:var(--paper);
-  border-color:rgba(255,255,255,.5);
+  background:linear-gradient(180deg,#3f96ec,#1c5ec0);
 }
+.map-node[data-state="current"] .map-disc{ animation:map-pulse 2.1s ease-in-out infinite; }
+@keyframes map-pulse{ 50%{ box-shadow:0 .22em .55em rgba(0,0,0,.65), 0 0 1.1em rgba(120,200,255,.95); } }
+
+/* "You are here": a chevron under the current node, matching the map's
+   pointer. A second cue beyond the pulse, so it survives reduced motion. */
+.map-here{
+  position:absolute; top:calc(100% + .1em); left:50%;
+  width:.72em; height:.72em;
+  transform:translateX(-50%) rotate(45deg);
+  background:linear-gradient(135deg,#3f96ec,#1c5ec0);
+  border-right:.12em solid rgba(255,255,255,.9);
+  border-bottom:.12em solid rgba(255,255,255,.9);
+  border-radius:.1em;
+}
+
+/* Locked — grey, with the pack's padlock. */
 .map-node[data-state="locked"] .map-disc{
-  background:linear-gradient(160deg,#39425f,#1b2138);
-  border-color:rgba(255,255,255,.35);
+  background:linear-gradient(180deg,#4a5266,#242a38);
+  border-color:rgba(255,255,255,.55);
 }
-.map-node[data-state="locked"] .map-card,
-.map-node[data-state="soon"] .map-card{ opacity:.85; }
+.map-lock-img{ width:1.05em; height:1.05em; object-fit:contain; }
 
-/* Padlock glyph, drawn rather than imaged: the pack's lock is 23x28 native and
-   would have to be upscaled past its detail here. */
-.map-lock{
-  width:.5em; height:.42em;
-  background:var(--paper);
-  border-radius:2px;
-  position:relative;
+/* Boss — the pack's marker, larger, no disc behind it. */
+.map-node[data-boss="true"] .map-disc{
+  width:3.3em; height:3.3em;
+  background:none; border:0; box-shadow:none;
 }
-.map-lock::before{
-  content:"";
-  position:absolute; left:50%; bottom:100%;
-  width:.3em; height:.26em;
+.map-boss-img{ width:100%; height:100%; object-fit:contain;
+  filter:drop-shadow(0 .16em .4em rgba(0,0,0,.75)); }
+.map-node[data-boss="true"][data-state="locked"] .map-boss-img{ filter:grayscale(.75) brightness(.6); }
+.map-boss-label{
+  position:absolute; top:calc(100% - .05em); left:50%;
   transform:translateX(-50%);
-  border:2px solid var(--paper);
-  border-bottom:0;
-  border-radius:.3em .3em 0 0;
+  font-size:.66em; font-weight:800; letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#ffd86b;
+  text-shadow:0 .12em .3em rgba(0,0,0,.95);
 }
 
-@keyframes map-pulse{ 50%{ box-shadow:0 6px 26px rgba(255,214,100,.75); } }
+/* ---- world banner */
 
-.map-legend{
-  position:absolute; left:0; right:0; bottom:1.1em;
-  text-align:center;
-  font-size:clamp(.6rem,1.2vw,.78rem);
-  color:var(--muted);
-  text-shadow:0 2px 10px rgba(0,0,0,.9);
+.map-world{
+  position:absolute; left:1em; bottom:1em;
   z-index:3;
+  padding:.5em 1em;
+  font-size:.82em; font-weight:700;
+  background:rgba(6,10,23,.8);
+  border:1px solid rgba(127,230,255,.22);
+  border-radius:4px;
+  text-shadow:0 .1em .3em rgba(0,0,0,.9);
 }
 
 .cover-resume-row{ display:flex; gap:.5em; flex-wrap:wrap; }
@@ -747,3 +780,46 @@ h2{ font-size:clamp(1.3rem,3.2vw,2.1rem); font-weight:700; letter-spacing:-.02em
 #btn-fullscreen svg{ width:1.2em; height:1.2em; fill:currentColor; }
 /* Once fullscreen, the exit glyph flips inward. */
 #btn-fullscreen[data-on="true"] svg{ transform:rotate(180deg); }
+
+/* ---------------------------------------------------------- toggles */
+
+.toggles{
+  display:grid; gap:.35em;
+  width:min(100%,17rem);
+  margin-top:.2em;
+}
+.toggle{
+  display:flex; align-items:center; justify-content:space-between; gap:1em;
+  padding:.55em .9em;
+  font:inherit; font-size:.82rem;
+  color:var(--muted);
+  background:rgba(39,53,95,.3);
+  border:1px solid rgba(127,230,255,.16);
+  border-radius:4px;
+  cursor:pointer;
+  transition:background .16s, border-color .16s, color .16s;
+}
+.toggle:hover{ background:rgba(39,53,95,.7); color:var(--paper); }
+.toggle:focus-visible{ outline:2px solid var(--facet); outline-offset:2px; }
+.toggle-state{
+  font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  font-size:.72em;
+}
+/* State is carried by the word, the border and the dot together — never by
+   colour alone. */
+.toggle[aria-pressed="true"]{ color:var(--paper); border-color:rgba(127,230,255,.45); }
+.toggle[aria-pressed="true"] .toggle-state{ color:var(--facet); }
+.toggle[aria-pressed="false"] .toggle-state{ color:var(--muted); }
+.toggle-state::before{
+  content:"";
+  display:inline-block; vertical-align:middle;
+  width:.5em; height:.5em; margin-right:.5em;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.9;
+}
+.toggle[aria-pressed="false"] .toggle-state::before{
+  background:transparent;
+  box-shadow:inset 0 0 0 1px currentColor;
+}
+#audio-note:empty{ display:none; }

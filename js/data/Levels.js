@@ -19,36 +19,51 @@ window.DH = window.DH || {};
   DH.LEVELS = [
     {
       id: 1,
-      name: 'The Ruins',
+      name: 'Forgotten Ruins',
       blurb: 'Overgrown aqueducts above the falls.',
-      scene: 'ruins',
+      mechanic: 'Move, jump, shoot.',
+      scene: 'ruins',                 // location 1.png
       data: DH.LEVEL_1,
-      map: { x: 0.175, y: 0.705 }
+      map: { x: 0.140, y: 0.725 }
     },
     {
       id: 2,
-      name: 'The Molten Keep',
-      blurb: 'A fortress built into a living volcano.',
-      scene: 'foundry',
+      name: 'Enchanted Forest',
+      blurb: 'Giant trees, glowing mushrooms, hidden paths.',
+      mechanic: 'Moving platforms and hidden routes.',
+      scene: 'grove',                 // location 3.png
       data: null,
-      map: { x: 0.360, y: 0.610 }
+      map: { x: 0.300, y: 0.648 }
     },
     {
       id: 3,
-      name: 'The Sunken Grove',
-      blurb: 'Old forest, older magic, colder water.',
-      scene: 'grove',
+      name: 'Crystal Canyon',
+      blurb: 'The crystal mines. Something is held down here.',
+      mechanic: 'Hazards, collapsing bridges, the Nova rescue.',
+      /* No painted plate supplied for this one — it falls back to the
+         procedural sky rather than borrowing another level's location. */
+      scene: null,
       data: null,
-      map: { x: 0.545, y: 0.545 }
+      map: { x: 0.455, y: 0.575 }
     },
     {
       id: 4,
-      name: 'The Skyward Vault',
-      blurb: 'The Obsidian Order keeps the Core up here.',
-      scene: 'skyward',
+      name: 'Sky Kingdom',
+      blurb: 'Floating islands and a very long way down.',
+      mechanic: 'Large gaps and moving platforms.',
+      scene: 'skyward',               // level mointioring image.png
+      data: null,
+      map: { x: 0.612, y: 0.497 }
+    },
+    {
+      id: 5,
+      name: 'Dark Fortress',
+      blurb: 'Lava, chains, and the Dark Colossus.',
+      mechanic: 'Lava hazards and the boss fight.',
+      scene: 'foundry',               // location 2.png
       data: null,
       boss: true,
-      map: { x: 0.735, y: 0.415 }
+      map: { x: 0.775, y: 0.402 }
     }
   ];
 

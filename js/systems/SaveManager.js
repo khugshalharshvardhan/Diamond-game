@@ -9,6 +9,20 @@ window.DH = window.DH || {};
   const KEY = 'diamondHeroes.save.v1';
   const VERSION = 1;
 
+  /* Settings live in their OWN key, not in the run blob. Starting a new run
+     calls clear(), and a player who turned the music off does not expect that
+     to come back because they started over. */
+  const SETTINGS_KEY = 'diamondHeroes.settings.v1';
+
+  const SETTINGS_DEFAULTS = {
+    music: true,
+    sfx: true,
+    voice: true,
+    musicVolume: 0.45,
+    sfxVolume: 0.8,
+    screenShake: true
+  };
+
   const DEFAULTS = {
     version: VERSION,
     hero: null,
@@ -16,6 +30,7 @@ window.DH = window.DH || {};
     level: 1,
     checkpoint: -1,
     unlockedLevels: [1],
+    completedLevels: [],
     weapons: ['blaster'],
     ammo: {},
     upgrades: {},
@@ -76,6 +91,34 @@ window.DH = window.DH || {};
     clear() {
       this._memory = null;
       try { window.localStorage.removeItem(KEY); } catch (err) { /* ignore */ }
+    },
+
+    /* ---- settings. Same merge-over-defaults contract as the run blob, so a
+       field added later cannot break a stored preference set. */
+
+    _settingsMemory: null,
+
+    loadSettings() {
+      let stored = null;
+      try {
+        const raw = window.localStorage.getItem(SETTINGS_KEY);
+        stored = raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        this.available = false;
+        stored = this._settingsMemory;
+      }
+      return Object.assign({}, SETTINGS_DEFAULTS, stored || {});
+    },
+
+    saveSettings(patch) {
+      const data = Object.assign(this.loadSettings(), patch);
+      this._settingsMemory = data;
+      try {
+        window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
+      } catch (err) {
+        this.available = false;
+      }
+      return data;
     }
   };
 

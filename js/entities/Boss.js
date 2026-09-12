@@ -88,6 +88,7 @@ window.DH = window.DH || {};
 
     hurt(amount, fromX, level) {
       if (this.dead || this.invuln > 0 || this.dying > 0) return;
+      DH.Audio.play('bossHit');
       this.health -= amount;
       this.hitFlash = 0.09;
       level.fx.number(this.cx + U.rand(-20, 20), this.y + 20, String(Math.round(amount)), '#ffffff');
@@ -101,6 +102,9 @@ window.DH = window.DH || {};
 
     enrage(level) {
       this.enraged = true;
+      DH.Audio.play('bossEnrage');
+      DH.Audio.say('bossEnrage');
+      DH.Audio.music('boss');
       this.state = 'idle';
       this.timer = 0.7;
       this.core = 1;
@@ -113,6 +117,7 @@ window.DH = window.DH || {};
 
     beginDeath(level) {
       this.health = 0;
+      DH.Audio.play('bossDie');
       this.dying = 1.6;
       this.vx = 0;
       level.onBossDefeated();
@@ -248,6 +253,7 @@ window.DH = window.DH || {};
       const oy = this.y + 46;
       const ang = Math.atan2(player.cy - oy, player.cx - ox) + U.rand(-0.12, 0.12);
       const speed = this.enraged ? 480 : 400;
+      DH.Audio.play('shootHeavy', { volume: 0.7, rate: 0.8 });
       level.bullets.push(new DH.Bullet({
         x: ox, y: oy,
         vx: Math.cos(ang) * speed,

@@ -188,6 +188,9 @@ window.DH = window.DH || {};
       if (this.player.cx < d.bossTrigger) return;
 
       this.bossActive = true;
+      DH.Audio.play('bossAppear');
+      DH.Audio.say('bossAppear', d.boss.name);
+      DH.Audio.music('boss');
       this.gate = { x: d.gate.x, y: d.gate.y, w: d.gate.w, h: d.gate.h };
       this.solids.push(this.gate);
       this.boss = new DH.Boss(d.boss, d.arena);
@@ -261,7 +264,10 @@ window.DH = window.DH || {};
           ctx.fillStyle = 'rgba(6,10,23,.45)';
           ctx.fillRect(s.x + 6, s.y + s.h, s.w - 12, 4);
         } else {
-          const grd = ctx.createLinearGradient(0, s.y, 0, s.y + Math.min(s.h, 200));
+          /* Tight gradient: a thick ground slab only shows its top ~130px on
+             screen, so spreading the falloff over the whole slab would leave
+             the visible part flat. */
+          const grd = ctx.createLinearGradient(0, s.y, 0, s.y + Math.min(s.h, 130));
           grd.addColorStop(0, P.rockTop);
           grd.addColorStop(1, P.rockBottom);
           ctx.fillStyle = grd;

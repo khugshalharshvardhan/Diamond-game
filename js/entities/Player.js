@@ -14,6 +14,7 @@ window.DH = window.DH || {};
   const AIR_FRICTION = 900;
   const COYOTE = 0.10;   // grace period after walking off a ledge
   const BUFFER = 0.12;   // grace period for pressing jump before landing
+  const LOW_HEALTH = 0.25;   // fraction at which the hero calls it out
 
   class Player extends DH.Entity {
     constructor(x, y, hero) {
@@ -42,6 +43,7 @@ window.DH = window.DH || {};
       this.powerTimer = 0;
       this.powerCool = 0;
       this.hurtPose = 0;
+      this.warnedLow = false;
     }
 
     respawn(x, y) {
@@ -56,6 +58,7 @@ window.DH = window.DH || {};
       this.powerTimer = 0;
       this.powerCool = 0;
       this.hurtPose = 0;
+      this.warnedLow = false;
     }
 
     /* ---- current stats, after whatever the ability is doing. Every consumer
@@ -93,6 +96,7 @@ window.DH = window.DH || {};
         this.invuln = Math.max(this.invuln, p.duration + 0.08);
       }
 
+      DH.Audio.play(p.id === 'phasedash' ? 'dash' : 'ability');
       level.cam.shake(6, 0.18);
       level.fx.burst(this.cx, this.cy, 18, {
         speed: 260, life: 0.45, size: 4, color: this.hero.accent, gravity: 120, shape: 'shard'
@@ -106,6 +110,8 @@ window.DH = window.DH || {};
 
     heal(amount) {
       this.health = Math.min(this.maxHealth, this.health + amount);
+      /* Healing back over the line re-arms the warning for next time. */
+      if (this.health / this.maxHealth > LOW_HEALTH) this.warnedLow = false;
     }
 
     hurt(amount, fromX, level) {
@@ -118,6 +124,7 @@ window.DH = window.DH || {};
       const shielded = this.powerTimer > 0 && p.id === 'shieldcore';
       const taken = shielded ? amount * (1 - p.absorb) : amount;
 
+      DH.Audio.play(shielded ? 'shielded' : 'playerHurt');
       this.health -= taken;
       this.invuln = 0.9;
       this.hitFlash = 0.14;
@@ -131,6 +138,13 @@ window.DH = window.DH || {};
         color: shielded ? this.hero.trim : '#ff5d9e', gravity: 500
       });
       level.game.ui.setHealth(this.health, this.maxHealth);
+
+      /* Warn once per trip below the line, not once per hit taken under it. */
+      if (this.health > 0 && this.health / this.maxHealth <= LOW_HEALTH && !this.warnedLow) {
+        this.warnedLow = true;
+        DH.Audio.say('lowHealth');
+      }
+
       if (this.health <= 0) this.die(level);
     }
 
@@ -139,6 +153,8 @@ window.DH = window.DH || {};
       this.health = 0;
       this.dead = true;
       this.control = false;
+      DH.Audio.play('playerDie');
+      DH.Audio.say('playerDown');
       level.cam.shake(16, 0.5);
       level.fx.burst(this.cx, this.cy, 34, {
         speed: 360, life: 0.8, size: 5, color: this.hero.accent, gravity: 620, shape: 'shard'
@@ -200,6 +216,7 @@ window.DH = window.DH || {};
         if (dropping) {
           this.dropThrough = 0.16;          // drop through thin platforms
         } else {
+          DH.Audio.play('jump');
           this.vy = -this.hero.jumpPx;
           this.onGround = false;
           this.coyote = 0;
@@ -224,6 +241,7 @@ window.DH = window.DH || {};
       if (this.onGround) {
         this.coyote = COYOTE;
         if (wasAir) {
+          DH.Audio.play('land');
           this.sx = 1.25; this.sy = 0.76;
           level.fx.burst(this.cx, this.bottom, 6, {
             speed: 130, life: 0.26, size: 3, color: '#9fb3e8', gravity: 600
@@ -246,6 +264,7 @@ window.DH = window.DH || {};
 
     fire(level) {
       const h = this.hero;
+      DH.Audio.play(h.bulletSize >= 9 ? 'shootHeavy' : 'shoot');
       this.fireTimer = this.curFireRate();
       this.muzzle = 0.06;
       this.vx -= this.facing * 28;
@@ -261,7 +280,6 @@ window.DH = window.DH || {};
         damage: this.curDamage(),
         size: h.bulletSize,
         color: h.accent,
-        knockback: h.knockback,
         life: 1.1
       }));
 

@@ -98,7 +98,16 @@ window.DH = window.DH || {};
       statHealth: 'ui/icons/stat_health.png',
       statDamage: 'ui/icons/stat_damage.png',
       statSpeed: 'ui/icons/stat_speed.png',
-      statFireRate: 'ui/icons/stat_fire_rate.png'
+      statFireRate: 'ui/icons/stat_fire_rate.png',
+
+      /* World map. The numbered node PNGs in the pack are deliberately NOT
+         used: they are flagged `reference-state`, carry cropped rings, and
+         have their numbers baked in, so states and numbers could not stay
+         live. These four are clean cut-outs. */
+      arrowLeft: 'ui/icons/arrow_left.png',
+      padlock: 'ui/map/padlock.png',
+      bossMarker: 'ui/map/boss_marker.png',
+      star: 'ui/rewards/star_large.png'
     },
 
     /* ---- parallax background.
@@ -128,7 +137,8 @@ window.DH = window.DH || {};
       return out;
     },
 
-    /* Absolute-ish path for DOM <img> use, where Assets' base is not applied. */
-    url(rel) { return this.base + rel; }
+    /* Path for DOM <img> use. Delegates so there is exactly one place that
+       knows how a manifest path becomes a URL. */
+    url(rel) { return DH.Assets.resolve(rel); }
   };
 })(window.DH);

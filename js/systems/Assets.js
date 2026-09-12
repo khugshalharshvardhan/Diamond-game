@@ -66,14 +66,8 @@ window.DH = window.DH || {};
       return rec && rec.ok ? rec.img : null;
     },
 
-    ready(src) { return !!Assets.image(src); },
-
     preload(list) {
       for (let i = 0; i < list.length; i++) Assets.request(list[i]);
-    },
-
-    progress() {
-      return Assets.requested ? Assets.settled / Assets.requested : 1;
     },
 
     /* Console summary, so "why is my PNG not showing" has an obvious answer. */

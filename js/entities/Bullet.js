@@ -15,7 +15,6 @@ window.DH = window.DH || {};
       this.damage = opts.damage;
       this.color = opts.color || '#7fe6ff';
       this.life = opts.life || 1.4;
-      this.knockback = opts.knockback || 0;
       this.gravity = opts.gravity || 0;
       this.passesWalls = !!opts.passesWalls;
       this.trail = 0;

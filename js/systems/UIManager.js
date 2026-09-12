@@ -53,9 +53,12 @@ window.DH = window.DH || {};
         mapNodes: $('#map-nodes'),
         mapPath: $('#map-path'),
         mapDiamonds: $('#map-diamonds'),
-        mapLegend: $('#map-legend'),
+        mapStars: $('#map-stars'),
+        mapStarsWrap: $('#map-stars-wrap'),
         deadNote: $('#dead-note'),
         tally: $('#tally'),
+        toggles: $('#toggles'),
+        audioNote: $('#audio-note'),
         ability: $('#ability'),
         abilityName: $('#ability-name'),
         abilityFill: $('#ability-fill'),
@@ -253,6 +256,46 @@ window.DH = window.DH || {};
       this.el.deadNote.textContent = text;
     }
 
+    /* Audio and accessibility toggles. Every write goes through DH.Audio.set,
+       which persists via SaveManager — nothing here touches localStorage. */
+    _bindToggles() {
+      const box = this.el.toggles;
+      if (!box) return;
+
+      box.addEventListener('click', (e) => {
+        const btn = e.target.closest('.toggle');
+        if (!btn) return;
+        const on = DH.Audio.toggle(btn.dataset.toggle);
+        /* The click sound is the confirmation, so suppress it when the thing
+           just switched off would have made it. */
+        if (on) DH.Audio.play('uiClick');
+        this.refreshToggles();
+      });
+
+      this.refreshToggles();
+    }
+
+    refreshToggles() {
+      const box = this.el.toggles;
+      if (!box || !DH.Audio.settings) return;
+      const items = box.querySelectorAll('.toggle');
+      for (let i = 0; i < items.length; i++) {
+        const on = !!DH.Audio.settings[items[i].dataset.toggle];
+        items[i].setAttribute('aria-pressed', String(on));
+        items[i].querySelector('.toggle-state').textContent = on ? 'On' : 'Off';
+      }
+
+      /* Say plainly when a toggle cannot do anything on this machine, rather
+         than leaving a control that silently does nothing. */
+      const note = this.el.audioNote;
+      if (!note) return;
+      const r = DH.Audio.report();
+      if (!r.webAudio) note.textContent = 'This browser has no Web Audio support, so the game is silent.';
+      else if (!r.speech) note.textContent = 'This browser has no speech synthesiser, so Voice does nothing.';
+      else if (!r.voicesInstalled) note.textContent = 'No speech voices are installed, so Voice does nothing.';
+      else note.textContent = '';
+    }
+
     /* Fullscreen. Kept in UIManager because it is presentation, not gameplay,
        and because the browser only grants it from a real user gesture. */
     _bindFullscreen() {
@@ -303,9 +346,23 @@ window.DH = window.DH || {};
       const img = this.el.mapArt;
       if (!img || !DH.ART) return;
       const src = DH.ART.scene('skyward');
-      if (!src) return;
-      img.onerror = function () { img.style.display = 'none'; };
-      img.src = DH.Assets.resolve(src);
+      if (src) {
+        img.onerror = function () { img.style.display = 'none'; };
+        img.src = DH.Assets.resolve(src);
+      }
+      /* The map's chrome icons. Each hides itself if its file is missing, and
+         the text beside it still carries the meaning. */
+      this._icon('#map-back-icon', 'arrowLeft');
+      this._icon('#map-gem', 'diamond');
+      this._icon('#map-star', 'star');
+    }
+
+    _icon(sel, key) {
+      const el = document.querySelector(sel);
+      const path = DH.ART && DH.ART.ui[key];
+      if (!el || !path) return;
+      el.onerror = function () { el.style.display = 'none'; };
+      el.src = DH.ART.url(path);
     }
 
     /* Rebuilt every time the map opens, straight from DH.LEVELS and the save,
@@ -315,49 +372,77 @@ window.DH = window.DH || {};
       const save = DH.SaveManager.load();
       const unlocked = {};
       (save.unlockedLevels || [1]).forEach((n) => { unlocked[n] = true; });
-      const current = save.hero ? save.level : 1;
+      const cleared = {};
+      (save.completedLevels || []).forEach((n) => { cleared[n] = true; });
+
+      /* "You are here" is the first unlocked level still unfinished. */
+      let current = 0;
+      for (let i = 0; i < DH.LEVELS.length; i++) {
+        const L = DH.LEVELS[i];
+        if (unlocked[L.id] && !cleared[L.id]) { current = L.id; break; }
+      }
 
       this.el.mapDiamonds.textContent = save.diamonds;
+      const doneCount = (save.completedLevels || []).length;
+      this.el.mapStars.textContent = doneCount + '/' + DH.LEVELS.length;
+      this.el.mapStarsWrap.setAttribute('aria-label',
+        doneCount + ' of ' + DH.LEVELS.length + ' levels cleared');
 
-      let built = 0;
+      const padlock = DH.ART.ui.padlock ? DH.ART.url(DH.ART.ui.padlock) : '';
+      const bossImg = DH.ART.ui.bossMarker ? DH.ART.url(DH.ART.ui.bossMarker) : '';
+
       this.el.mapNodes.innerHTML = DH.LEVELS.map((L) => {
         const isOpen = !!unlocked[L.id];
-        const playable = isOpen && !!L.data;
-        if (L.data) built++;
+        const isDone = !!cleared[L.id];
 
-        /* Four distinct states. Each gets its own WORD as well as its own
-           colour, because the map is exactly the kind of screen where
-           colour-only status fails people. */
-        let state, badge;
-        if (!isOpen) { state = 'locked'; badge = 'Locked'; }
-        else if (!L.data) { state = 'soon'; badge = 'Coming soon'; }
-        else if (L.id === current && save.hero) { state = 'current'; badge = 'Current'; }
-        else { state = 'open'; badge = 'Ready'; }
+        /* Five states. Each has its own shape or glyph as well as its own
+           colour, and its own word in the accessible label — a progress map is
+           exactly where colour-only status fails people. */
+        let state, word;
+        if (isDone) { state = 'done'; word = 'Cleared'; }
+        else if (!isOpen) { state = 'locked'; word = 'Locked'; }
+        else if (!L.data) { state = 'soon'; word = 'Coming soon'; }
+        else if (L.id === current) { state = 'current'; word = 'Play now'; }
+        else { state = 'open'; word = 'Ready'; }
+
+        /* Locked levels are not interactive at all. Unlocked-but-unbuilt ones
+           stay clickable so the tap gets an answer instead of silence. */
+        const dead = state === 'locked';
+
+        let face;
+        if (L.boss) {
+          face = bossImg
+            ? '<img class="map-boss-img" src="' + bossImg + '" alt="">'
+            : '<span class="map-glyph">!</span>';
+        } else if (state === 'done') {
+          face = '<span class="map-glyph map-tick"></span>';
+        } else if (state === 'locked') {
+          face = padlock
+            ? '<img class="map-lock-img" src="' + padlock + '" alt="">'
+            : '<span class="map-glyph">&#8226;</span>';
+        } else {
+          face = '<span class="map-num">' + L.id + '</span>';
+        }
 
         return '' +
           '<button class="map-node" type="button" data-level="' + L.id + '"' +
-            ' data-state="' + state + '"' + (playable ? '' : ' disabled') +
+            ' data-state="' + state + '"' + (L.boss ? ' data-boss="true"' : '') +
+            (dead ? ' disabled' : '') +
             ' style="left:' + (L.map.x * 100) + '%;top:' + (L.map.y * 100) + '%"' +
-            ' aria-label="Level ' + L.id + ', ' + L.name + ', ' + badge + '">' +
-            '<span class="map-disc" aria-hidden="true">' +
-              (state === 'locked' ? '<span class="map-lock"></span>' : (L.boss ? '★' : L.id)) +
-            '</span>' +
-            '<span class="map-card">' +
-              '<span class="map-name">' + L.name + '</span>' +
-              '<span class="map-badge">' + badge + '</span>' +
-            '</span>' +
+            ' title="' + L.name + ' \u2014 ' + word + '"' +
+            ' aria-label="Level ' + L.id + ', ' + L.name + ', ' + word + '">' +
+            '<span class="map-disc" aria-hidden="true">' + face + '</span>' +
+            (L.boss ? '<span class="map-boss-label" aria-hidden="true">Boss</span>' : '') +
+            (state === 'current' ? '<span class="map-here" aria-hidden="true"></span>' : '') +
           '</button>';
       }).join('');
 
       this._drawMapPath(unlocked);
-      this.el.mapLegend.textContent =
-        built + ' of ' + DH.LEVELS.length + ' levels built. Locked and coming-soon levels cannot be started.';
     }
 
     /* The route. Segments up to the last unlocked level draw solid; the rest
-       dashed, so "where am I and what is next" reads at a glance. */
+       stay dotted, so "where am I and what is next" reads at a glance. */
     _drawMapPath(unlocked) {
-      const svg = this.el.mapPath;
       let out = '';
       for (let i = 0; i < DH.LEVELS.length - 1; i++) {
         const a = DH.LEVELS[i].map;
@@ -367,7 +452,7 @@ window.DH = window.DH || {};
                     ' x2="' + (b.x * 100) + '" y2="' + (b.y * 100) + '"' +
                     ' class="map-link' + (reached ? ' on' : '') + '"/>';
       }
-      svg.innerHTML = out;
+      this.el.mapPath.innerHTML = out;
     }
 
     /* ------------------------------------------------ hero select */
@@ -465,6 +550,8 @@ window.DH = window.DH || {};
 
     pickHero(id) {
       this.picked = id;
+      DH.Audio.play('uiSelect');
+      DH.Audio.say('heroSelected', DH.HEROES[id]);
       this.el.roster.querySelectorAll('.hero-card').forEach((card) => {
         card.setAttribute('aria-pressed', String(card.dataset.hero === id));
       });
@@ -483,12 +570,21 @@ window.DH = window.DH || {};
 
       this.el.mapNodes.addEventListener('click', (e) => {
         const node = e.target.closest('.map-node');
-        if (node && !node.disabled) g.chooseLevel(Number(node.dataset.level));
+        if (!node || node.disabled) return;
+        const id = Number(node.dataset.level);
+        /* chooseLevel refuses levels with no data. Say so rather than letting
+           the tap do nothing at all. */
+        if (!g.chooseLevel(id)) {
+          const L = DH.levelById(id);
+          DH.Audio.play('uiClick');
+          this.toast((L ? L.name : 'That level') + ' is not in this build yet');
+        }
       });
 
       document.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-act]');
         if (!btn) return;
+        DH.Audio.play('uiClick');
         switch (btn.dataset.act) {
           /* Flow spec: PLAY checks the save — an existing run goes to the
              world map to pick a level, a fresh one goes to hero select. */
@@ -506,6 +602,7 @@ window.DH = window.DH || {};
       });
 
       this._bindFullscreen();
+      this._bindToggles();
 
       // Number keys on the select screen; the roster is a real toolbar, so
       // Tab and Enter already work without extra handling.

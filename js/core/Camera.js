@@ -70,6 +70,9 @@ window.DH = window.DH || {};
     }
 
     shake(power, duration) {
+      /* Respect the accessibility setting at the one place shake originates,
+         so no caller has to remember to check it. */
+      if (DH.Audio && DH.Audio.settings && DH.Audio.settings.screenShake === false) return;
       if (this.shakeTime > 0 && this.shakePower > power) return;
       this.shakePower = power;
       this.shakeTime = this.shakeMax = duration;

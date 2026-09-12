@@ -39,7 +39,7 @@ window.DH = window.DH || {};
     }
 
     /* Enemy drops pop out and fall before they start bobbing. */
-    static drop(x, y, kind, fx) {
+    static drop(x, y, kind) {
       const p = new Pickup(x, y, kind, null);
       p.vx = U.rand(-130, 130);
       p.vy = U.rand(-330, -190);
@@ -76,6 +76,7 @@ window.DH = window.DH || {};
 
     collect(level) {
       this.dead = true;
+      DH.Audio.play(this.kind);
       const g = level.game;
 
       if (this.kind === 'health') {
@@ -150,5 +151,4 @@ window.DH = window.DH || {};
   }
 
   DH.Pickup = Pickup;
-  DH.PICKUP_KINDS = KINDS;
 })(window.DH);

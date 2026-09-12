@@ -54,14 +54,6 @@ window.DH = window.DH || {};
       ctx.lineTo(cx, cy + h / 2);
       ctx.lineTo(cx - w / 2, cy - h / 6);
       ctx.closePath();
-    },
-
-    glow(ctx, color, blur, fn) {
-      ctx.save();
-      ctx.shadowColor = color;
-      ctx.shadowBlur = blur;
-      fn();
-      ctx.restore();
     }
   };
 

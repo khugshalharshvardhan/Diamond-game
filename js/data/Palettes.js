@@ -27,28 +27,28 @@ window.DH = window.DH || {};
 
     /* location 1 — sunlit ruins, grey stone under heavy moss. */
     ruins: {
-      rockTop: '#8b8672', rockBottom: '#3f3d31', edge: '#9ed15f',
+      rockTop: '#7c7462', rockBottom: '#2f2b22', edge: '#9ed15f',
       ledge: '#6f6a55', ledgeTop: '#9ed15f',
       detail: 'tuft', detailColor: 'rgba(150,205,90,.55)'
     },
 
     /* location 2 — the molten keep. Cold basalt, hot edges. */
     foundry: {
-      rockTop: '#574f5e', rockBottom: '#1f1a26', edge: '#ff8a3c',
+      rockTop: '#4e4756', rockBottom: '#181320', edge: '#ff8a3c',
       ledge: '#443d4d', ledgeTop: '#ff9d4a',
       detail: 'ember', detailColor: 'rgba(255,140,60,.7)'
     },
 
     /* location 3 — the sunken grove. Wet stone, cold light. */
     grove: {
-      rockTop: '#5f6f62', rockBottom: '#232d2b', edge: '#7fd98f',
+      rockTop: '#54655a', rockBottom: '#1d2523', edge: '#7fd98f',
       ledge: '#4b5850', ledgeTop: '#7fd98f',
       detail: 'crystal', detailColor: 'rgba(120,230,255,.3)'
     },
 
     /* level monitoring image — the skyward vault. Pale stone, bright grass. */
     skyward: {
-      rockTop: '#9a9788', rockBottom: '#4d4a40', edge: '#8ed15c',
+      rockTop: '#8b8879', rockBottom: '#3c3a33', edge: '#8ed15c',
       ledge: '#7d7a6b', ledgeTop: '#8ed15c',
       detail: 'tuft', detailColor: 'rgba(150,210,95,.5)'
     }

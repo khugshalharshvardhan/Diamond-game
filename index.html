@@ -96,7 +96,7 @@
 
       <div class="cover-resume">
         <div class="cover-resume-row">
-          <button class="btn cover-continue" type="button" data-act="continue" id="btn-continue-cover">Continue</button>
+          <button class="btn cover-continue" type="button" data-act="continue">Continue</button>
           <button class="btn cover-continue" type="button" data-act="map">World map</button>
         </div>
         <p class="fineprint" id="save-line-cover">No run in progress</p>
@@ -132,20 +132,30 @@
   <section class="screen" id="screen-map">
     <img id="map-art" alt="" aria-hidden="true">
 
-    <div class="map-bar">
-      <button class="btn ghost map-back" type="button" data-act="back">Back</button>
-      <h2 class="map-title">World 1 — The Forgotten Lands</h2>
-      <p class="map-purse"><span id="map-diamonds">100</span> diamonds</p>
+    <div class="map-top">
+      <button class="map-back" type="button" data-act="back" aria-label="Back">
+        <img id="map-back-icon" alt="" aria-hidden="true">
+      </button>
+      <h2 class="map-title">World map</h2>
+
+      <div class="map-counts">
+        <span class="map-count">
+          <img id="map-gem" alt="" aria-hidden="true"><span id="map-diamonds">100</span>
+        </span>
+        <span class="map-count" id="map-stars-wrap">
+          <img id="map-star" alt="" aria-hidden="true"><span id="map-stars">0/5</span>
+        </span>
+      </div>
     </div>
 
-    <!-- The route between nodes. Redrawn whenever the map opens. -->
+    <!-- Route between nodes, redrawn whenever the map opens. -->
     <svg id="map-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
 
     <!-- Nodes are generated from DH.LEVELS so the map cannot drift out of step
          with what is actually built and unlocked. -->
     <div id="map-nodes"></div>
 
-    <p class="map-legend" id="map-legend"></p>
+    <p class="map-world">World 1 &mdash; The Forgotten Lands</p>
   </section>
 
   <!-- ============ PAUSE ============ -->
@@ -157,6 +167,24 @@
         <button class="btn" data-act="restart">Restart from checkpoint</button>
         <button class="btn ghost" data-act="quit">Leave run</button>
       </div>
+
+      <!-- Toggles carry their state in the word "On"/"Off" as well as in
+           aria-pressed, so nothing here depends on seeing a colour. -->
+      <div class="toggles" id="toggles">
+        <button class="toggle" type="button" data-toggle="music" aria-pressed="true">
+          <span class="toggle-name">Music</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="sfx" aria-pressed="true">
+          <span class="toggle-name">Sound effects</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="voice" aria-pressed="true">
+          <span class="toggle-name">Voice</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="screenShake" aria-pressed="true">
+          <span class="toggle-name">Screen shake</span><span class="toggle-state">On</span>
+        </button>
+      </div>
+      <p class="fineprint" id="audio-note"></p>
     </div>
   </section>
 
@@ -182,7 +210,7 @@
         <button class="btn primary" data-act="map">World map</button>
         <button class="btn ghost" data-act="quit">Return to title</button>
       </div>
-      <p class="fineprint" id="complete-note">Level 2 arrives in the next build.</p>
+      <p class="fineprint">Level 2 arrives in the next build.</p>
     </div>
   </section>
 </div>
@@ -200,6 +228,8 @@
 <script src="js/data/Level1.js"></script>
 <script src="js/data/Levels.js"></script>
 <script src="js/data/Palettes.js"></script>
+<script src="js/data/Audio.js"></script>
+<script src="js/systems/AudioManager.js"></script>
 <script src="js/entities/Entity.js"></script>
 <script src="js/entities/HeroArt.js"></script>
 <script src="js/entities/Bullet.js"></script>

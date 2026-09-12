@@ -23,6 +23,8 @@ window.DH = window.DH || {};
       if (this.active) return false;
       this.active = true;
       this.pulse = 1;
+      DH.Audio.play('checkpoint');
+      DH.Audio.say('checkpoint');
       level.fx.burst(this.cx, this.cy, 22, {
         speed: 250, life: 0.7, size: 4, color: '#66f0d0', gravity: 160, shape: 'shard'
       });

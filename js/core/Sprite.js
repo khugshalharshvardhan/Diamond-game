@@ -44,8 +44,6 @@ window.DH = window.DH || {};
       DH.Assets.request(this.src);
     }
 
-    get ready() { return DH.Assets.ready(this.src); }
-
     draw(ctx, anim, t) {
       const img = DH.Assets.image(this.src);
       if (!img) return false;

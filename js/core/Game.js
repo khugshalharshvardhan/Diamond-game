@@ -21,6 +21,9 @@ window.DH = window.DH || {};
       this.input = new DH.Input();
       this.camera = new DH.Camera(VW, VH);
       this.particles = new DH.Particles(480);
+      /* Audio first: UIManager's settings toggles read DH.Audio.settings as
+         they are built, so the settings have to exist before it runs. */
+      DH.Audio.init();
       this.ui = new DH.UIManager(this);
 
       this.mode = 'menu';
@@ -65,6 +68,7 @@ window.DH = window.DH || {};
 
     openMenu() {
       this.mode = 'menu';
+      DH.Audio.music('menu');
       this.level = null;
       this.timeScale = 1;
       this.particles.clear();
@@ -153,6 +157,8 @@ window.DH = window.DH || {};
       this.ui.setDiamonds(this.state.diamonds, false);
       this.ui.hideBoss();
       this.ui.toast(data.name);
+      DH.Audio.music('level');
+      DH.Audio.say('levelStart', data);
 
       this.mode = 'playing';
       this.input.release();
@@ -174,6 +180,7 @@ window.DH = window.DH || {};
 
     restartFromCheckpoint() {
       if (!this.level) return;
+      DH.Audio.music('level');
       this.timeScale = 1;
       this.level.restartFromCheckpoint();
       this.ui.hideAll();
@@ -193,6 +200,9 @@ window.DH = window.DH || {};
 
     completeLevel() {
       this.mode = 'complete';
+      DH.Audio.play('levelComplete');
+      DH.Audio.say('levelComplete');
+      DH.Audio.music('menu');
       this.timeScale = 1;
       const reward = this.level.data.reward;
       this.addDiamonds(reward, false);
@@ -206,6 +216,7 @@ window.DH = window.DH || {};
         clearedEnemies: [],
         collectedPickups: [],
         unlockedLevels: this._unlockedAfter(this.state.level),
+        completedLevels: this._completedWith(this.state.level),
         companionRescued: this.state.companionRescued,
         ammo: { blaster: this.state.ammo }
       });
@@ -218,6 +229,13 @@ window.DH = window.DH || {};
       this.ui.setHudVisible(false);
       this.ui.show('complete');
       this.input.release();
+    }
+
+    /* Levels cleared, for the map's tick marks and star count. Additive: a
+       replay can never un-clear something. */
+    _completedWith(levelId) {
+      const done = DH.SaveManager.load().completedLevels || [];
+      return done.indexOf(levelId) >= 0 ? done : done.concat([levelId]).sort((a, b) => a - b);
     }
 
     /* Clearing level N unlocks N+1, and never revokes anything already open. */
@@ -330,5 +348,4 @@ window.DH = window.DH || {};
   }
 
   DH.Game = Game;
-  DH.VIEW = { width: VW, height: VH, step: STEP };
 })(window.DH);

@@ -8,7 +8,7 @@ window.DH = window.DH || {};
 
   const U = DH.Utils;
 
-  function spires(ctx, offset, vw, vh, spacing, color, minH, maxH, baseY) {
+  function spires(ctx, offset, vw, spacing, color, minH, maxH, baseY) {
     const first = Math.floor(offset / spacing) - 1;
     const count = Math.ceil(vw / spacing) + 3;
     ctx.fillStyle = color;
@@ -123,7 +123,7 @@ window.DH = window.DH || {};
         const offset = camX * L.speed;
         if (!tile(ctx, L.src, offset, drift, vw, vh)) {
           const f = L.fallback;
-          spires(ctx, offset, vw, vh, f.spacing, f.color, f.minH, f.maxH, vh * f.baseY + drift);
+          spires(ctx, offset, vw, f.spacing, f.color, f.minH, f.maxH, vh * f.baseY + drift);
         }
       }
 
@@ -141,5 +141,4 @@ window.DH = window.DH || {};
       ctx.globalAlpha = 1;
     }
   };
-
 })(window.DH);

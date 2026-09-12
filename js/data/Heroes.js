@@ -48,7 +48,6 @@ window.DH = window.DH || {};
       fireRate: 0.25,
       bulletSpeed: 12,
 
-      knockback: 190,
       bulletSize: 6,
 
       /* Read by HeroArt. Flags, not code paths per hero. */
@@ -83,7 +82,6 @@ window.DH = window.DH || {};
       fireRate: 0.40,
       bulletSpeed: 10,
 
-      knockback: 330,
       bulletSize: 10,
 
       art: { build: 1.18, hood: false, scarf: false, reactor: true, visor: 'slit', weapon: 'cannon' },
@@ -115,7 +113,6 @@ window.DH = window.DH || {};
       fireRate: 0.14,
       bulletSpeed: 14,
 
-      knockback: 90,
       bulletSize: 4,
 
       art: { build: 0.90, hood: true, scarf: false, reactor: false, visor: 'wide', weapon: 'pistols' },

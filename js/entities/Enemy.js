@@ -72,12 +72,12 @@ window.DH = window.DH || {};
       this.onGround = false;
       this.hitFlash = 0;
       this.step = U.rand(0, 6);
-      this.bobSeed = U.rand(0, 6);
       this.hurtShow = 0;
     }
 
     hurt(amount, fromX, level) {
       if (this.dead) return;
+      DH.Audio.play('hit');
       this.health -= amount;
       this.hitFlash = 0.12;
       this.hurtShow = 1.6;
@@ -92,6 +92,7 @@ window.DH = window.DH || {};
 
     die(level) {
       this.dead = true;
+      DH.Audio.play('enemyDie');
       level.clearedPending.add(this.id);
       level.fx.burst(this.cx, this.cy, 18, {
         speed: 280, life: 0.55, size: 5, color: '#ff5d9e', gravity: 620
@@ -204,7 +205,6 @@ window.DH = window.DH || {};
       ctx.fillStyle = eye;
       ctx.fillRect(4, -31, 10, 4);
       ctx.restore();
-
     }
 
     drawHealthBar(ctx) {
