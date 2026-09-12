@@ -1,0 +1,142 @@
+id,category,group,path,width,height,hasTransparency,quality,notes
+assets/characters/heroes/assault,characters,characters/heroes,assets/characters/heroes/assault.png,93,116,True,source-resolution,Static full-body pose; the held weapon is part of the character artwork.
+assets/characters/heroes/tank,characters,characters/heroes,assets/characters/heroes/tank.png,99,126,True,source-resolution,Static full-body pose; the held weapon is part of the character artwork.
+assets/characters/heroes/scout,characters,characters/heroes,assets/characters/heroes/scout.png,90,111,True,source-resolution,Static full-body pose; the held weapon is part of the character artwork.
+assets/characters/enemies/goblin,characters,characters/enemies,assets/characters/enemies/goblin.png,56,65,True,source-resolution,"One static pose, not an animation frame set."
+assets/characters/enemies/sniper,characters,characters/enemies,assets/characters/enemies/sniper.png,60,71,True,source-resolution,"One static pose, not an animation frame set."
+assets/characters/enemies/robot,characters,characters/enemies,assets/characters/enemies/robot.png,88,74,True,source-resolution,"One static pose, not an animation frame set."
+assets/characters/enemies/flying_drone,characters,characters/enemies,assets/characters/enemies/flying_drone.png,58,53,True,source-resolution,"One static pose, not an animation frame set."
+assets/characters/enemies/dark_colossus,characters,characters/enemies,assets/characters/enemies/dark_colossus.png,128,123,True,source-resolution,"One static pose, not an animation frame set."
+assets/characters/companion/companion_idle_small,characters,characters/companion,assets/characters/companion/companion_idle_small.png,35,58,True,tiny-source,Very small pose from the companion-joins scene. Approximate edge extraction; use the portrait for close-ups.
+assets/weapons/pistol,weapons,weapons,assets/weapons/pistol.png,55,39,True,source-resolution,Standalone weapon icon; no firing or projectile frames are present in the source.
+assets/weapons/shotgun,weapons,weapons,assets/weapons/shotgun.png,76,37,True,source-resolution,Standalone weapon icon; no firing or projectile frames are present in the source.
+assets/weapons/assault_rifle,weapons,weapons,assets/weapons/assault_rifle.png,82,42,True,source-resolution,Standalone weapon icon; no firing or projectile frames are present in the source.
+assets/weapons/sniper_rifle,weapons,weapons,assets/weapons/sniper_rifle.png,82,38,True,source-resolution,Standalone weapon icon; no firing or projectile frames are present in the source.
+assets/weapons/rocket_launcher,weapons,weapons,assets/weapons/rocket_launcher.png,80,47,True,source-resolution,Standalone weapon icon; no firing or projectile frames are present in the source.
+assets/weapons/sword,weapons,weapons,assets/weapons/sword.png,53,50,True,source-resolution,Standalone weapon icon; no firing or projectile frames are present in the source.
+assets/weapons/variants/shop_pistol,weapons,weapons/variants,assets/weapons/variants/shop_pistol.png,46,35,True,source-resolution,Small alternate weapon drawing from the shop interface.
+assets/weapons/variants/shop_shotgun,weapons,weapons/variants,assets/weapons/variants/shop_shotgun.png,59,34,True,source-resolution,Small alternate weapon drawing from the shop interface.
+assets/weapons/variants/shop_assault_rifle,weapons,weapons/variants,assets/weapons/variants/shop_assault_rifle.png,61,35,True,source-resolution,Small alternate weapon drawing from the shop interface.
+assets/items/diamond,items,items,assets/items/diamond.png,46,45,True,source-resolution,Glow edges are partially transparent.
+assets/items/health_pack,items,items,assets/items/health_pack.png,41,42,True,source-resolution,
+assets/items/ammo_box,items,items,assets/items/ammo_box.png,41,40,True,source-resolution,
+assets/items/power_up,items,items,assets/items/power_up.png,49,48,True,source-resolution,Glow edges are partially transparent.
+assets/items/shield,items,items,assets/items/shield.png,49,50,True,source-resolution,Glow edges are partially transparent.
+assets/items/key,items,items,assets/items/key.png,42,47,True,source-resolution,
+assets/items/pistol_ammo,items,items,assets/items/pistol_ammo.png,35,34,True,source-resolution,
+assets/items/shotgun_ammo,items,items,assets/items/shotgun_ammo.png,33,31,True,source-resolution,
+assets/items/rifle_ammo,items,items,assets/items/rifle_ammo.png,33,32,True,source-resolution,
+assets/portraits/assault_card_crop,portraits,portraits,assets/portraits/assault_card_crop.png,122,87,False,source-resolution,Bust crop retaining the original tinted background; not a full-body cutout.
+assets/portraits/tank_card_crop,portraits,portraits,assets/portraits/tank_card_crop.png,121,87,False,source-resolution,Bust crop retaining the original tinted background; not a full-body cutout.
+assets/portraits/scout_card_crop,portraits,portraits,assets/portraits/scout_card_crop.png,118,87,False,source-resolution,Bust crop retaining the original tinted background; not a full-body cutout.
+assets/portraits/assault_inventory,portraits,portraits,assets/portraits/assault_inventory.png,65,61,True,source-resolution,Small framed portrait with original background.
+assets/portraits/companion,portraits,portraits,assets/portraits/companion.png,65,64,True,source-resolution,Circular companion portrait; the original portrait background is retained inside the frame.
+assets/ui/buttons/play_game_yellow,ui,ui/buttons,assets/ui/buttons/play_game_yellow.png,149,39,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/characters_dark,ui,ui/buttons,assets/ui/buttons/characters_dark.png,149,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/shop_dark,ui,ui/buttons,assets/ui/buttons/shop_dark.png,149,37,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/settings_dark,ui,ui/buttons,assets/ui/buttons/settings_dark.png,149,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/exit_dark,ui,ui/buttons,assets/ui/buttons/exit_dark.png,149,37,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/select_yellow,ui,ui/buttons,assets/ui/buttons/select_yellow.png,104,37,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/buy_green,ui,ui/buttons,assets/ui/buttons/buy_green.png,59,35,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/next_level_yellow,ui,ui/buttons,assets/ui/buttons/next_level_yellow.png,160,39,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/main_menu_blue,ui,ui/buttons,assets/ui/buttons/main_menu_blue.png,160,40,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/continue_blue,ui,ui/buttons,assets/ui/buttons/continue_blue.png,144,43,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/main_menu_dark,ui,ui/buttons,assets/ui/buttons/main_menu_dark.png,144,43,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/clear_save_red,ui,ui/buttons,assets/ui/buttons/clear_save_red.png,114,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/back_blue,ui,ui/buttons,assets/ui/buttons/back_blue.png,113,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/tab_weapons_active,ui,ui/buttons,assets/ui/buttons/tab_weapons_active.png,90,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/tab_ammo,ui,ui/buttons,assets/ui/buttons/tab_ammo.png,90,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/tab_health,ui,ui/buttons,assets/ui/buttons/tab_health.png,91,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/tab_upgrades,ui,ui/buttons,assets/ui/buttons/tab_upgrades.png,92,38,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/buttons/world_map_back,ui,ui/buttons,assets/ui/buttons/world_map_back.png,42,34,True,source-resolution,Text/icon is baked into the PNG. Recreate labels in HTML for editable text.
+assets/ui/controls/pause,ui,ui/controls,assets/ui/controls/pause.png,49,50,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/settings,ui,ui/controls,assets/ui/controls/settings.png,49,50,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/left,ui,ui/controls,assets/ui/controls/left.png,49,50,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/right,ui,ui/controls,assets/ui/controls/right.png,49,50,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/aim,ui,ui/controls,assets/ui/controls/aim.png,50,50,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/gameplay_left,ui,ui/controls,assets/ui/controls/gameplay_left.png,53,54,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/gameplay_right,ui,ui/controls,assets/ui/controls/gameplay_right.png,54,54,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/gameplay_aim,ui,ui/controls,assets/ui/controls/gameplay_aim.png,55,55,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/gameplay_jump,ui,ui/controls,assets/ui/controls/gameplay_jump.png,55,55,True,source-resolution,Original circular control with transparent exterior.
+assets/ui/controls/carousel_left,ui,ui/controls,assets/ui/controls/carousel_left.png,39,46,True,source-resolution,Dark blue carousel arrow; intended for a dark interface.
+assets/ui/controls/carousel_right,ui,ui/controls,assets/ui/controls/carousel_right.png,40,50,True,source-resolution,Dark blue carousel arrow; intended for a dark interface.
+assets/ui/icons/heart,ui,ui/icons,assets/ui/icons/heart.png,27,25,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/heart_empty,ui,ui/icons,assets/ui/icons/heart_empty.png,25,24,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/ammo,ui,ui/icons,assets/ui/icons/ammo.png,28,27,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/diamond,ui,ui/icons,assets/ui/icons/diamond.png,32,29,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/pause,ui,ui/icons,assets/ui/icons/pause.png,23,24,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/settings,ui,ui/icons,assets/ui/icons/settings.png,28,29,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/arrow_left,ui,ui/icons,assets/ui/icons/arrow_left.png,27,27,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/arrow_right,ui,ui/icons,assets/ui/icons/arrow_right.png,28,28,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/crosshair,ui,ui/icons,assets/ui/icons/crosshair.png,31,30,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/stat_health,ui,ui/icons,assets/ui/icons/stat_health.png,22,23,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/stat_damage,ui,ui/icons,assets/ui/icons/stat_damage.png,23,22,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/stat_speed,ui,ui/icons,assets/ui/icons/stat_speed.png,23,21,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/stat_fire_rate,ui,ui/icons,assets/ui/icons/stat_fire_rate.png,24,22,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/upgrade_damage,ui,ui/icons,assets/ui/icons/upgrade_damage.png,27,27,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/upgrade_health,ui,ui/icons,assets/ui/icons/upgrade_health.png,27,26,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/upgrade_speed,ui,ui/icons,assets/ui/icons/upgrade_speed.png,25,26,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/music,ui,ui/icons,assets/ui/icons/music.png,24,25,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/sound,ui,ui/icons,assets/ui/icons/sound.png,26,24,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/graphics,ui,ui/icons,assets/ui/icons/graphics.png,27,24,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/controls,ui,ui/icons,assets/ui/icons/controls.png,25,25,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/settings_small,ui,ui/icons,assets/ui/icons/settings_small.png,28,29,True,source-resolution,Small UI icon at original source resolution.
+assets/ui/icons/skull,ui,ui/icons,assets/ui/icons/skull.png,43,47,True,source-resolution,Death-screen skull; partially transparent glow.
+assets/ui/rewards/star_large,ui,ui/rewards,assets/ui/rewards/star_large.png,50,48,True,source-resolution,Golden star artwork with soft transparency at its glow.
+assets/ui/rewards/star_left,ui,ui/rewards,assets/ui/rewards/star_left.png,43,42,True,source-resolution,Golden star artwork with soft transparency at its glow.
+assets/ui/rewards/star_right,ui,ui/rewards,assets/ui/rewards/star_right.png,43,40,True,source-resolution,Golden star artwork with soft transparency at its glow.
+assets/ui/rewards/three_stars,ui,ui/rewards,assets/ui/rewards/three_stars.png,132,64,True,source-resolution,Golden star artwork with soft transparency at its glow.
+assets/ui/rewards/diamond_reward,ui,ui/rewards,assets/ui/rewards/diamond_reward.png,34,30,True,source-resolution,
+assets/ui/labels/level_complete,ui,ui/labels,assets/ui/labels/level_complete.png,174,31,True,source-resolution,"Baked-in lettering, not editable text."
+assets/ui/labels/you_died,ui,ui/labels,assets/ui/labels/you_died.png,102,31,True,source-resolution,"Baked-in lettering, not editable text."
+assets/ui/bars/health_sample,ui,ui/bars,assets/ui/bars/health_sample.png,185,26,True,source-resolution,Static sample including its current fill; build changing values using HTML/CSS or canvas.
+assets/ui/bars/ammo_sample,ui,ui/bars,assets/ui/bars/ammo_sample.png,184,30,True,source-resolution,Static sample including its current fill; build changing values using HTML/CSS or canvas.
+assets/ui/bars/diamonds_sample,ui,ui/bars,assets/ui/bars/diamonds_sample.png,185,31,True,source-resolution,Static sample including its current fill; build changing values using HTML/CSS or canvas.
+assets/ui/bars/health_red_fill,ui,ui/bars,assets/ui/bars/health_red_fill.png,66,24,True,source-resolution,"Visible colored fill fragment, not an empty progress-bar template."
+assets/ui/bars/ammo_yellow_fill,ui,ui/bars,assets/ui/bars/ammo_yellow_fill.png,92,24,True,source-resolution,"Visible colored fill fragment, not an empty progress-bar template."
+assets/ui/bars/diamond_cyan_fill,ui,ui/bars,assets/ui/bars/diamond_cyan_fill.png,72,24,True,source-resolution,"Visible colored fill fragment, not an empty progress-bar template."
+assets/ui/hud/health_counter,ui,ui/hud,assets/ui/hud/health_counter.png,100,32,True,reference-state,HUD crop retaining original numbers and possible scene pixels at edges; reference state only.
+assets/ui/hud/ammo_counter,ui,ui/hud,assets/ui/hud/ammo_counter.png,89,31,True,reference-state,HUD crop retaining original numbers and possible scene pixels at edges; reference state only.
+assets/ui/hud/diamond_counter,ui,ui/hud,assets/ui/hud/diamond_counter.png,56,35,True,reference-state,HUD crop retaining original numbers and possible scene pixels at edges; reference state only.
+assets/ui/hud/level_title,ui,ui/hud,assets/ui/hud/level_title.png,173,31,True,reference-state,HUD crop retaining original numbers and possible scene pixels at edges; reference state only.
+assets/ui/hud/boss_health,ui,ui/hud,assets/ui/hud/boss_health.png,174,28,True,reference-state,HUD crop retaining original numbers and possible scene pixels at edges; reference state only.
+assets/ui/cards/hero_assault,ui,ui/cards,assets/ui/cards/hero_assault.png,143,280,True,source-resolution,"Complete baked card, including portrait, labels, stats, and button."
+assets/ui/cards/hero_tank,ui,ui/cards,assets/ui/cards/hero_tank.png,144,280,True,source-resolution,"Complete baked card, including portrait, labels, stats, and button."
+assets/ui/cards/hero_scout,ui,ui/cards,assets/ui/cards/hero_scout.png,142,280,True,source-resolution,"Complete baked card, including portrait, labels, stats, and button."
+assets/ui/inventory/weapon_equipped,ui,ui/inventory,assets/ui/inventory/weapon_equipped.png,80,74,True,source-resolution,Original inventory tile. Its visible contents are baked in.
+assets/ui/inventory/weapon_slot_shadow,ui,ui/inventory,assets/ui/inventory/weapon_slot_shadow.png,68,57,True,source-resolution,Original inventory tile. Its visible contents are baked in.
+assets/ui/inventory/weapon_slot_empty,ui,ui/inventory,assets/ui/inventory/weapon_slot_empty.png,70,57,True,source-resolution,Original inventory tile. Its visible contents are baked in.
+assets/ui/inventory/upgrade_damage,ui,ui/inventory,assets/ui/inventory/upgrade_damage.png,68,70,True,source-resolution,Upgrade tile with original text and level.
+assets/ui/inventory/upgrade_health,ui,ui/inventory,assets/ui/inventory/upgrade_health.png,69,70,True,source-resolution,Upgrade tile with original text and level.
+assets/ui/inventory/upgrade_speed,ui,ui/inventory,assets/ui/inventory/upgrade_speed.png,69,70,True,source-resolution,Upgrade tile with original text and level.
+assets/ui/map/level_1,ui,ui/map,assets/ui/map/level_1.png,44,44,True,reference-state,Level node cropped from the map; edge/background contamination may remain.
+assets/ui/map/level_2,ui,ui/map,assets/ui/map/level_2.png,47,49,True,reference-state,Level node cropped from the map; edge/background contamination may remain.
+assets/ui/map/level_3_locked,ui,ui/map,assets/ui/map/level_3_locked.png,52,67,True,reference-state,"Map node and attached lock, with approximate exterior masking."
+assets/ui/map/level_4_locked,ui,ui/map,assets/ui/map/level_4_locked.png,52,67,True,reference-state,"Map node and attached lock, with approximate exterior masking."
+assets/ui/map/padlock,ui,ui/map,assets/ui/map/padlock.png,23,28,True,source-resolution,Small standalone padlock from a locked map node.
+assets/ui/map/boss_marker,ui,ui/map,assets/ui/map/boss_marker.png,69,70,True,approximate-edge,Boss-map emblem with manually guided edge extraction.
+assets/ui/dialogue/companion_name_tag,ui,ui/dialogue,assets/ui/dialogue/companion_name_tag.png,95,31,True,source-resolution,Baked label. The original portrait overlaps its left edge; place the companion portrait over that edge.
+assets/ui/dialogue/rescue_text_box,ui,ui/dialogue,assets/ui/dialogue/rescue_text_box.png,216,59,True,source-resolution,Dialogue text is baked in. Left portrait is exported separately.
+assets/ui/settings/music_slider,ui,ui/settings,assets/ui/settings/music_slider.png,134,21,True,source-resolution,Static slider state; handle is not an independently movable layer.
+assets/ui/settings/sound_slider,ui,ui/settings,assets/ui/settings/sound_slider.png,134,21,True,source-resolution,Static slider state; handle is not an independently movable layer.
+assets/ui/settings/graphics_dropdown,ui,ui/settings,assets/ui/settings/graphics_dropdown.png,137,34,True,source-resolution,Dropdown crop including original label and value.
+assets/ui/settings/controls_dropdown,ui,ui/settings,assets/ui/settings/controls_dropdown.png,137,35,True,source-resolution,Dropdown crop including original label and value.
+assets/branding/diamond_heroes_logo,branding,branding,assets/branding/diamond_heroes_logo.png,199,129,True,approximate-edge,"Logo extracted from the illustrated menu, with manually guided edge masking; text remains rasterized."
+references/screens/main_menu,references,screens,references/screens/main_menu.png,469,368,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/hero_selection,references,screens,references/screens/hero_selection.png,441,368,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/shop,references,screens,references/screens/shop.png,361,368,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/inventory,references,screens,references/screens/inventory.png,230,368,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/ruins_gameplay,references,screens,references/screens/ruins_gameplay.png,521,246,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/boss_gameplay,references,screens,references/screens/boss_gameplay.png,492,246,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/level_complete,references,screens,references/screens/level_complete.png,251,246,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/defeat,references,screens,references/screens/defeat.png,235,246,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/world_map,references,screens,references/screens/world_map.png,464,206,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/rescue_dialogue,references,screens,references/screens/rescue_dialogue.png,294,206,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/companion_joins,references,screens,references/screens/companion_joins.png,239,206,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/saved_progress,references,screens,references/screens/saved_progress.png,242,206,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/screens/settings,references,screens,references/screens/settings.png,253,206,False,reference-only,"Flattened screen reference, not a clean background or an interactive screen."
+references/sheets/heroes,references,sheets,references/sheets/heroes.png,319,156,False,reference-only,Original labeled reference sheet crop.
+references/sheets/enemies,references,sheets,references/sheets/enemies.png,436,156,False,reference-only,Original labeled reference sheet crop.
+references/sheets/weapons,references,sheets,references/sheets/weapons.png,282,156,False,reference-only,Original labeled reference sheet crop.
+references/sheets/items,references,sheets,references/sheets/items.png,218,156,False,reference-only,Original labeled reference sheet crop.
+references/sheets/ui,references,sheets,references/sheets/ui.png,233,156,False,reference-only,Original labeled reference sheet crop.

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diamond Heroes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="960" height="540"></canvas>
+
+  <button id="btn-fullscreen" type="button" title="Fullscreen (F)" aria-label="Enter fullscreen">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm14 0h2v5h-5v-2h3v-3z"/></svg>
+  </button>
+
+  <!-- ============ HUD ============ -->
+  <div id="hud" class="hidden">
+    <div class="hud-row">
+      <div class="vitals">
+        <div class="crest" id="hud-crest"><span id="hud-initial">A</span></div>
+        <div class="vitals-body">
+          <div class="vitals-name" id="hud-name">Assault</div>
+          <div class="track">
+            <div class="track-fill" id="hud-hp"></div>
+            <div class="track-ghost" id="hud-hp-ghost"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="purse">
+        <img class="gem" id="hud-gem" alt="" aria-hidden="true">
+        <span id="hud-diamonds">100</span>
+      </div>
+    </div>
+
+    <div id="boss-bar" class="hidden">
+      <div class="boss-name" id="boss-name">The Warden</div>
+      <div class="boss-track"><div class="boss-fill" id="boss-fill"></div></div>
+    </div>
+
+    <div id="ability" class="hidden" data-mode="ready">
+      <div class="ability-key" aria-hidden="true">Shift</div>
+      <div class="ability-body">
+        <div class="ability-name" id="ability-name">Ability</div>
+        <div class="ability-track"><div class="ability-fill" id="ability-fill"></div></div>
+      </div>
+      <div class="ability-state" id="ability-state">Ready</div>
+    </div>
+
+    <div id="toast" class="hidden"></div>
+    <div id="hint">Move <b>A</b> <b>D</b> &nbsp;·&nbsp; Jump <b>Space</b> &nbsp;·&nbsp; Fire <b>J</b> &nbsp;·&nbsp; Ability <b>Shift</b> &nbsp;·&nbsp; Pause <b>Esc</b></div>
+  </div>
+
+  <!-- ============ TITLE ============ -->
+  <section class="screen" id="screen-menu">
+    <!-- Cover plate. The class `cover` is added to this section only once the
+         image has actually decoded, so the text title below stays the fallback
+         and the menu is never blank. -->
+    <img id="cover-art" alt="" aria-hidden="true">
+
+    <div id="cover-ui" hidden>
+      <!-- The art has PLAY GAME, SETTINGS, CHARACTERS and SHOP painted into
+           it. These real buttons are positioned exactly over the painted ones
+           and styled to match, so the screen looks like the cover but every
+           control is focusable, has live text and announces itself. -->
+      <button class="cover-play" type="button" data-act="new">
+        <span class="cover-play-glyph" aria-hidden="true"></span>
+        <span class="cover-play-text">Play game</span>
+      </button>
+
+      <button class="cover-icon" type="button" data-act="settings" data-slot="settings"
+              disabled aria-describedby="cover-soon">
+        <span class="cover-disc" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.3 4a7.3 7.3 0 00-.1-1.2l2-1.6-2-3.4-2.4 1a7.5 7.5 0 00-2-1.2L16.4 3h-4l-.4 2.6c-.7.3-1.4.7-2 1.2l-2.4-1-2 3.4 2 1.6a7.3 7.3 0 000 2.4l-2 1.6 2 3.4 2.4-1c.6.5 1.3.9 2 1.2l.4 2.6h4l.4-2.6c.7-.3 1.4-.7 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg>
+        </span>
+        <span class="cover-label">Settings</span>
+      </button>
+
+      <button class="cover-icon" type="button" data-act="characters" data-slot="characters">
+        <span class="cover-disc" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 11a3 3 0 100-6 3 3 0 000 6zm-6.5 1a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm13 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM12 13c-2.7 0-5 1.5-5 3.4V19h10v-2.6c0-1.9-2.3-3.4-5-3.4zM5.5 13.5c-2.1 0-3.8 1.2-3.8 2.7V19H5v-2.6c0-.9.4-1.7 1.1-2.4a6 6 0 00-.6 0zm13 0c-.2 0-.4 0-.6.1.7.6 1.1 1.4 1.1 2.3V19h3.3v-2.8c0-1.5-1.7-2.7-3.8-2.7z"/></svg>
+        </span>
+        <span class="cover-label">Characters</span>
+      </button>
+
+      <button class="cover-icon" type="button" data-act="shop" data-slot="shop"
+              disabled aria-describedby="cover-soon">
+        <span class="cover-disc" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM3 3h2.2l.8 2H21a1 1 0 01.96 1.28l-2.3 7.6A2 2 0 0117.74 15H8.5a2 2 0 01-1.94-1.5L4.2 5H3V3z"/></svg>
+        </span>
+        <span class="cover-label">Shop</span>
+      </button>
+
+      <p id="cover-soon" class="cover-soon">Not in this build yet</p>
+
+      <div class="cover-resume">
+        <div class="cover-resume-row">
+          <button class="btn cover-continue" type="button" data-act="continue" id="btn-continue-cover">Continue</button>
+          <button class="btn cover-continue" type="button" data-act="map">World map</button>
+        </div>
+        <p class="fineprint" id="save-line-cover">No run in progress</p>
+      </div>
+    </div>
+
+    <div class="title-block">
+      <div class="title-gem"></div>
+      <h1>Diamond<span>Heroes</span></h1>
+      <p class="tagline">The vaults below the city are not empty. Something is counting what's left.</p>
+      <div class="actions">
+        <button class="btn primary" data-act="new">Start a run</button>
+        <button class="btn" data-act="continue" id="btn-continue">Continue</button>
+      </div>
+      <p class="fineprint" id="save-line">No run in progress</p>
+    </div>
+  </section>
+
+  <!-- ============ HERO SELECT ============ -->
+  <section class="screen" id="screen-select">
+    <header class="screen-head">
+      <h2>Choose your hero</h2>
+      <p>Each hero has its own stats and its own ability. You keep this one for the whole run.</p>
+    </header>
+    <div class="roster" id="roster"></div>
+    <div class="actions center">
+      <button class="btn ghost" data-act="back">Back</button>
+      <button class="btn primary" data-act="deploy" id="btn-deploy" disabled>Deploy</button>
+    </div>
+  </section>
+
+  <!-- ============ WORLD MAP ============ -->
+  <section class="screen" id="screen-map">
+    <img id="map-art" alt="" aria-hidden="true">
+
+    <div class="map-bar">
+      <button class="btn ghost map-back" type="button" data-act="back">Back</button>
+      <h2 class="map-title">World 1 — The Forgotten Lands</h2>
+      <p class="map-purse"><span id="map-diamonds">100</span> diamonds</p>
+    </div>
+
+    <!-- The route between nodes. Redrawn whenever the map opens. -->
+    <svg id="map-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+    <!-- Nodes are generated from DH.LEVELS so the map cannot drift out of step
+         with what is actually built and unlocked. -->
+    <div id="map-nodes"></div>
+
+    <p class="map-legend" id="map-legend"></p>
+  </section>
+
+  <!-- ============ PAUSE ============ -->
+  <section class="screen dim" id="screen-pause">
+    <div class="card">
+      <h2>Paused</h2>
+      <div class="actions column">
+        <button class="btn primary" data-act="resume">Resume</button>
+        <button class="btn" data-act="restart">Restart from checkpoint</button>
+        <button class="btn ghost" data-act="quit">Leave run</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEATH ============ -->
+  <section class="screen dim" id="screen-dead">
+    <div class="card">
+      <h2>You went down</h2>
+      <p class="card-note" id="dead-note">Your diamonds are safe. The checkpoint held.</p>
+      <div class="actions column">
+        <button class="btn primary" data-act="respawn">Back to checkpoint</button>
+        <button class="btn ghost" data-act="quit">Leave run</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VICTORY ============ -->
+  <section class="screen dim" id="screen-complete">
+    <div class="card wide">
+      <h2>The Warden is down</h2>
+      <p class="card-note">Level 1 cleared. The lift to the lower vault is powered.</p>
+      <dl class="tally" id="tally"></dl>
+      <div class="actions column">
+        <button class="btn primary" data-act="map">World map</button>
+        <button class="btn ghost" data-act="quit">Return to title</button>
+      </div>
+      <p class="fineprint" id="complete-note">Level 2 arrives in the next build.</p>
+    </div>
+  </section>
+</div>
+
+<script src="js/core/Utils.js"></script>
+<script src="js/systems/Assets.js"></script>
+<script src="js/core/Sprite.js"></script>
+<script src="js/core/Input.js"></script>
+<script src="js/core/Physics.js"></script>
+<script src="js/core/Camera.js"></script>
+<script src="js/core/Particles.js"></script>
+<script src="js/systems/SaveManager.js"></script>
+<script src="js/data/Heroes.js"></script>
+<script src="js/data/Art.js"></script>
+<script src="js/data/Level1.js"></script>
+<script src="js/data/Levels.js"></script>
+<script src="js/data/Palettes.js"></script>
+<script src="js/entities/Entity.js"></script>
+<script src="js/entities/HeroArt.js"></script>
+<script src="js/entities/Bullet.js"></script>
+<script src="js/entities/Pickup.js"></script>
+<script src="js/entities/Enemy.js"></script>
+<script src="js/entities/Boss.js"></script>
+<script src="js/entities/Player.js"></script>
+<script src="js/entities/Companion.js"></script>
+<script src="js/world/Background.js"></script>
+<script src="js/world/Checkpoint.js"></script>
+<script src="js/world/Level.js"></script>
+<script src="js/systems/UIManager.js"></script>
+<script src="js/core/Game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

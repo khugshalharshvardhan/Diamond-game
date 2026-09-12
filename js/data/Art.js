@@ -1,0 +1,134 @@
+/* Art — the manifest. This is the file you edit when artwork changes.
+
+   SOURCE
+   ------
+   Paths point at the supplied pack in place, at diamond-heroes-assets/assets/.
+   The pack is not copied into the project: its own preview.html and
+   assets.json stay valid, its filenames are preserved as its CLAUDE.md asks,
+   and 123 files are not duplicated.
+
+   WHAT THIS ART IS
+   ----------------
+   Per the pack's own README, every PNG is a SINGLE STATIC POSE. `frames: 1` on
+   all 141 entries. There are no walk, jump, attack or death cycles, and the
+   weapons are baked into the character poses. So the sprites below run in the
+   Sprite class's static mode: movement translates and flips the pose, and the
+   squash/stretch, muzzle flash and hit flash stay procedural on top. That is
+   not a walk animation and is not described as one.
+
+   Every asset in the pack carries a uniform 4px transparent border, and its
+   pivot is bottom-centre of the trimmed content (the flying drone is centred,
+   because it flies). `pad: 4` trims that border so feet land on the ground
+   rather than 4px above it.
+
+   `drawHeight` is the target height in world pixels. It is deliberately a
+   little taller than each entity's collision box — art overhanging its hitbox
+   is normal and reads better than art shrunk to fit. Collision boxes are
+   defined in the entities, never from these numbers.
+
+   Anything missing here simply falls back to procedural drawing. */
+window.DH = window.DH || {};
+(function (DH) {
+  'use strict';
+
+  const PACK = 'diamond-heroes-assets/assets/';
+
+  DH.ART = {
+    base: PACK,
+
+    /* ---- heroes. Keys match the ids in Heroes.js. Collision box is 34x52. */
+    heroes: {
+      assault: { src: 'characters/heroes/assault.png', pad: 4, drawHeight: 64 },
+      tank:    { src: 'characters/heroes/tank.png',    pad: 4, drawHeight: 70 },
+      scout:   { src: 'characters/heroes/scout.png',   pad: 4, drawHeight: 61 }
+    },
+
+    /* ---- enemies. Only `grunt` is wired today; the rest are here so Phase 6
+       is a data change rather than a code change. Collision box is 40x38. */
+    enemies: {
+      grunt:    { src: 'characters/enemies/goblin.png',        pad: 4, drawHeight: 48 },
+      gunner:   { src: 'characters/enemies/sniper.png',        pad: 4, drawHeight: 52 },
+      brute:    { src: 'characters/enemies/robot.png',         pad: 4, drawHeight: 56 },
+      drone:    { src: 'characters/enemies/flying_drone.png',  pad: 4, drawHeight: 40, anchor: 'center' },
+      assassin: { src: 'characters/enemies/sniper.png',        pad: 4, drawHeight: 50 }
+    },
+
+    /* ---- boss. Collision box is 104x118. The spec wants the Warden at 3-4x
+       the player's height; reaching that means growing the hitbox and the
+       arena together, which is boss-polish work, not an art number. */
+    boss: { src: 'characters/enemies/dark_colossus.png', pad: 4, drawHeight: 132 },
+
+    companion: { src: 'characters/companion/companion_idle_small.png', pad: 4, drawHeight: 36 },
+
+    /* ---- world pickups, keyed by Pickup kind. */
+    pickups: {
+      diamond: { src: 'items/diamond.png',     pad: 4, drawHeight: 26, anchor: 'center' },
+      gem:     { src: 'items/power_up.png',    pad: 4, drawHeight: 40, anchor: 'center' },
+      health:  { src: 'items/health_pack.png', pad: 4, drawHeight: 30, anchor: 'center' },
+      ammo:    { src: 'items/ammo_box.png',    pad: 4, drawHeight: 28, anchor: 'center' }
+    },
+
+    /* ---- full-scene plates. These live at the PROJECT ROOT, not inside the
+       pack, so each is written with a leading './' — Assets.resolve() leaves
+       rooted paths alone instead of prefixing `base`. Spaces in the filenames
+       are encoded there too.
+
+       All five are 1672x941, i.e. 16:9 to within 0.06%, which is the same
+       aspect as the stage. That is why they can be placed by percentage and
+       stay aligned at every window size. */
+    scenes: {
+      cover:   './cover page.png',
+      ruins:   './location 1.png',
+      foundry: './location 2.png',
+      grove:   './location 3.png',
+      skyward: './level mointioring image.png'
+    },
+
+    scene(key) { return this.scenes[key] || null; },
+
+    /* ---- flat icons for the DOM interface, used as <img> sources.
+       Only text-free art is listed. The pack's button and card PNGs have their
+       labels baked into the pixels, so using them would freeze every string
+       and fight the real, focusable buttons already in the markup — its
+       CLAUDE.md warns against exactly that. */
+    ui: {
+      diamond: 'ui/icons/diamond.png',
+      heart: 'ui/icons/heart.png',
+      heartEmpty: 'ui/icons/heart_empty.png',
+      statHealth: 'ui/icons/stat_health.png',
+      statDamage: 'ui/icons/stat_damage.png',
+      statSpeed: 'ui/icons/stat_speed.png',
+      statFireRate: 'ui/icons/stat_fire_rate.png'
+    },
+
+    /* ---- parallax background.
+       The pack supplies NO clean background plates — its references/screens/
+       crops still contain characters, HUD and text baked in, and it says so.
+       So every layer falls back to its procedural band. Real plates dropped at
+       these paths will be picked up with no code change. */
+    background: {
+      layers: [
+        { src: null, speed: 0.12, fallback: { spacing: 330, color: '#101a3d', minH: 150, maxH: 330, baseY: 0.82 } },
+        { src: null, speed: 0.28, fallback: { spacing: 240, color: '#16234c', minH: 110, maxH: 250, baseY: 0.90 } },
+        { src: null, speed: 0.48, fallback: { spacing: 170, color: '#1b2b5c', minH: 70,  maxH: 170, baseY: 0.98 } }
+      ]
+    },
+
+    /* Every path worth preloading at boot. */
+    all() {
+      const out = [];
+      const push = (o) => Object.keys(o).forEach((k) => { if (o[k] && o[k].src) out.push(o[k].src); });
+      push(this.heroes);
+      push(this.enemies);
+      push(this.pickups);
+      out.push(this.boss.src, this.companion.src);
+      Object.keys(this.ui).forEach((k) => out.push(this.ui[k]));
+      Object.keys(this.scenes).forEach((k) => out.push(this.scenes[k]));
+      this.background.layers.forEach((l) => { if (l.src) out.push(l.src); });
+      return out;
+    },
+
+    /* Absolute-ish path for DOM <img> use, where Assets' base is not applied. */
+    url(rel) { return this.base + rel; }
+  };
+})(window.DH);

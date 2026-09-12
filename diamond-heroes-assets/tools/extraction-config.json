@@ -1,0 +1,2127 @@
+[
+  {
+    "path": "assets/characters/heroes/assault.png",
+    "box": [
+      26,
+      875,
+      115,
+      984
+    ],
+    "mode": "auto",
+    "note": "Static full-body pose; the held weapon is part of the character artwork.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/heroes/tank.png",
+    "box": [
+      120,
+      866,
+      218,
+      985
+    ],
+    "mode": "auto",
+    "note": "Static full-body pose; the held weapon is part of the character artwork.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/heroes/scout.png",
+    "box": [
+      228,
+      877,
+      314,
+      985
+    ],
+    "mode": "auto",
+    "note": "Static full-body pose; the held weapon is part of the character artwork.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/enemies/goblin.png",
+    "box": [
+      346,
+      891,
+      402,
+      958
+    ],
+    "mode": "auto",
+    "note": "One static pose, not an animation frame set.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/enemies/sniper.png",
+    "box": [
+      404,
+      883,
+      463,
+      958
+    ],
+    "mode": "auto",
+    "note": "One static pose, not an animation frame set.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/enemies/robot.png",
+    "box": [
+      468,
+      883,
+      555,
+      959
+    ],
+    "mode": "auto",
+    "note": "One static pose, not an animation frame set.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/enemies/flying_drone.png",
+    "box": [
+      569,
+      885,
+      626,
+      948
+    ],
+    "mode": "auto",
+    "note": "One static pose, not an animation frame set.",
+    "anchor": "center"
+  },
+  {
+    "path": "assets/characters/enemies/dark_colossus.png",
+    "box": [
+      630,
+      865,
+      765,
+      985
+    ],
+    "mode": "auto",
+    "note": "One static pose, not an animation frame set.",
+    "anchor": "bottom-center"
+  },
+  {
+    "path": "assets/characters/companion/companion_idle_small.png",
+    "box": [
+      902,
+      708,
+      939,
+      761
+    ],
+    "mode": "grabcut",
+    "note": "Very small pose from the companion-joins scene. Approximate edge extraction; use the portrait for close-ups.",
+    "anchor": "bottom-center",
+    "quality": "tiny-source",
+    "polygon": [
+      [
+        18,
+        0
+      ],
+      [
+        26,
+        3
+      ],
+      [
+        28,
+        8
+      ],
+      [
+        30,
+        12
+      ],
+      [
+        31,
+        15
+      ],
+      [
+        29,
+        22
+      ],
+      [
+        30,
+        26
+      ],
+      [
+        33,
+        30
+      ],
+      [
+        34,
+        35
+      ],
+      [
+        36,
+        38
+      ],
+      [
+        36,
+        42
+      ],
+      [
+        31,
+        43
+      ],
+      [
+        29,
+        40
+      ],
+      [
+        26,
+        36
+      ],
+      [
+        28,
+        42
+      ],
+      [
+        26,
+        44
+      ],
+      [
+        26,
+        48
+      ],
+      [
+        29,
+        50
+      ],
+      [
+        29,
+        52
+      ],
+      [
+        20,
+        52
+      ],
+      [
+        18,
+        46
+      ],
+      [
+        18,
+        44
+      ],
+      [
+        14,
+        44
+      ],
+      [
+        11,
+        49
+      ],
+      [
+        12,
+        51
+      ],
+      [
+        8,
+        52
+      ],
+      [
+        2,
+        52
+      ],
+      [
+        3,
+        49
+      ],
+      [
+        5,
+        44
+      ],
+      [
+        5,
+        40
+      ],
+      [
+        3,
+        39
+      ],
+      [
+        0,
+        41
+      ],
+      [
+        0,
+        38
+      ],
+      [
+        4,
+        33
+      ],
+      [
+        5,
+        28
+      ],
+      [
+        4,
+        26
+      ],
+      [
+        6,
+        21
+      ],
+      [
+        7,
+        19
+      ],
+      [
+        6,
+        16
+      ],
+      [
+        7,
+        14
+      ],
+      [
+        9,
+        12
+      ],
+      [
+        10,
+        5
+      ],
+      [
+        13,
+        2
+      ]
+    ],
+    "rejectGreen": true
+  },
+  {
+    "path": "assets/weapons/pistol.png",
+    "box": [
+      798,
+      880,
+      852,
+      920
+    ],
+    "mode": "auto",
+    "note": "Standalone weapon icon; no firing or projectile frames are present in the source."
+  },
+  {
+    "path": "assets/weapons/shotgun.png",
+    "box": [
+      874,
+      882,
+      947,
+      918
+    ],
+    "mode": "auto",
+    "note": "Standalone weapon icon; no firing or projectile frames are present in the source."
+  },
+  {
+    "path": "assets/weapons/assault_rifle.png",
+    "box": [
+      969,
+      880,
+      1053,
+      919
+    ],
+    "mode": "auto",
+    "note": "Standalone weapon icon; no firing or projectile frames are present in the source."
+  },
+  {
+    "path": "assets/weapons/sniper_rifle.png",
+    "box": [
+      795,
+      943,
+      878,
+      982
+    ],
+    "mode": "auto",
+    "note": "Standalone weapon icon; no firing or projectile frames are present in the source."
+  },
+  {
+    "path": "assets/weapons/rocket_launcher.png",
+    "box": [
+      883,
+      938,
+      962,
+      981
+    ],
+    "mode": "auto",
+    "note": "Standalone weapon icon; no firing or projectile frames are present in the source."
+  },
+  {
+    "path": "assets/weapons/sword.png",
+    "box": [
+      983,
+      938,
+      1037,
+      984
+    ],
+    "mode": "auto",
+    "note": "Standalone weapon icon; no firing or projectile frames are present in the source."
+  },
+  {
+    "path": "assets/weapons/variants/shop_pistol.png",
+    "box": [
+      954,
+      97,
+      998,
+      124
+    ],
+    "mode": "auto",
+    "note": "Small alternate weapon drawing from the shop interface."
+  },
+  {
+    "path": "assets/weapons/variants/shop_shotgun.png",
+    "box": [
+      951,
+      144,
+      1003,
+      171
+    ],
+    "mode": "auto",
+    "note": "Small alternate weapon drawing from the shop interface."
+  },
+  {
+    "path": "assets/weapons/variants/shop_assault_rifle.png",
+    "box": [
+      950,
+      188,
+      1003,
+      215
+    ],
+    "mode": "auto",
+    "note": "Small alternate weapon drawing from the shop interface."
+  },
+  {
+    "path": "assets/items/diamond.png",
+    "box": [
+      1090,
+      880,
+      1134,
+      918
+    ],
+    "mode": "glow",
+    "note": "Glow edges are partially transparent."
+  },
+  {
+    "path": "assets/items/health_pack.png",
+    "box": [
+      1158,
+      880,
+      1201,
+      918
+    ],
+    "mode": "auto",
+    "note": ""
+  },
+  {
+    "path": "assets/items/ammo_box.png",
+    "box": [
+      1221,
+      880,
+      1266,
+      918
+    ],
+    "mode": "auto",
+    "note": ""
+  },
+  {
+    "path": "assets/items/power_up.png",
+    "box": [
+      1088,
+      940,
+      1136,
+      983
+    ],
+    "mode": "glow",
+    "note": "Glow edges are partially transparent."
+  },
+  {
+    "path": "assets/items/shield.png",
+    "box": [
+      1155,
+      938,
+      1203,
+      983
+    ],
+    "mode": "glow",
+    "note": "Glow edges are partially transparent."
+  },
+  {
+    "path": "assets/items/key.png",
+    "box": [
+      1220,
+      938,
+      1264,
+      983
+    ],
+    "mode": "auto",
+    "note": ""
+  },
+  {
+    "path": "assets/items/pistol_ammo.png",
+    "box": [
+      955,
+      243,
+      983,
+      269
+    ],
+    "mode": "auto",
+    "note": ""
+  },
+  {
+    "path": "assets/items/shotgun_ammo.png",
+    "box": [
+      956,
+      286,
+      981,
+      309
+    ],
+    "mode": "auto",
+    "note": ""
+  },
+  {
+    "path": "assets/items/rifle_ammo.png",
+    "box": [
+      956,
+      328,
+      981,
+      352
+    ],
+    "mode": "auto",
+    "note": ""
+  },
+  {
+    "path": "assets/portraits/assault_card_crop.png",
+    "box": [
+      498,
+      72,
+      620,
+      159
+    ],
+    "mode": "crop",
+    "note": "Bust crop retaining the original tinted background; not a full-body cutout."
+  },
+  {
+    "path": "assets/portraits/tank_card_crop.png",
+    "box": [
+      641,
+      72,
+      762,
+      159
+    ],
+    "mode": "crop",
+    "note": "Bust crop retaining the original tinted background; not a full-body cutout."
+  },
+  {
+    "path": "assets/portraits/scout_card_crop.png",
+    "box": [
+      791,
+      72,
+      909,
+      159
+    ],
+    "mode": "crop",
+    "note": "Bust crop retaining the original tinted background; not a full-body cutout."
+  },
+  {
+    "path": "assets/portraits/assault_inventory.png",
+    "box": [
+      1314,
+      60,
+      1371,
+      113
+    ],
+    "mode": "rounded",
+    "note": "Small framed portrait with original background.",
+    "radius": 5
+  },
+  {
+    "path": "assets/portraits/companion.png",
+    "box": [
+      491,
+      771,
+      548,
+      827
+    ],
+    "mode": "ellipse",
+    "note": "Circular companion portrait; the original portrait background is retained inside the frame."
+  },
+  {
+    "path": "assets/ui/buttons/play_game_yellow.png",
+    "box": [
+      285,
+      138,
+      426,
+      169
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/characters_dark.png",
+    "box": [
+      285,
+      173,
+      426,
+      203
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/shop_dark.png",
+    "box": [
+      285,
+      208,
+      426,
+      237
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/settings_dark.png",
+    "box": [
+      285,
+      242,
+      426,
+      272
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/exit_dark.png",
+    "box": [
+      285,
+      277,
+      426,
+      306
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/select_yellow.png",
+    "box": [
+      509,
+      299,
+      605,
+      328
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/buttons/buy_green.png",
+    "box": [
+      1217,
+      97,
+      1268,
+      124
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/next_level_yellow.png",
+    "box": [
+      1084,
+      548,
+      1236,
+      579
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/main_menu_blue.png",
+    "box": [
+      1084,
+      583,
+      1236,
+      615
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/continue_blue.png",
+    "box": [
+      1345,
+      519,
+      1481,
+      554
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/buttons/main_menu_dark.png",
+    "box": [
+      1345,
+      561,
+      1481,
+      596
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/buttons/clear_save_red.png",
+    "box": [
+      1292,
+      801,
+      1398,
+      831
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/buttons/back_blue.png",
+    "box": [
+      1409,
+      801,
+      1514,
+      831
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/buttons/tab_weapons_active.png",
+    "box": [
+      942,
+      52,
+      1024,
+      82
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/tab_ammo.png",
+    "box": [
+      1026,
+      52,
+      1108,
+      82
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/tab_health.png",
+    "box": [
+      1110,
+      52,
+      1193,
+      82
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/tab_upgrades.png",
+    "box": [
+      1195,
+      52,
+      1279,
+      82
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/buttons/world_map_back.png",
+    "box": [
+      15,
+      645,
+      49,
+      671
+    ],
+    "mode": "rounded",
+    "note": "Text/icon is baked into the PNG. Recreate labels in HTML for editable text.",
+    "radius": 4
+  },
+  {
+    "path": "assets/ui/controls/pause.png",
+    "box": [
+      1312,
+      961,
+      1353,
+      1003
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/settings.png",
+    "box": [
+      1353,
+      961,
+      1394,
+      1003
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/left.png",
+    "box": [
+      1393,
+      961,
+      1434,
+      1003
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/right.png",
+    "box": [
+      1434,
+      961,
+      1475,
+      1003
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/aim.png",
+    "box": [
+      1475,
+      961,
+      1517,
+      1003
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/gameplay_left.png",
+    "box": [
+      15,
+      578,
+      60,
+      624
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/gameplay_right.png",
+    "box": [
+      70,
+      578,
+      116,
+      624
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/gameplay_aim.png",
+    "box": [
+      424,
+      572,
+      471,
+      619
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/gameplay_jump.png",
+    "box": [
+      475,
+      572,
+      522,
+      619
+    ],
+    "mode": "ellipse",
+    "note": "Original circular control with transparent exterior."
+  },
+  {
+    "path": "assets/ui/controls/carousel_left.png",
+    "box": [
+      559,
+      18,
+      591,
+      60
+    ],
+    "mode": "auto",
+    "note": "Dark blue carousel arrow; intended for a dark interface.",
+    "threshold": 9
+  },
+  {
+    "path": "assets/ui/controls/carousel_right.png",
+    "box": [
+      815,
+      18,
+      851,
+      61
+    ],
+    "mode": "auto",
+    "note": "Dark blue carousel arrow; intended for a dark interface.",
+    "threshold": 9
+  },
+  {
+    "path": "assets/ui/icons/heart.png",
+    "box": [
+      1314,
+      882,
+      1334,
+      903
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": false
+  },
+  {
+    "path": "assets/ui/icons/heart_empty.png",
+    "box": [
+      1446,
+      108,
+      1466,
+      128
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/ammo.png",
+    "box": [
+      1315,
+      908,
+      1337,
+      928
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": false
+  },
+  {
+    "path": "assets/ui/icons/diamond.png",
+    "box": [
+      1314,
+      932,
+      1338,
+      954
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": false
+  },
+  {
+    "path": "assets/ui/icons/pause.png",
+    "box": [
+      1323,
+      971,
+      1342,
+      993
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/settings.png",
+    "box": [
+      1360,
+      970,
+      1385,
+      994
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/arrow_left.png",
+    "box": [
+      1401,
+      970,
+      1426,
+      994
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/arrow_right.png",
+    "box": [
+      1441,
+      970,
+      1467,
+      994
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/crosshair.png",
+    "box": [
+      1482,
+      970,
+      1508,
+      995
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/stat_health.png",
+    "box": [
+      501,
+      189,
+      516,
+      205
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/stat_damage.png",
+    "box": [
+      501,
+      207,
+      518,
+      223
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/stat_speed.png",
+    "box": [
+      501,
+      224,
+      518,
+      241
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/stat_fire_rate.png",
+    "box": [
+      501,
+      242,
+      518,
+      258
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/upgrade_damage.png",
+    "box": [
+      1328,
+      313,
+      1356,
+      338
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/upgrade_health.png",
+    "box": [
+      1401,
+      312,
+      1429,
+      338
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/upgrade_speed.png",
+    "box": [
+      1476,
+      312,
+      1502,
+      338
+    ],
+    "mode": "glyph",
+    "note": "Small UI icon at original source resolution.",
+    "ellipseROI": true
+  },
+  {
+    "path": "assets/ui/icons/music.png",
+    "box": [
+      1291,
+      680,
+      1311,
+      700
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/sound.png",
+    "box": [
+      1291,
+      705,
+      1312,
+      725
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/graphics.png",
+    "box": [
+      1291,
+      732,
+      1312,
+      752
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/controls.png",
+    "box": [
+      1291,
+      765,
+      1312,
+      785
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/settings_small.png",
+    "box": [
+      1288,
+      646,
+      1310,
+      668
+    ],
+    "mode": "auto",
+    "note": "Small UI icon at original source resolution."
+  },
+  {
+    "path": "assets/ui/icons/skull.png",
+    "box": [
+      1396,
+      403,
+      1437,
+      446
+    ],
+    "mode": "glow",
+    "note": "Death-screen skull; partially transparent glow."
+  },
+  {
+    "path": "assets/ui/rewards/star_large.png",
+    "box": [
+      1138,
+      402,
+      1181,
+      447
+    ],
+    "mode": "glow",
+    "note": "Golden star artwork with soft transparency at its glow."
+  },
+  {
+    "path": "assets/ui/rewards/star_left.png",
+    "box": [
+      1100,
+      419,
+      1137,
+      455
+    ],
+    "mode": "glow",
+    "note": "Golden star artwork with soft transparency at its glow."
+  },
+  {
+    "path": "assets/ui/rewards/star_right.png",
+    "box": [
+      1184,
+      421,
+      1223,
+      456
+    ],
+    "mode": "glow",
+    "note": "Golden star artwork with soft transparency at its glow."
+  },
+  {
+    "path": "assets/ui/rewards/three_stars.png",
+    "box": [
+      1099,
+      400,
+      1225,
+      456
+    ],
+    "mode": "glow",
+    "note": "Golden star artwork with soft transparency at its glow."
+  },
+  {
+    "path": "assets/ui/rewards/diamond_reward.png",
+    "box": [
+      1124,
+      511,
+      1153,
+      538
+    ],
+    "mode": "glow",
+    "note": ""
+  },
+  {
+    "path": "assets/ui/labels/level_complete.png",
+    "box": [
+      1077,
+      456,
+      1245,
+      481
+    ],
+    "mode": "auto",
+    "note": "Baked-in lettering, not editable text."
+  },
+  {
+    "path": "assets/ui/labels/you_died.png",
+    "box": [
+      1366,
+      447,
+      1468,
+      472
+    ],
+    "mode": "auto",
+    "note": "Baked-in lettering, not editable text."
+  },
+  {
+    "path": "assets/ui/bars/health_sample.png",
+    "box": [
+      1313,
+      881,
+      1494,
+      904
+    ],
+    "mode": "auto",
+    "note": "Static sample including its current fill; build changing values using HTML/CSS or canvas.",
+    "threshold": 25
+  },
+  {
+    "path": "assets/ui/bars/ammo_sample.png",
+    "box": [
+      1313,
+      905,
+      1494,
+      930
+    ],
+    "mode": "auto",
+    "note": "Static sample including its current fill; build changing values using HTML/CSS or canvas.",
+    "threshold": 25
+  },
+  {
+    "path": "assets/ui/bars/diamonds_sample.png",
+    "box": [
+      1313,
+      931,
+      1494,
+      956
+    ],
+    "mode": "auto",
+    "note": "Static sample including its current fill; build changing values using HTML/CSS or canvas.",
+    "threshold": 25
+  },
+  {
+    "path": "assets/ui/bars/health_red_fill.png",
+    "box": [
+      1353,
+      885,
+      1411,
+      901
+    ],
+    "mode": "rounded",
+    "note": "Visible colored fill fragment, not an empty progress-bar template.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/bars/ammo_yellow_fill.png",
+    "box": [
+      1346,
+      910,
+      1430,
+      926
+    ],
+    "mode": "rounded",
+    "note": "Visible colored fill fragment, not an empty progress-bar template.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/bars/diamond_cyan_fill.png",
+    "box": [
+      1346,
+      935,
+      1410,
+      951
+    ],
+    "mode": "rounded",
+    "note": "Visible colored fill fragment, not an empty progress-bar template.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/hud/health_counter.png",
+    "box": [
+      13,
+      408,
+      105,
+      432
+    ],
+    "mode": "rounded",
+    "note": "HUD crop retaining original numbers and possible scene pixels at edges; reference state only.",
+    "radius": 6,
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/hud/ammo_counter.png",
+    "box": [
+      13,
+      434,
+      94,
+      457
+    ],
+    "mode": "rounded",
+    "note": "HUD crop retaining original numbers and possible scene pixels at edges; reference state only.",
+    "radius": 6,
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/hud/diamond_counter.png",
+    "box": [
+      471,
+      389,
+      519,
+      416
+    ],
+    "mode": "rounded",
+    "note": "HUD crop retaining original numbers and possible scene pixels at edges; reference state only.",
+    "radius": 6,
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/hud/level_title.png",
+    "box": [
+      10,
+      385,
+      175,
+      408
+    ],
+    "mode": "rounded",
+    "note": "HUD crop retaining original numbers and possible scene pixels at edges; reference state only.",
+    "radius": 6,
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/hud/boss_health.png",
+    "box": [
+      545,
+      408,
+      711,
+      428
+    ],
+    "mode": "rounded",
+    "note": "HUD crop retaining original numbers and possible scene pixels at edges; reference state only.",
+    "radius": 6,
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/cards/hero_assault.png",
+    "box": [
+      490,
+      66,
+      625,
+      338
+    ],
+    "mode": "rounded",
+    "note": "Complete baked card, including portrait, labels, stats, and button.",
+    "radius": 10
+  },
+  {
+    "path": "assets/ui/cards/hero_tank.png",
+    "box": [
+      636,
+      66,
+      772,
+      338
+    ],
+    "mode": "rounded",
+    "note": "Complete baked card, including portrait, labels, stats, and button.",
+    "radius": 10
+  },
+  {
+    "path": "assets/ui/cards/hero_scout.png",
+    "box": [
+      782,
+      66,
+      916,
+      338
+    ],
+    "mode": "rounded",
+    "note": "Complete baked card, including portrait, labels, stats, and button.",
+    "radius": 10
+  },
+  {
+    "path": "assets/ui/inventory/weapon_equipped.png",
+    "box": [
+      1313,
+      218,
+      1385,
+      284
+    ],
+    "mode": "rounded",
+    "note": "Original inventory tile. Its visible contents are baked in.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/inventory/weapon_slot_shadow.png",
+    "box": [
+      1388,
+      218,
+      1448,
+      267
+    ],
+    "mode": "rounded",
+    "note": "Original inventory tile. Its visible contents are baked in.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/inventory/weapon_slot_empty.png",
+    "box": [
+      1455,
+      218,
+      1517,
+      267
+    ],
+    "mode": "rounded",
+    "note": "Original inventory tile. Its visible contents are baked in.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/inventory/upgrade_damage.png",
+    "box": [
+      1313,
+      307,
+      1373,
+      369
+    ],
+    "mode": "rounded",
+    "note": "Upgrade tile with original text and level.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/inventory/upgrade_health.png",
+    "box": [
+      1385,
+      307,
+      1446,
+      369
+    ],
+    "mode": "rounded",
+    "note": "Upgrade tile with original text and level.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/inventory/upgrade_speed.png",
+    "box": [
+      1457,
+      307,
+      1518,
+      369
+    ],
+    "mode": "rounded",
+    "note": "Upgrade tile with original text and level.",
+    "radius": 7
+  },
+  {
+    "path": "assets/ui/map/level_1.png",
+    "box": [
+      76,
+      727,
+      112,
+      763
+    ],
+    "mode": "ellipse",
+    "note": "Level node cropped from the map; edge/background contamination may remain.",
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/map/level_2.png",
+    "box": [
+      151,
+      712,
+      190,
+      753
+    ],
+    "mode": "ellipse",
+    "note": "Level node cropped from the map; edge/background contamination may remain.",
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/map/level_3_locked.png",
+    "box": [
+      225,
+      733,
+      269,
+      792
+    ],
+    "mode": "node",
+    "note": "Map node and attached lock, with approximate exterior masking.",
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/map/level_4_locked.png",
+    "box": [
+      301,
+      733,
+      345,
+      792
+    ],
+    "mode": "node",
+    "note": "Map node and attached lock, with approximate exterior masking.",
+    "quality": "reference-state"
+  },
+  {
+    "path": "assets/ui/map/padlock.png",
+    "box": [
+      238,
+      765,
+      258,
+      788
+    ],
+    "mode": "glyph",
+    "note": "Small standalone padlock from a locked map node."
+  },
+  {
+    "path": "assets/ui/map/boss_marker.png",
+    "box": [
+      366,
+      690,
+      432,
+      757
+    ],
+    "mode": "grabcut",
+    "note": "Boss-map emblem with manually guided edge extraction.",
+    "quality": "approximate-edge",
+    "polygon": [
+      [
+        21,
+        0
+      ],
+      [
+        26,
+        11
+      ],
+      [
+        33,
+        2
+      ],
+      [
+        40,
+        13
+      ],
+      [
+        47,
+        1
+      ],
+      [
+        50,
+        15
+      ],
+      [
+        47,
+        21
+      ],
+      [
+        56,
+        13
+      ],
+      [
+        56,
+        23
+      ],
+      [
+        62,
+        30
+      ],
+      [
+        62,
+        40
+      ],
+      [
+        57,
+        50
+      ],
+      [
+        52,
+        59
+      ],
+      [
+        41,
+        64
+      ],
+      [
+        29,
+        66
+      ],
+      [
+        17,
+        61
+      ],
+      [
+        10,
+        52
+      ],
+      [
+        6,
+        43
+      ],
+      [
+        1,
+        36
+      ],
+      [
+        2,
+        25
+      ],
+      [
+        7,
+        15
+      ],
+      [
+        16,
+        3
+      ],
+      [
+        16,
+        15
+      ]
+    ],
+    "rejectGreen": true
+  },
+  {
+    "path": "assets/ui/dialogue/companion_name_tag.png",
+    "box": [
+      536,
+      768,
+      623,
+      791
+    ],
+    "mode": "rounded",
+    "note": "Baked label. The original portrait overlaps its left edge; place the companion portrait over that edge.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/dialogue/rescue_text_box.png",
+    "box": [
+      541,
+      785,
+      749,
+      836
+    ],
+    "mode": "rounded",
+    "note": "Dialogue text is baked in. Left portrait is exported separately.",
+    "radius": 8
+  },
+  {
+    "path": "assets/ui/settings/music_slider.png",
+    "box": [
+      1382,
+      681,
+      1510,
+      700
+    ],
+    "mode": "auto",
+    "note": "Static slider state; handle is not an independently movable layer."
+  },
+  {
+    "path": "assets/ui/settings/sound_slider.png",
+    "box": [
+      1382,
+      705,
+      1510,
+      724
+    ],
+    "mode": "auto",
+    "note": "Static slider state; handle is not an independently movable layer."
+  },
+  {
+    "path": "assets/ui/settings/graphics_dropdown.png",
+    "box": [
+      1382,
+      727,
+      1511,
+      753
+    ],
+    "mode": "rounded",
+    "note": "Dropdown crop including original label and value.",
+    "radius": 5
+  },
+  {
+    "path": "assets/ui/settings/controls_dropdown.png",
+    "box": [
+      1382,
+      760,
+      1511,
+      787
+    ],
+    "mode": "rounded",
+    "note": "Dropdown crop including original label and value.",
+    "radius": 5
+  },
+  {
+    "path": "assets/branding/diamond_heroes_logo.png",
+    "box": [
+      147,
+      15,
+      346,
+      138
+    ],
+    "mode": "grabcut",
+    "note": "Logo extracted from the illustrated menu, with manually guided edge masking; text remains rasterized.",
+    "polygon": [
+      [
+        3,
+        29
+      ],
+      [
+        19,
+        28
+      ],
+      [
+        33,
+        31
+      ],
+      [
+        36,
+        21
+      ],
+      [
+        47,
+        13
+      ],
+      [
+        57,
+        7
+      ],
+      [
+        63,
+        2
+      ],
+      [
+        67,
+        9
+      ],
+      [
+        77,
+        6
+      ],
+      [
+        85,
+        1
+      ],
+      [
+        114,
+        0
+      ],
+      [
+        122,
+        4
+      ],
+      [
+        130,
+        7
+      ],
+      [
+        135,
+        4
+      ],
+      [
+        142,
+        8
+      ],
+      [
+        150,
+        15
+      ],
+      [
+        157,
+        22
+      ],
+      [
+        163,
+        28
+      ],
+      [
+        174,
+        28
+      ],
+      [
+        183,
+        33
+      ],
+      [
+        190,
+        42
+      ],
+      [
+        193,
+        56
+      ],
+      [
+        190,
+        66
+      ],
+      [
+        185,
+        74
+      ],
+      [
+        178,
+        82
+      ],
+      [
+        173,
+        91
+      ],
+      [
+        173,
+        101
+      ],
+      [
+        168,
+        110
+      ],
+      [
+        159,
+        115
+      ],
+      [
+        148,
+        116
+      ],
+      [
+        140,
+        120
+      ],
+      [
+        126,
+        120
+      ],
+      [
+        116,
+        122
+      ],
+      [
+        86,
+        122
+      ],
+      [
+        75,
+        120
+      ],
+      [
+        64,
+        121
+      ],
+      [
+        55,
+        117
+      ],
+      [
+        45,
+        117
+      ],
+      [
+        37,
+        114
+      ],
+      [
+        28,
+        117
+      ],
+      [
+        21,
+        112
+      ],
+      [
+        20,
+        92
+      ],
+      [
+        12,
+        83
+      ],
+      [
+        8,
+        74
+      ],
+      [
+        3,
+        72
+      ],
+      [
+        1,
+        63
+      ],
+      [
+        1,
+        43
+      ]
+    ],
+    "quality": "approximate-edge"
+  },
+  {
+    "path": "references/screens/main_menu.png",
+    "box": [
+      5,
+      8,
+      474,
+      376
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/hero_selection.png",
+    "box": [
+      482,
+      8,
+      923,
+      376
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/shop.png",
+    "box": [
+      931,
+      8,
+      1292,
+      376
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/inventory.png",
+    "box": [
+      1299,
+      8,
+      1529,
+      376
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/ruins_gameplay.png",
+    "box": [
+      6,
+      383,
+      527,
+      629
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/boss_gameplay.png",
+    "box": [
+      535,
+      383,
+      1027,
+      629
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/level_complete.png",
+    "box": [
+      1035,
+      383,
+      1286,
+      629
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/defeat.png",
+    "box": [
+      1294,
+      383,
+      1529,
+      629
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/world_map.png",
+    "box": [
+      6,
+      638,
+      470,
+      844
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/rescue_dialogue.png",
+    "box": [
+      478,
+      638,
+      772,
+      844
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/companion_joins.png",
+    "box": [
+      779,
+      638,
+      1018,
+      844
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/saved_progress.png",
+    "box": [
+      1026,
+      638,
+      1268,
+      844
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/screens/settings.png",
+    "box": [
+      1276,
+      638,
+      1529,
+      844
+    ],
+    "mode": "crop",
+    "note": "Flattened screen reference, not a clean background or an interactive screen.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/sheets/heroes.png",
+    "box": [
+      7,
+      852,
+      326,
+      1008
+    ],
+    "mode": "crop",
+    "note": "Original labeled reference sheet crop.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/sheets/enemies.png",
+    "box": [
+      335,
+      852,
+      771,
+      1008
+    ],
+    "mode": "crop",
+    "note": "Original labeled reference sheet crop.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/sheets/weapons.png",
+    "box": [
+      779,
+      852,
+      1061,
+      1008
+    ],
+    "mode": "crop",
+    "note": "Original labeled reference sheet crop.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/sheets/items.png",
+    "box": [
+      1070,
+      852,
+      1288,
+      1008
+    ],
+    "mode": "crop",
+    "note": "Original labeled reference sheet crop.",
+    "quality": "reference-only",
+    "upscale": false
+  },
+  {
+    "path": "references/sheets/ui.png",
+    "box": [
+      1296,
+      852,
+      1529,
+      1008
+    ],
+    "mode": "crop",
+    "note": "Original labeled reference sheet crop.",
+    "quality": "reference-only",
+    "upscale": false
+  }
+]
