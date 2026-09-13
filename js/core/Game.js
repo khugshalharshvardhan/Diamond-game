@@ -37,7 +37,7 @@ window.DH = window.DH || {};
       this.pendingLevel = 1;
 
       this.state = {
-        hero: null, diamonds: 100, level: 1, checkpoint: -1,
+        hero: null, diamonds: 100, upgrades: {}, level: 1, checkpoint: -1,
         cleared: [], collected: [], companionRescued: false, ammo: 0
       };
 
@@ -93,6 +93,47 @@ window.DH = window.DH || {};
       return true;
     }
 
+    /* Diamonds and upgrades live in the save, but `state` is only filled when
+       a run starts. Opening the shop straight off a page load would otherwise
+       show the constructor's placeholder 100 rather than what was earned. */
+    _syncWallet() {
+      if (this.level) return;
+      const s = DH.SaveManager.load();
+      if (!s.updatedAt) return;
+      this.state.diamonds = s.diamonds;
+      this.state.upgrades = s.upgrades || {};
+    }
+
+    openShop() {
+      this._syncWallet();
+      this.mode = 'shop';
+      this.ui.show('shop');
+      this.ui.refreshShop();
+    }
+
+    openSettings() {
+      this.mode = 'settings';
+      this.ui.show('settings');
+      this.ui.refreshSettings();
+    }
+
+    /* Spend on an upgrade. Returns why it failed so the UI can say so rather
+       than just refusing. */
+    buyUpgrade(key) {
+      const next = DH.nextUpgrade(key, this.state.upgrades);
+      if (!next) return 'maxed';
+      if (this.state.diamonds < next.step.cost) return 'poor';
+
+      this.state.diamonds -= next.step.cost;
+      this.state.upgrades[key] = next.level;
+      DH.SaveManager.save({
+        diamonds: this.state.diamonds,
+        upgrades: this.state.upgrades
+      });
+      this.ui.setDiamonds(this.state.diamonds, true);
+      return 'ok';
+    }
+
     openMap() {
       this.mode = 'map';
       this.ui.show('map');
@@ -103,11 +144,24 @@ window.DH = window.DH || {};
       const id = this.pendingLevel || 1;
       const entry = DH.levelById(id);
       if (!entry || !entry.data) return;
+
+      /* Diamonds and upgrades are account-level, not run-level: they are what
+         the shop spends and they must survive starting a new run. Only the
+         in-level progress below is reset. Previously this wiped the save and
+         forced 100 diamonds, which made buying anything pointless. */
+      const prior = DH.SaveManager.load();
+      /* "Never saved anything" is updatedAt, not hero: buying an upgrade before
+         the first run writes a record with no hero, and testing hero there
+         would refund the purchase. */
+      const first = !prior.updatedAt;
+
       this.state = {
-        hero: heroId, diamonds: 100, level: id, checkpoint: -1,
+        hero: heroId,
+        diamonds: first ? 100 : prior.diamonds,
+        upgrades: prior.upgrades || {},
+        level: id, checkpoint: -1,
         cleared: [], collected: [], companionRescued: false, ammo: 0
       };
-      DH.SaveManager.clear();
       this._enterLevel(entry.data, null);
       this.saveProgress();
     }
@@ -123,6 +177,7 @@ window.DH = window.DH || {};
         diamonds: s.diamonds,
         level: s.level,
         checkpoint: s.checkpoint,
+        upgrades: s.upgrades || {},
         cleared: s.clearedEnemies || [],
         collected: s.collectedPickups || [],
         companionRescued: s.companionRescued,
@@ -213,6 +268,7 @@ window.DH = window.DH || {};
         diamonds: this.state.diamonds,
         level: this.state.level,
         checkpoint: -1,
+        upgrades: this.state.upgrades,
         clearedEnemies: [],
         collectedPickups: [],
         unlockedLevels: this._unlockedAfter(this.state.level),
@@ -276,6 +332,7 @@ window.DH = window.DH || {};
         diamonds: this.state.diamonds,
         level: this.state.level,
         checkpoint: this.level.checkpointIndex,
+        upgrades: this.state.upgrades,
         clearedEnemies: Array.from(this.level.cleared),
         collectedPickups: Array.from(this.level.collected),
         companionRescued: this.state.companionRescued,

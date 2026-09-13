@@ -55,6 +55,11 @@ window.DH = window.DH || {};
         mapDiamonds: $('#map-diamonds'),
         mapStars: $('#map-stars'),
         mapStarsWrap: $('#map-stars-wrap'),
+        shopList: $('#shop-list'),
+        shopDiamonds: $('#shop-diamonds'),
+        shopFlash: $('#shop-flash'),
+        settingsToggles: $('#settings-toggles'),
+        settingsNote: $('#settings-note'),
         deadNote: $('#dead-note'),
         tally: $('#tally'),
         toggles: $('#toggles'),
@@ -68,6 +73,8 @@ window.DH = window.DH || {};
         menu: $('#screen-menu'),
         select: $('#screen-select'),
         map: $('#screen-map'),
+        shop: $('#screen-shop'),
+        settings: $('#screen-settings'),
         pause: $('#screen-pause'),
         dead: $('#screen-dead'),
         complete: $('#screen-complete')
@@ -303,37 +310,37 @@ window.DH = window.DH || {};
       this.el.deadNote.textContent = text;
     }
 
-    /* Audio and accessibility toggles. Every write goes through DH.Audio.set,
-       which persists via SaveManager — nothing here touches localStorage. */
+    /* Toggles. The same markup appears in the pause menu and on the Settings
+       screen, so one delegated handler serves both and they can never show
+       different states. Every write goes through DH.Audio.set, which persists
+       via SaveManager — nothing here touches localStorage. */
     _bindToggles() {
-      const box = this.el.toggles;
-      if (!box) return;
-
-      box.addEventListener('click', (e) => {
+      document.addEventListener('click', (e) => {
         const btn = e.target.closest('.toggle');
         if (!btn) return;
-        const on = DH.Audio.toggle(btn.dataset.toggle);
-        /* The click sound is the confirmation, so suppress it when the thing
-           just switched off would have made it. */
+        const key = btn.dataset.toggle;
+        const on = DH.Audio.toggle(key);
+        /* The click sound is the confirmation, so it is suppressed when the
+           thing that would have made it is what just went off. */
         if (on) DH.Audio.play('uiClick');
+        this._applySideEffects(key);
         this.refreshToggles();
       });
 
+      this._applySideEffects('highContrast');
       this.refreshToggles();
     }
 
-    refreshToggles() {
-      const box = this.el.toggles;
-      if (!box || !DH.Audio.settings) return;
-      const items = box.querySelectorAll('.toggle');
-      for (let i = 0; i < items.length; i++) {
-        const on = !!DH.Audio.settings[items[i].dataset.toggle];
-        items[i].setAttribute('aria-pressed', String(on));
-        items[i].querySelector('.toggle-state').textContent = on ? 'On' : 'Off';
-      }
+    /* Settings that change something outside the audio graph. */
+    _applySideEffects(key) {
+      if (key !== 'highContrast') return;
+      document.body.classList.toggle('high-contrast', !!DH.Audio.settings.highContrast);
+    }
 
-      /* Say plainly when a toggle cannot do anything on this machine, rather
-         than leaving a control that silently does nothing. */
+    refreshToggles() {
+      this._paintToggles(this.el.toggles);
+      this._paintToggles(this.el.settingsToggles);
+
       const note = this.el.audioNote;
       if (!note) return;
       const r = DH.Audio.report();
@@ -341,6 +348,18 @@ window.DH = window.DH || {};
       else if (!r.speech) note.textContent = 'This browser has no speech synthesiser, so Voice does nothing.';
       else if (!r.voicesInstalled) note.textContent = 'No speech voices are installed, so Voice does nothing.';
       else note.textContent = '';
+    }
+
+    /* State is carried by the word On/Off as well as aria-pressed, so it never
+       depends on seeing a colour. */
+    _paintToggles(box) {
+      if (!box || !DH.Audio.settings) return;
+      const items = box.querySelectorAll('.toggle');
+      for (let i = 0; i < items.length; i++) {
+        const on = !!DH.Audio.settings[items[i].dataset.toggle];
+        items[i].setAttribute('aria-pressed', String(on));
+        items[i].querySelector('.toggle-state').textContent = on ? 'On' : 'Off';
+      }
     }
 
     /* Fullscreen. Kept in UIManager because it is presentation, not gameplay,
@@ -387,6 +406,79 @@ window.DH = window.DH || {};
       });
     }
 
+    /* ------------------------------------------------ shop */
+
+    /* Rebuilt on every open from the save, so what it offers and what it costs
+       can never drift from what the player actually owns. */
+    refreshShop() {
+      const g = this.game;
+      this.el.shopDiamonds.textContent = g.state.diamonds;
+      this.el.shopFlash.textContent = '';
+
+      this.el.shopList.innerHTML = DH.UPGRADE_ORDER.map((key) => {
+        const track = DH.UPGRADES[key];
+        const level = g.state.upgrades[key] || 0;
+        const next = DH.nextUpgrade(key, g.state.upgrades);
+        const maxed = !next;
+        const afford = next && g.state.diamonds >= next.step.cost;
+        const icon = DH.ART.ui[track.icon];
+
+        /* Owned levels are shown as filled pips AND as "Level n of 3", so the
+           state does not live only in a row of dots. */
+        let pips = '';
+        for (let i = 0; i < track.levels.length; i++) {
+          pips += '<span class="pip' + (i < level ? ' on' : '') + '"></span>';
+        }
+
+        return '' +
+          '<div class="shop-row" data-key="' + key + '">' +
+            (icon ? '<img class="shop-icon" src="' + DH.ART.url(icon) + '" alt="">'
+                  : '<span class="shop-icon"></span>') +
+            '<div class="shop-info">' +
+              '<span class="shop-name">' + track.name + '</span>' +
+              '<span class="shop-blurb">' +
+                (maxed ? 'Fully upgraded.' : next.step.label + ' \u00b7 ' + track.blurb) +
+              '</span>' +
+              '<span class="shop-level"><span class="pips">' + pips + '</span>' +
+                'Level ' + level + ' of ' + track.levels.length + '</span>' +
+            '</div>' +
+            (maxed
+              ? '<span class="shop-maxed">Maxed</span>'
+              : '<span class="shop-price"><img class="gem-icon" alt="" aria-hidden="true">' +
+                  next.step.cost + '</span>' +
+                '<button class="shop-buy" type="button" data-buy="' + key + '"' +
+                  (afford ? '' : ' data-poor="true"') + '>Buy</button>') +
+          '</div>';
+      }).join('');
+
+      this._iconAll('#shop-list .gem-icon', 'diamond');
+    }
+
+    /* Purchase feedback. Never an alert(): a message in the panel that the
+       screen reader also announces, per the design doc. */
+    _shopFlash(text, bad) {
+      const el = this.el.shopFlash;
+      el.textContent = text;
+      el.dataset.bad = bad ? 'true' : 'false';
+      if (window.gsap && this._motionOK()) {
+        window.gsap.fromTo(el, { opacity: 0, y: -6 },
+          { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out', overwrite: true });
+      }
+    }
+
+    /* ------------------------------------------------ settings */
+
+    refreshSettings() {
+      this._paintToggles(this.el.settingsToggles);
+      const note = this.el.settingsNote;
+      if (!note) return;
+      const r = DH.Audio.report();
+      if (!r.webAudio) note.textContent = 'This browser has no Web Audio support, so the game is silent.';
+      else if (!r.speech) note.textContent = 'This browser has no speech synthesiser, so Voice does nothing.';
+      else if (!r.voicesInstalled) note.textContent = 'No speech voices are installed, so Voice does nothing.';
+      else note.textContent = '';
+    }
+
     /* ------------------------------------------------ world map */
 
     _applyMapArt() {
@@ -400,8 +492,21 @@ window.DH = window.DH || {};
       /* The map's chrome icons. Each hides itself if its file is missing, and
          the text beside it still carries the meaning. */
       this._icon('#map-back-icon', 'arrowLeft');
+      this._iconAll('.back-icon', 'arrowLeft');
+      this._iconAll('.gem-icon', 'diamond');
       this._icon('#map-gem', 'diamond');
       this._icon('#map-star', 'star');
+    }
+
+    _iconAll(sel, key) {
+      const path = DH.ART && DH.ART.ui[key];
+      if (!path) return;
+      const list = document.querySelectorAll(sel);
+      for (let i = 0; i < list.length; i++) {
+        const el = list[i];
+        el.onerror = function () { el.style.display = 'none'; };
+        el.src = DH.ART.url(path);
+      }
     }
 
     _icon(sel, key) {
@@ -616,6 +721,44 @@ window.DH = window.DH || {};
         if (card) this.pickHero(card.dataset.hero);
       });
 
+      this.el.shopList.addEventListener('click', (e) => {
+        const buy = e.target.closest('[data-buy]');
+        if (!buy) return;
+        const key = buy.dataset.buy;
+        const result = g.buyUpgrade(key);
+        if (result === 'ok') {
+          DH.Audio.play('uiSelect');
+          this._shopFlash(DH.UPGRADES[key].name + ' upgraded', false);
+        } else if (result === 'poor') {
+          DH.Audio.play('uiDenied');
+          this._shopFlash('Not enough diamonds', true);
+        } else {
+          DH.Audio.play('uiDenied');
+          this._shopFlash(DH.UPGRADES[key].name + ' is already at maximum', true);
+        }
+        this.refreshShop();
+      });
+
+      const reset = document.getElementById('btn-reset');
+      const confirm = document.getElementById('reset-confirm');
+      if (reset && confirm) {
+        reset.addEventListener('click', () => { confirm.hidden = false; reset.hidden = true; });
+        document.getElementById('btn-reset-no').addEventListener('click', () => {
+          confirm.hidden = true; reset.hidden = false;
+        });
+        document.getElementById('btn-reset-yes').addEventListener('click', () => {
+          /* Run data only. Audio and accessibility preferences live in their
+             own key and are deliberately not erased here. */
+          DH.SaveManager.clear();
+          g.state.diamonds = 100;
+          g.state.upgrades = {};
+          g.state.hero = null;
+          confirm.hidden = true; reset.hidden = false;
+          this.refreshSaveLine();
+          this.toast('Save cleared');
+        });
+      }
+
       this.el.mapNodes.addEventListener('click', (e) => {
         const node = e.target.closest('.map-node');
         if (!node || node.disabled) return;
@@ -639,6 +782,8 @@ window.DH = window.DH || {};
           case 'new':      DH.SaveManager.exists() ? g.openMap() : g.openSelect(); break;
           case 'characters': g.openSelect(); break;
           case 'map':     g.openMap(); break;
+          case 'shop':    g.openShop(); break;
+          case 'settings': g.openSettings(); break;
           case 'continue': g.continueRun(); break;
           case 'back':     g.openMenu(); break;
           case 'deploy':   if (this.picked) g.deploy(this.picked); break;

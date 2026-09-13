@@ -126,6 +126,10 @@ window.DH = window.DH || {};
     ] },
     uiSelect: { layers: [
       { kind: 'chime', notes: [880, 1320], dur: 0.22, gain: 0.10 }
+    ] },
+    /* Refusal: a purchase you cannot afford, or an upgrade already maxed. */
+    uiDenied: { layers: [
+      { kind: 'sweep', wave: 'square', from: 300, to: 150, dur: 0.17, gain: 0.11 }
     ] }
   };
 

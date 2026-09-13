@@ -17,11 +17,14 @@ window.DH = window.DH || {};
   const LOW_HEALTH = 0.25;   // fraction at which the hero calls it out
 
   class Player extends DH.Entity {
-    constructor(x, y, hero) {
+    constructor(x, y, hero, upgrades) {
       super(x, y, 34, 52);
       this.hero = hero;
-      this.maxHealth = hero.maxHealth;
-      this.health = hero.maxHealth;
+      /* Shop upgrades are resolved once here, never re-read mid-run, so a
+         purchase cannot change a hero already in the field. */
+      this.mods = DH.upgradeEffect(upgrades);
+      this.maxHealth = hero.maxHealth + this.mods.healthAdd;
+      this.health = this.maxHealth;
 
       this.onGround = false;
       this.coyote = 0;
@@ -72,12 +75,14 @@ window.DH = window.DH || {};
 
     curSpeed() {
       const p = this.power;
-      return this.hero.speedPx * (this.powerTimer > 0 && p.speedMul ? p.speedMul : 1);
+      return this.hero.speedPx * this.mods.speedMul *
+             (this.powerTimer > 0 && p.speedMul ? p.speedMul : 1);
     }
 
     curDamage() {
       const p = this.power;
-      return this.hero.damage * (this.powerTimer > 0 && p.damageMul ? p.damageMul : 1);
+      return this.hero.damage * this.mods.damageMul *
+             (this.powerTimer > 0 && p.damageMul ? p.damageMul : 1);
     }
 
     curFireRate() {

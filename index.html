@@ -69,8 +69,7 @@
         <span class="cover-play-text">Play game</span>
       </button>
 
-      <button class="cover-icon" type="button" data-act="settings" data-slot="settings"
-              disabled aria-describedby="cover-soon">
+      <button class="cover-icon" type="button" data-act="settings" data-slot="settings">
         <span class="cover-disc" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.3 4a7.3 7.3 0 00-.1-1.2l2-1.6-2-3.4-2.4 1a7.5 7.5 0 00-2-1.2L16.4 3h-4l-.4 2.6c-.7.3-1.4.7-2 1.2l-2.4-1-2 3.4 2 1.6a7.3 7.3 0 000 2.4l-2 1.6 2 3.4 2.4-1c.6.5 1.3.9 2 1.2l.4 2.6h4l.4-2.6c.7-.3 1.4-.7 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg>
         </span>
@@ -84,15 +83,12 @@
         <span class="cover-label">Characters</span>
       </button>
 
-      <button class="cover-icon" type="button" data-act="shop" data-slot="shop"
-              disabled aria-describedby="cover-soon">
+      <button class="cover-icon" type="button" data-act="shop" data-slot="shop">
         <span class="cover-disc" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM3 3h2.2l.8 2H21a1 1 0 01.96 1.28l-2.3 7.6A2 2 0 0117.74 15H8.5a2 2 0 01-1.94-1.5L4.2 5H3V3z"/></svg>
         </span>
         <span class="cover-label">Shop</span>
       </button>
-
-      <p id="cover-soon" class="cover-soon">Not in this build yet</p>
 
       <div class="cover-resume">
         <div class="cover-resume-row">
@@ -124,7 +120,7 @@
     <div class="roster" id="roster"></div>
     <div class="actions center">
       <button class="btn ghost" data-act="back">Back</button>
-      <button class="btn primary" data-act="deploy" id="btn-deploy" disabled>Deploy</button>
+      <button class="btn primary" data-act="deploy" id="btn-deploy" disabled>Start</button>
     </div>
   </section>
 
@@ -156,6 +152,73 @@
     <div id="map-nodes"></div>
 
     <p class="map-world">World 1 &mdash; The Forgotten Lands</p>
+  </section>
+
+  <!-- ============ SHOP ============ -->
+  <section class="screen" id="screen-shop">
+    <div class="panel-top">
+      <button class="map-back" type="button" data-act="back" aria-label="Back">
+        <img class="back-icon" alt="" aria-hidden="true">
+      </button>
+      <h2 class="panel-title">Shop</h2>
+      <span class="map-count">
+        <img class="gem-icon" alt="" aria-hidden="true"><span id="shop-diamonds">100</span>
+      </span>
+    </div>
+
+    <div class="shop-tabs" id="shop-tabs">
+      <button class="shop-tab" type="button" data-tab="upgrades" aria-pressed="true">Upgrades</button>
+    </div>
+
+    <div class="shop-list" id="shop-list"></div>
+
+    <p class="panel-note">Weapons and ammo arrive with the weapon system.</p>
+    <p class="shop-flash" id="shop-flash" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section class="screen" id="screen-settings">
+    <div class="panel-top">
+      <button class="map-back" type="button" data-act="back" aria-label="Back">
+        <img class="back-icon" alt="" aria-hidden="true">
+      </button>
+      <h2 class="panel-title">Settings</h2>
+      <span></span>
+    </div>
+
+    <div class="settings-body">
+      <div class="toggles" id="settings-toggles">
+        <button class="toggle" type="button" data-toggle="music" aria-pressed="true">
+          <span class="toggle-name">Music</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="sfx" aria-pressed="true">
+          <span class="toggle-name">Sound effects</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="voice" aria-pressed="true">
+          <span class="toggle-name">Voice</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="screenShake" aria-pressed="true">
+          <span class="toggle-name">Screen shake</span><span class="toggle-state">On</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="highContrast" aria-pressed="false">
+          <span class="toggle-name">High contrast</span><span class="toggle-state">Off</span>
+        </button>
+      </div>
+
+      <p class="fineprint" id="settings-note"></p>
+
+      <!-- Destructive, so it asks first, in the game's own UI. -->
+      <div class="danger">
+        <button class="btn danger-btn" type="button" id="btn-reset">Clear save</button>
+        <div class="danger-confirm" id="reset-confirm" hidden>
+          <p class="card-note">This erases your diamonds, upgrades and level progress. It cannot be undone.</p>
+          <div class="actions">
+            <button class="btn danger-btn" type="button" id="btn-reset-yes">Erase everything</button>
+            <button class="btn ghost" type="button" id="btn-reset-no">Keep my save</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ PAUSE ============ -->
@@ -231,6 +294,7 @@
 <script src="js/data/Art.js"></script>
 <script src="js/data/Level1.js"></script>
 <script src="js/data/Levels.js"></script>
+<script src="js/data/Upgrades.js"></script>
 <script src="js/data/Palettes.js"></script>
 <script src="js/data/Audio.js"></script>
 <script src="js/systems/AudioManager.js"></script>

@@ -20,7 +20,8 @@ window.DH = window.DH || {};
     voice: true,
     musicVolume: 0.45,
     sfxVolume: 0.8,
-    screenShake: true
+    screenShake: true,
+    highContrast: false
   };
 
   const DEFAULTS = {

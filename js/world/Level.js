@@ -79,7 +79,7 @@ window.DH = window.DH || {};
       }
       this.build();
       const p = this.spawnPoint();
-      this.player = new DH.Player(p.x, p.y, hero);
+      this.player = new DH.Player(p.x, p.y, hero, this.game.state.upgrades);
       if (this.game.state.companionRescued) {
         this.companion = new DH.Companion(p.x - 40, p.y - 20);
       }

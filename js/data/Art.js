@@ -151,7 +151,11 @@ window.DH = window.DH || {};
       arrowLeft: 'ui/icons/arrow_left.png',
       padlock: 'ui/map/padlock.png',
       bossMarker: 'ui/map/boss_marker.png',
-      star: 'ui/rewards/star_large.png'
+      star: 'ui/rewards/star_large.png',
+
+      upgradeDamage: 'ui/icons/upgrade_damage.png',
+      upgradeHealth: 'ui/icons/upgrade_health.png',
+      upgradeSpeed: 'ui/icons/upgrade_speed.png'
     },
 
     /* ---- parallax background.
