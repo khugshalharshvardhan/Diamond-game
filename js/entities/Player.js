@@ -32,6 +32,7 @@ window.DH = window.DH || {};
       this.muzzle = 0;
       this.runT = 0;
       this.animT = 0;   // free-running clock for idle breathing, scarf, reactor
+      this.walkDist = 0;   // odometer, in world px, that drives the walk cycle
       this.sx = 1;
       this.sy = 1;
       this.control = true;
@@ -256,6 +257,9 @@ window.DH = window.DH || {};
       this.sx = U.damp(this.sx, 1, 0.0001, dt);
       this.sy = U.damp(this.sy, 1, 0.0001, dt);
       this.animT += dt;
+      /* Never reset: the cycle should resume where it left off after a jump,
+         not snap back to the contact frame. */
+      this.walkDist += Math.abs(this.vx) * dt;
       if (this.onGround) this.runT += Math.abs(this.vx) * dt * 0.055;
       else this.runT = 0;
 
@@ -330,7 +334,8 @@ window.DH = window.DH || {};
         vx: this.vx,
         muzzle: this.muzzle,
         flash: this.hitFlash > 0,
-        t: this.animT
+        t: this.animT,
+        dist: this.walkDist
       });
 
       ctx.restore();

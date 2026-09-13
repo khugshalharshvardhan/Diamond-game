@@ -36,11 +36,55 @@ window.DH = window.DH || {};
   DH.ART = {
     base: PACK,
 
-    /* ---- heroes. Keys match the ids in Heroes.js. Collision box is 34x52. */
+    /* ---- heroes. Keys match the ids in Heroes.js. Collision box is 34x52.
+
+       These are REAL sheets: a 4x2 grid, 8 frames of a walk cycle, read
+       left-to-right then top-to-bottom. They were re-exported from the
+       supplied art onto an integer grid (the source pitch was 443.5px, so
+       slicing it directly bled a sliver of the next frame in), and every
+       frame was shifted so the planted foot sits on one baseline — the
+       source had row 2 sitting ~8px higher, which read as a limp.
+
+       `perPixel` advances the cycle every N world pixels travelled rather
+       than on a timer, so the feet cannot skate. Lower = faster steps. A
+       slower hero therefore steps more slowly for free.
+
+       There is no idle, jump, fall or hurt artwork: those poses reuse the
+       most plausible walk frame. Only `run` is a real animation. */
     heroes: {
-      assault: { src: 'characters/heroes/assault.png', pad: 4, drawHeight: 64 },
-      tank:    { src: 'characters/heroes/tank.png',    pad: 4, drawHeight: 70 },
-      scout:   { src: 'characters/heroes/scout.png',   pad: 4, drawHeight: 61 }
+      assault: {
+        src: './assets/heroes/assault_walk.png',
+        frameW: 220, frameH: 217, drawHeight: 66,
+        anims: {
+          idle: { from: 0, to: 0 },
+          run:  { from: 0, to: 7, perPixel: 16 },
+          jump: { from: 1, to: 1 },
+          fall: { from: 5, to: 5 },
+          hurt: { from: 0, to: 0 }
+        }
+      },
+      tank: {
+        src: './assets/heroes/tank_walk.png',
+        frameW: 220, frameH: 211, drawHeight: 72,
+        anims: {
+          idle: { from: 0, to: 0 },
+          run:  { from: 0, to: 7, perPixel: 18 },
+          jump: { from: 1, to: 1 },
+          fall: { from: 5, to: 5 },
+          hurt: { from: 0, to: 0 }
+        }
+      },
+      scout: {
+        src: './assets/heroes/scout_walk.png',
+        frameW: 220, frameH: 216, drawHeight: 63,
+        anims: {
+          idle: { from: 0, to: 0 },
+          run:  { from: 0, to: 7, perPixel: 16 },
+          jump: { from: 1, to: 1 },
+          fall: { from: 5, to: 5 },
+          hurt: { from: 0, to: 0 }
+        }
+      }
     },
 
     /* ---- enemies. Only `grunt` is wired today; the rest are here so Phase 6

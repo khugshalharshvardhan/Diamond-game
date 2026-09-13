@@ -22,10 +22,10 @@ pickups; portraits; text-free UI icons.
 
 **Not provided, and not faked here:**
 
-- **Animation frames.** No walk, jump, attack, hurt or death cycles. Movement
-  translates and flips the single pose. Squash/stretch, muzzle flash, hit flash
-  and the boss's corrupted-core glow are drawn procedurally on top. **This is
-  not a walk animation.**
+- **Animation frames for enemies and the boss.** No walk, attack, hurt or death
+  cycles. Movement translates and flips the single pose. Hit flash and the
+  boss's corrupted-core glow are drawn procedurally on top.
+  The three HEROES are the exception — see below.
 - **Clean level backgrounds.** `references/screens/` are flattened screenshots
   with characters, HUD and text still baked in — unusable as backgrounds. All
   three parallax layers therefore still draw their procedural bands.
@@ -35,11 +35,34 @@ pickups; portraits; text-free UI icons.
   the pixels. The interface stays real DOM with live text; only text-free icons
   are taken from the pack.
 
+## Hero walk cycles
+
+`assets/heroes/{assault,tank,scout}_walk.png` are real sheets: a 4x2 grid,
+8 frames of a walk, read left-to-right then top-to-bottom.
+
+They were re-exported from the supplied art rather than used as delivered:
+
+- the source pitch was **443.5px**, so slicing on integer boundaries bled a
+  sliver of the neighbouring frame into every cell;
+- **row 2 sat about 8px higher than row 1**, which read as a limp. Every frame
+  is now shifted so the planted foot rests on one baseline.
+
+Horizontal placement is untouched — the weapons skew any automatic centring,
+and measuring the leg region showed the bodies were already centred to within
+one world pixel.
+
+The cycle advances on **distance travelled**, not on a timer (`perPixel` in the
+manifest), so the feet cannot skate and a slower hero steps more slowly for
+free. Lower `perPixel` = faster steps.
+
+There is still no idle, jump, fall or hurt artwork: those poses reuse the most
+plausible walk frame. Only `run` is a real animation.
+
 ## Still needed to match the mock-up
 
 | Need | Why it matters |
 | --- | --- |
-| Hero sprite sheets — idle / run / jump / fall / hurt | The single static pose is the largest remaining gap |
+| Hero idle / jump / fall / hurt frames | The walk cycle exists; these poses reuse a walk frame |
 | Three tiling parallax background plates | The only part of the mock-up's look still entirely procedural |
 | Enemy sheets for Gunner / Brute / Drone / Assassin | Art exists and is mapped; animation does not |
 | Weapon art separated from the hero poses | Required before a weapon swap can change the character's look |

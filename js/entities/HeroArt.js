@@ -42,7 +42,7 @@ window.DH = window.DH || {};
      come through here, so they can never end up showing different heroes. */
   function draw(ctx, hero, s) {
     const sheet = sheetFor(hero);
-    if (sheet && sheet.draw(ctx, s.pose || 'idle', s.t || 0)) {
+    if (sheet && sheet.draw(ctx, s.pose || 'idle', s.t || 0, s.dist || 0)) {
       /* The supplied art is a single static pose with no firing frame, so the
          muzzle flash stays procedural and is drawn over it. Without this,
          switching to artwork would silently lose a piece of game feel. */

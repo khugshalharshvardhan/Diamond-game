@@ -44,7 +44,10 @@ window.DH = window.DH || {};
       DH.Assets.request(this.src);
     }
 
-    draw(ctx, anim, t) {
+    /* `t` is seconds; `dist` is world pixels travelled. An animation with
+       `perPixel` advances on distance instead of time, which is what stops a
+       walk cycle from skating: the feet then move because the body moved. */
+    draw(ctx, anim, t, dist) {
       const img = DH.Assets.image(this.src);
       if (!img) return false;
 
@@ -54,8 +57,9 @@ window.DH = window.DH || {};
         const a = this.anims[anim] || this.anims.idle;
         if (!a) return false;
         const count = Math.max(1, a.to - a.from + 1);
-        const fps = a.fps || this.fps;
-        const raw = Math.floor((t || 0) * fps);
+        const raw = a.perPixel
+          ? Math.floor(Math.abs(dist || 0) / a.perPixel)
+          : Math.floor((t || 0) * (a.fps || this.fps));
         const step = a.loop === false ? Math.min(raw, count - 1) : ((raw % count) + count) % count;
         const frame = a.from + step;
         const cols = Math.max(1, Math.floor(img.width / this.frameW));

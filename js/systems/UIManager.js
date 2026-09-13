@@ -13,7 +13,7 @@ window.DH = window.DH || {};
      the scale lifts it to fill the box without cropping the Tank's shoulders. */
   const PORTRAIT_W = 116;
   const PORTRAIT_H = 128;
-  const PORTRAIT_SCALE = 1.60;
+  const PORTRAIT_SCALE = 1.48;
 
   /* Stat label -> key in DH.ART.ui. Icons are decorative: every row still
      prints its name and its number, so nothing depends on the picture. */
