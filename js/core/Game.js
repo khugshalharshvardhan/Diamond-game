@@ -378,7 +378,7 @@ window.DH = window.DH || {};
            its full width is used regardless of how long the level is. */
         const progress = this.camera.x / Math.max(1, d.width - VW);
         DH.Background.draw(ctx, this.camera.x, this.camera.y, this.clock,
-                           VW, VH, d.scene, progress, d.sceneDim);
+                           VW, VH, d.scene, progress, d.sceneDim, d.sceneBlur);
         this.level.draw(ctx);
       } else {
         // Title and select screens get the same world, slowly drifting past.

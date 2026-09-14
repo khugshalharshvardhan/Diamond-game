@@ -59,19 +59,66 @@ window.DH = window.DH || {};
 
   /* Painted scenes are bright and busy. A scrim keeps the player, enemies and
      projectiles readable against them; without it the action gets lost in the
-     artwork. Level data can override per scene. */
-  const SCENE_DIM = 0.34;
+     artwork. Level data can override per scene with `sceneDim`. */
+  const SCENE_DIM = 0.38;
+
+  /* The plates are paintings of ruins, so they contain painted ledges, arches
+     and bridges. Left sharp, those read as things you could stand on and the
+     player tries to jump to them. Throwing the backdrop out of focus settles
+     it into depth and makes the real terrain the only thing that looks solid.
+     Level data can override with `sceneBlur`. */
+  const SCENE_BLUR = 7;
+
+  /* Blurring a full-screen plate every frame would be wasteful, and the result
+     never changes, so it is rendered once and reused. Keyed on source and
+     size, so a resize or a level change rebuilds it. */
+  const softened = { key: '', canvas: null };
+
+  function soften(img, w, h, blur) {
+    const key = img.src + '|' + w + 'x' + h + '|' + blur;
+    if (softened.key === key) return softened.canvas;
+
+    const out = document.createElement('canvas');
+    out.width = Math.max(1, w);
+    out.height = Math.max(1, h);
+    const g = out.getContext('2d');
+
+    /* ctx.filter is the good path. Where it is missing, drawing small and
+       scaling back up gives a serviceable blur with no extra dependency. */
+    g.filter = 'blur(' + blur + 'px)';
+    if (g.filter && g.filter !== 'none') {
+      g.drawImage(img, 0, 0, out.width, out.height);
+    } else {
+      g.filter = 'none';
+      const div = Math.max(2, Math.round(blur * 1.4));
+      const small = document.createElement('canvas');
+      small.width = Math.max(1, Math.round(out.width / div));
+      small.height = Math.max(1, Math.round(out.height / div));
+      const sg = small.getContext('2d');
+      sg.imageSmoothingEnabled = true;
+      sg.drawImage(img, 0, 0, small.width, small.height);
+      g.imageSmoothingEnabled = true;
+      g.drawImage(small, 0, 0, out.width, out.height);
+    }
+
+    softened.key = key;
+    softened.canvas = out;
+    return out;
+  }
 
   /* Draw a full-scene plate, panning across it as the camera crosses the level.
      `progress` is 0..1 along the level, so the plate's whole width is used no
      matter how long the level is — no tuning per level. */
-  function scene(ctx, src, progress, camY, vw, vh, dim) {
+  function scene(ctx, src, progress, camY, vw, vh, dim, blur) {
     const img = DH.Assets.image(src);
     if (!img) return false;
 
     const scale = Math.max(vw / img.width, vh / img.height) * SCENE_ZOOM;
     const w = img.width * scale;
     const h = img.height * scale;
+
+    const b = (blur === undefined || blur === null) ? SCENE_BLUR : blur;
+    const plate = b > 0 ? soften(img, Math.round(w), Math.round(h), b) : img;
 
     const travelX = Math.max(0, w - vw);
     const travelY = Math.max(0, h - vh);
@@ -82,7 +129,7 @@ window.DH = window.DH || {};
        then let the camera's height nudge it a little. */
     const y = -travelY * U.clamp(0.62 + (camY / vh) * 0.12, 0, 1);
 
-    ctx.drawImage(img, x, y, w, h);
+    ctx.drawImage(plate, x, y, w, h);
 
     const d = (dim === undefined || dim === null) ? SCENE_DIM : dim;
     if (d > 0) {
@@ -98,9 +145,9 @@ window.DH = window.DH || {};
        top of a painted scene would read as two backgrounds fighting. Until it
        loads — or with no key at all — the original procedural sky is used
        unchanged, so the game still looks deliberate with no art present. */
-    draw(ctx, camX, camY, t, vw, vh, backdropKey, progress, dim) {
+    draw(ctx, camX, camY, t, vw, vh, backdropKey, progress, dim, blur) {
       const src = backdropKey && DH.ART && DH.ART.scene(backdropKey);
-      if (src && scene(ctx, src, progress, camY, vw, vh, dim)) return;
+      if (src && scene(ctx, src, progress, camY, vw, vh, dim, blur)) return;
 
       const sky = ctx.createLinearGradient(0, 0, 0, vh);
       sky.addColorStop(0, '#0a1230');

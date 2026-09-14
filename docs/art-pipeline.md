@@ -118,3 +118,25 @@ The Tank is the constraint: 107px of jump height and only **128px of flat
 reach**. Every gap in Level 1 is 110px or less, or crossed by the bridge or the
 pillar shelf, and every shelf-to-shelf step is 90px or under. Verified by
 walking the platform graph for all three heroes.
+
+## Backdrop focus
+
+Scene plates are paintings of ruins and fortresses, so they contain painted
+ledges, arches and bridges. Left sharp, those read as things you could stand on
+and players try to jump to them.
+
+`Background` therefore renders each plate **out of focus** — `SCENE_BLUR`,
+default 7px — which settles it into depth and leaves the real terrain as the
+only thing that looks solid. The blur is applied once into a cached offscreen
+canvas keyed on source and size, not per frame. Where `ctx.filter` is missing,
+it falls back to a downscale-and-upscale blur, so there is no hard dependency.
+
+Per level: `sceneDim` and `sceneBlur` in the level data.
+
+## Level 2 terrain
+
+Level 2 has no cut-out art. Its platforms come from the `foundry` palette in
+`js/data/Palettes.js` — cold basalt, hot ember edges, embers drifting off the
+surfaces. To give it real art later: drop pieces into
+`assets/images/terrain/level-02/`, describe them in `Terrain.js`, and name them
+on the platforms in `Level2.js`. Nothing else changes.

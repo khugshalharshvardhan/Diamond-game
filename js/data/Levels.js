@@ -19,7 +19,7 @@ window.DH = window.DH || {};
   DH.LEVELS = [
     {
       id: 1,
-      name: 'Forgotten Ruins',
+      name: 'The Ruins',
       blurb: 'Overgrown aqueducts above the falls.',
       mechanic: 'Move, jump, shoot.',
       scene: 'ruins',                 // backgrounds/forgotten-ruins.png
@@ -28,15 +28,25 @@ window.DH = window.DH || {};
     },
     {
       id: 2,
+      name: 'The Dark Fortress',
+      blurb: 'Lava, chains, and the Dark Colossus.',
+      mechanic: 'Lava hazards and a second boss.',
+      scene: 'foundry',               // backgrounds/dark-fortress.png
+      data: DH.LEVEL_2,
+      boss: true,
+      map: { x: 0.300, y: 0.648 }
+    },
+    {
+      id: 3,
       name: 'Enchanted Forest',
       blurb: 'Giant trees, glowing mushrooms, hidden paths.',
       mechanic: 'Moving platforms and hidden routes.',
       scene: 'grove',                 // backgrounds/enchanted-forest.png
       data: null,
-      map: { x: 0.300, y: 0.648 }
+      map: { x: 0.455, y: 0.575 }
     },
     {
-      id: 3,
+      id: 4,
       name: 'Crystal Canyon',
       blurb: 'The crystal mines. Something is held down here.',
       mechanic: 'Hazards, collapsing bridges, the Nova rescue.',
@@ -44,25 +54,15 @@ window.DH = window.DH || {};
          procedural sky rather than borrowing another level's location. */
       scene: null,
       data: null,
-      map: { x: 0.455, y: 0.575 }
+      map: { x: 0.612, y: 0.497 }
     },
     {
-      id: 4,
+      id: 5,
       name: 'Sky Kingdom',
       blurb: 'Floating islands and a very long way down.',
       mechanic: 'Large gaps and moving platforms.',
       scene: 'skyward',               // backgrounds/sky-kingdom.png
       data: null,
-      map: { x: 0.612, y: 0.497 }
-    },
-    {
-      id: 5,
-      name: 'Dark Fortress',
-      blurb: 'Lava, chains, and the Dark Colossus.',
-      mechanic: 'Lava hazards and the boss fight.',
-      scene: 'foundry',               // backgrounds/dark-fortress.png
-      data: null,
-      boss: true,
       map: { x: 0.775, y: 0.402 }
     }
   ];
