@@ -50,6 +50,11 @@ window.DH = window.DH || {};
 
       bulletSize: 6,
 
+      /* Starter blaster reserve. Generous on purpose: ammo is a pressure
+         valve here, not a resource to manage shot by shot. */
+      ammo: 40,
+      maxAmmo: 60,
+
       /* Read by HeroArt. Flags, not code paths per hero. */
       art: { build: 1.00, hood: false, scarf: true, reactor: false, visor: 'band', weapon: 'carbine' },
 
@@ -84,6 +89,11 @@ window.DH = window.DH || {};
 
       bulletSize: 10,
 
+      /* Starter blaster reserve. Generous on purpose: ammo is a pressure
+         valve here, not a resource to manage shot by shot. */
+      ammo: 28,
+      maxAmmo: 40,
+
       art: { build: 1.18, hood: false, scarf: false, reactor: true, visor: 'slit', weapon: 'cannon' },
 
       power: {
@@ -114,6 +124,11 @@ window.DH = window.DH || {};
       bulletSpeed: 14,
 
       bulletSize: 4,
+
+      /* Starter blaster reserve. Generous on purpose: ammo is a pressure
+         valve here, not a resource to manage shot by shot. */
+      ammo: 60,
+      maxAmmo: 90,
 
       art: { build: 0.90, hood: true, scarf: false, reactor: false, visor: 'wide', weapon: 'pistols' },
 

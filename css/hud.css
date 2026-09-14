@@ -8,64 +8,118 @@
 #hud{
   position:absolute; inset:0;
   pointer-events:none;
-  font-size:clamp(10px, 1.35vw, 15px);
+  font-size:clamp(10px, min(1.55vw, 2.76vh), 17px);
 }
 
-.hud-row{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  padding:1.4em 1.6em;
-  /* Clear the fullscreen control in the corner so the diamond counter is
-     never sitting underneath it. */
-  padding-right:4.2em;
+/* ---- top-left stack: level name, health, ammo */
+
+.hud-left{
+  position:absolute; left:1.1em; top:1em;
+  display:grid; gap:.42em; justify-items:start;
 }
 
-.vitals{ display:flex; gap:.75em; align-items:center; }
+.level-tag{
+  padding:.45em 1em;
+  font-size:1.05em; font-weight:800; letter-spacing:.02em;
+  background:rgba(10,18,38,.82);
+  border:1px solid rgba(127,230,255,.22);
+  border-radius:.5em;
+  text-shadow:0 .1em .3em rgba(0,0,0,.9);
+}
 
-.crest{
-  width:2.9em; height:2.9em;
+.gauge{ display:flex; align-items:center; gap:.4em; }
+.gauge-icon{
+  width:2em; height:2em; flex:none;
   display:grid; place-items:center;
-  font-weight:800; font-size:1.05em;
-  color:var(--ink);
-  background:linear-gradient(150deg,var(--facet),var(--facet-dk));
-  clip-path:polygon(50% 0,100% 27%,100% 73%,50% 100%,0 73%,0 27%);
+  background:rgba(10,18,38,.82);
+  border:1px solid rgba(127,230,255,.2);
+  border-radius:.42em;
 }
+.gauge-icon img{ width:1.25em; height:1.25em; object-fit:contain; }
 
-.vitals-name{ font-weight:600; margin-bottom:.35em; }
-
-.track{
+.gauge-track{
   position:relative; isolation:isolate;
-  width:13em; height:.72em;
-  background:rgba(6,10,23,.72);
-  border:1px solid rgba(127,230,255,.25);
+  display:block;
+  width:11em; height:1.55em;
+  background:rgba(10,18,38,.85);
+  border:1px solid rgba(127,230,255,.22);
+  border-radius:.42em;
   overflow:hidden;
 }
-.track-fill{
+.gauge-fill{
   position:absolute; inset:0 auto 0 0; z-index:2;
-  width:100%;
-  background:linear-gradient(90deg,#66f0d0,#7fe6ff);
+  width:100%; display:block;
   transition:width .12s linear;
 }
-.track-ghost{
+/* The slower ghost trails behind a hit, so damage is legible as an amount. */
+.gauge-ghost{
   position:absolute; inset:0 auto 0 0; z-index:1;
-  width:100%;
-  background:rgba(255,93,158,.6);
+  width:100%; display:block;
+  background:rgba(255,255,255,.35);
   transition:width .5s ease .18s;
 }
+.gauge-text{
+  position:absolute; inset:0; z-index:3;
+  display:grid; place-items:center;
+  font-size:.82em; font-weight:800;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.02em;
+  text-shadow:0 .12em .25em rgba(0,0,0,.95);
+}
+
+#gauge-health .gauge-fill{ background:linear-gradient(180deg,#ff6a5e,#c92d28); }
+#gauge-ammo   .gauge-fill{ background:linear-gradient(180deg,#ffd05a,#e08a1e); }
+
+/* Empty magazine: the bar alone would be a colour-only cue, so the text
+   changes too and the gauge knocks once when a shot is refused. */
+#gauge-ammo[data-empty="true"] .gauge-text{ color:#ff9d9d; }
+#gauge-ammo[data-empty="true"] .gauge-text::after{ content:"  empty"; font-size:.85em; }
+.shake{ animation:gauge-knock .3s ease; }
+@keyframes gauge-knock{
+  25%{ transform:translateX(-.25em); }
+  60%{ transform:translateX(.2em); }
+}
+
+/* ---- top-right purse */
 
 .purse{
-  display:flex; align-items:center; gap:.45em;
-  font-weight:700; font-variant-numeric:tabular-nums;
+  position:absolute; right:3.6em; top:1em;   /* clears the fullscreen control */
+  display:flex; align-items:center; gap:.4em;
+  padding:.4em .8em;
+  font-weight:800; font-variant-numeric:tabular-nums;
   font-size:1.15em;
-  text-shadow:0 2px 10px rgba(0,0,0,.7);
+  background:rgba(10,18,38,.82);
+  border:1px solid rgba(127,230,255,.22);
+  border-radius:.5em;
+  text-shadow:0 .1em .3em rgba(0,0,0,.9);
 }
-.purse .gem{
-  width:1.5em; height:1.5em;
-  object-fit:contain;
-  image-rendering:auto;
-  filter:drop-shadow(0 0 6px rgba(127,230,255,.55));
-}
+.purse .gem{ width:1.4em; height:1.4em; object-fit:contain; }
 .purse.bump{ animation:bump .32s ease; }
-@keyframes bump{ 40%{ transform:scale(1.22); } }
+@keyframes bump{ 40%{ transform:scale(1.18); } }
+
+/* ---- on-screen controls */
+
+#touch{
+  position:absolute; inset:auto 0 0 0;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  padding:0 1.2em 1.2em;
+  pointer-events:none;
+}
+.touch-group{ display:flex; gap:.7em; pointer-events:auto; }
+.touch-btn{
+  width:3.6em; height:3.6em;
+  display:grid; place-items:center;
+  padding:0; border:0; background:none;
+  cursor:pointer;
+  opacity:.78;
+  transition:opacity .12s, transform .08s;
+  touch-action:none;          /* stop the browser panning instead of playing */
+  -webkit-user-select:none; user-select:none;
+}
+.touch-btn img{ width:100%; height:100%; object-fit:contain; pointer-events:none; }
+.touch-btn:hover{ opacity:.95; }
+.touch-btn[data-on="true"]{ opacity:1; transform:scale(.92); }
+.touch-btn:focus-visible{ outline:2px solid var(--facet); outline-offset:3px; border-radius:50%; }
 
 #boss-bar{
   position:absolute; left:50%; bottom:1.8em;

@@ -29,11 +29,14 @@ window.DH = window.DH || {};
       this.game = game;
       this.el = {
         hud: $('#hud'),
-        crest: $('#hud-crest'),
-        initial: $('#hud-initial'),
-        name: $('#hud-name'),
         hp: $('#hud-hp'),
         hpGhost: $('#hud-hp-ghost'),
+        hpText: $('#hud-hp-text'),
+        ammo: $('#hud-ammo'),
+        ammoText: $('#hud-ammo-text'),
+        gaugeAmmo: $('#gauge-ammo'),
+        levelTag: $('#level-tag'),
+        touch: $('#touch'),
         purse: $('.purse'),
         diamonds: $('#hud-diamonds'),
         gem: $('#hud-gem'),
@@ -244,17 +247,31 @@ window.DH = window.DH || {};
 
     /* ------------------------------------------------ HUD */
 
-    setHero(hero) {
-      this.el.name.textContent = hero.name;
-      this.el.initial.textContent = hero.name[0];
-      this.el.crest.style.background = 'linear-gradient(150deg,' + hero.accent + ',' + hero.shade + ')';
-      this.el.hp.style.background = 'linear-gradient(90deg,' + hero.shade + ',' + hero.accent + ')';
-    }
-
     setHealth(current, max) {
       const pct = Math.max(0, current / max) * 100 + '%';
       this.el.hp.style.width = pct;
       this.el.hpGhost.style.width = pct;
+      this.el.hpText.textContent = Math.max(0, Math.round(current)) + '/' + Math.round(max);
+    }
+
+    setAmmo(current, max) {
+      this.el.ammo.style.width = Math.max(0, current / max) * 100 + '%';
+      this.el.ammoText.textContent = current + '/' + max;
+      this.el.gaugeAmmo.dataset.empty = current <= 0 ? 'true' : 'false';
+    }
+
+    /* Firing on empty: draw the eye to the gauge that explains why. */
+    flashAmmo() {
+      const g = this.el.gaugeAmmo;
+      g.classList.remove('shake');
+      void g.offsetWidth;
+      g.classList.add('shake');
+    }
+
+    setLevelName(name) {
+      const entry = DH.levelById(this.game.state.level);
+      this.el.levelTag.textContent =
+        'Level ' + (entry ? entry.id : 1) + ' — ' + name;
     }
 
     setDiamonds(n, bump) {
@@ -360,6 +377,65 @@ window.DH = window.DH || {};
         items[i].setAttribute('aria-pressed', String(on));
         items[i].querySelector('.toggle-state').textContent = on ? 'On' : 'Off';
       }
+    }
+
+    _touchIcons() {
+      const map = { left: 'padLeft', right: 'padRight', fire: 'padFire', jump: 'padJump' };
+      const btns = this.el.touch ? this.el.touch.querySelectorAll('.touch-btn') : [];
+      for (let i = 0; i < btns.length; i++) {
+        const img = btns[i].querySelector('img');
+        const key = map[btns[i].dataset.hold];
+        const path = key && DH.ART.ui[key];
+        if (!img || !path) continue;
+        img.onerror = function () { img.style.display = 'none'; };
+        img.src = DH.ART.url(path);
+      }
+    }
+
+    /* On-screen controls. They push ACTIONS into Input rather than faking key
+       events, and they are real buttons so they stay keyboard reachable.
+
+       Pointer capture is what makes them usable: without it, sliding a thumb
+       off a button leaves the action stuck down forever. */
+    _bindTouch() {
+      const box = this.el.touch;
+      if (!box) return;
+      const input = this.game.input;
+
+      const set = (btn, on) => {
+        btn.dataset.on = on ? 'true' : 'false';
+        input.setTouch(btn.dataset.hold, on);
+      };
+
+      box.addEventListener('pointerdown', (e) => {
+        const btn = e.target.closest('.touch-btn');
+        if (!btn) return;
+        e.preventDefault();
+        try { btn.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        set(btn, true);
+      });
+
+      const release = (e) => {
+        const btn = e.target.closest('.touch-btn');
+        if (btn) set(btn, false);
+      };
+      box.addEventListener('pointerup', release);
+      box.addEventListener('pointercancel', release);
+
+      /* Keyboard users get the same buttons: hold on keydown, drop on keyup. */
+      box.addEventListener('keydown', (e) => {
+        const btn = e.target.closest('.touch-btn');
+        if (!btn || e.repeat) return;
+        if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); set(btn, true); }
+      });
+      box.addEventListener('keyup', (e) => {
+        const btn = e.target.closest('.touch-btn');
+        if (btn) set(btn, false);
+      });
+      box.addEventListener('blur', (e) => {
+        const btn = e.target.closest && e.target.closest('.touch-btn');
+        if (btn) set(btn, false);
+      }, true);
     }
 
     /* Fullscreen. Kept in UIManager because it is presentation, not gameplay,
@@ -492,6 +568,9 @@ window.DH = window.DH || {};
       /* The map's chrome icons. Each hides itself if its file is missing, and
          the text beside it still carries the meaning. */
       this._icon('#map-back-icon', 'arrowLeft');
+      this._icon('#icon-heart', 'heart');
+      this._icon('#icon-ammo', 'ammoIcon');
+      this._touchIcons();
       this._iconAll('.back-icon', 'arrowLeft');
       this._iconAll('.gem-icon', 'diamond');
       this._icon('#map-gem', 'diamond');
@@ -796,6 +875,7 @@ window.DH = window.DH || {};
 
       this._bindFullscreen();
       this._bindToggles();
+      this._bindTouch();
 
       // Number keys on the select screen; the roster is a real toolbar, so
       // Tab and Enter already work without extra handling.

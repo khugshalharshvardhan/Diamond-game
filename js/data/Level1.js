@@ -153,12 +153,16 @@ window.DH = window.DH || {};
       .concat(arc(1820, 268, 4, 48, 30))
       .concat(row(2260, 380, 4, 62))
       .concat([{ x: 2400, y: 438, kind: 'health' }])
+      .concat([{ x: 1180, y: 438, kind: 'ammo' }])
+      .concat([{ x: 2660, y: 438, kind: 'ammo' }])
       .concat(arc(3150, 198, 5, 48, 32))
       .concat([{ x: 3240, y: 140, kind: 'gem' }])
       .concat(row(3460, 366, 3, 70))
       .concat(row(3900, 358, 3, 52))
       .concat([{ x: 4220, y: 278, kind: 'gem' }])
       .concat([{ x: 4420, y: 438, kind: 'health' }])
+      .concat([{ x: 3760, y: 438, kind: 'ammo' }])
+      .concat([{ x: 4520, y: 438, kind: 'ammo' }])
       .concat(row(4750, 358, 3, 52))
       .concat(row(5220, 358, 3, 52)),
 

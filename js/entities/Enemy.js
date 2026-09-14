@@ -105,6 +105,9 @@ window.DH = window.DH || {};
       const n = U.randInt(2, 3);
       for (let i = 0; i < n; i++) level.pickups.push(DH.Pickup.drop(this.cx, this.cy, 'diamond'));
       if (Math.random() < 0.16) level.pickups.push(DH.Pickup.drop(this.cx, this.cy, 'health'));
+      /* Kills are the main way the magazine refills; the placed boxes are a
+         safety net, not the supply. */
+      if (Math.random() < 0.34) level.pickups.push(DH.Pickup.drop(this.cx, this.cy, 'ammo'));
     }
 
     update(dt, level) {
@@ -207,17 +210,21 @@ window.DH = window.DH || {};
       ctx.restore();
     }
 
+    /* Always shown, not just after a hit: knowing what is nearly dead is the
+       point of the bar, and Level only calls draw for enemies on screen. It
+       brightens briefly when struck so the hit still registers. */
     drawHealthBar(ctx) {
       const cx = this.cx;
-      if (this.hurtShow > 0 && this.health < this.maxHealth) {
-        const w = 34;
-        ctx.globalAlpha = Math.min(1, this.hurtShow);
-        ctx.fillStyle = 'rgba(6,10,23,.8)';
-        ctx.fillRect(cx - w / 2, this.y - 12, w, 4);
-        ctx.fillStyle = '#ff5d9e';
-        ctx.fillRect(cx - w / 2, this.y - 12, w * (this.health / this.maxHealth), 4);
-        ctx.globalAlpha = 1;
-      }
+      const w = 34;
+      const frac = Math.max(0, this.health / this.maxHealth);
+      const hot = this.hurtShow > 0;
+
+      ctx.globalAlpha = hot ? 1 : 0.85;
+      ctx.fillStyle = 'rgba(6,10,23,.8)';
+      ctx.fillRect(cx - w / 2 - 1, this.y - 13, w + 2, 6);
+      ctx.fillStyle = hot ? '#ff9db0' : '#ff5d6e';
+      ctx.fillRect(cx - w / 2, this.y - 12, w * frac, 4);
+      ctx.globalAlpha = 1;
     }
   }
 

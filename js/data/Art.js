@@ -133,7 +133,6 @@ window.DH = window.DH || {};
        CLAUDE.md warns against exactly that. */
     ui: {
       diamond: 'ui/icons/diamond.png',
-      heart: 'ui/icons/heart.png',
       heartEmpty: 'ui/icons/heart-empty.png',
       statHealth: 'ui/icons/stat-health.png',
       statDamage: 'ui/icons/stat-damage.png',
@@ -151,7 +150,15 @@ window.DH = window.DH || {};
 
       upgradeDamage: 'ui/icons/upgrade-damage.png',
       upgradeHealth: 'ui/icons/upgrade-health.png',
-      upgradeSpeed: 'ui/icons/upgrade-speed.png'
+      upgradeSpeed: 'ui/icons/upgrade-speed.png',
+
+      /* HUD and on-screen controls. */
+      heart: 'ui/icons/heart.png',
+      ammoIcon: 'ui/icons/ammo.png',
+      padLeft: 'ui/controls/gameplay-left.png',
+      padRight: 'ui/controls/gameplay-right.png',
+      padJump: 'ui/controls/gameplay-jump.png',
+      padFire: 'ui/controls/gameplay-aim.png'
     },
 
     /* ---- parallax background.

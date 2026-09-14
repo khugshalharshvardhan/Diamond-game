@@ -38,7 +38,7 @@ window.DH = window.DH || {};
 
       this.state = {
         hero: null, diamonds: 100, upgrades: {}, level: 1, checkpoint: -1,
-        cleared: [], collected: [], companionRescued: false, ammo: 0
+        cleared: [], collected: [], companionRescued: false, ammo: null
       };
 
       this._resize();
@@ -157,10 +157,11 @@ window.DH = window.DH || {};
 
       this.state = {
         hero: heroId,
+        ammo: null,          // null = start from the hero's own reserve
         diamonds: first ? 100 : prior.diamonds,
         upgrades: prior.upgrades || {},
         level: id, checkpoint: -1,
-        cleared: [], collected: [], companionRescued: false, ammo: 0
+        cleared: [], collected: [], companionRescued: false
       };
       this._enterLevel(entry.data, null);
       this.saveProgress();
@@ -181,7 +182,7 @@ window.DH = window.DH || {};
         cleared: s.clearedEnemies || [],
         collected: s.collectedPickups || [],
         companionRescued: s.companionRescued,
-        ammo: (s.ammo && s.ammo.blaster) || 0
+        ammo: (s.ammo && typeof s.ammo.blaster === 'number') ? s.ammo.blaster : null
       };
       /* Resume the level that was saved. Falling back to level 1 would
          silently throw away progress the moment level 2 exists. */
@@ -206,9 +207,10 @@ window.DH = window.DH || {};
 
       this.ui.hideAll();
       this.ui.setHudVisible(true);
-      this.ui.setHero(hero);
       this.ui.setAbilityHero(hero);
-      this.ui.setHealth(hero.maxHealth, hero.maxHealth);
+      this.ui.setHealth(this.level.player.maxHealth, this.level.player.maxHealth);
+      this.ui.setAmmo(this.level.player.ammo, this.level.player.maxAmmo);
+      this.ui.setLevelName(data.name);
       this.ui.setDiamonds(this.state.diamonds, false);
       this.ui.hideBoss();
       this.ui.toast(data.name);
@@ -274,7 +276,7 @@ window.DH = window.DH || {};
         unlockedLevels: this._unlockedAfter(this.state.level),
         completedLevels: this._completedWith(this.state.level),
         companionRescued: this.state.companionRescued,
-        ammo: { blaster: this.state.ammo }
+        ammo: { blaster: this.level.player.ammo }
       });
 
       this.ui.showTally([
@@ -318,10 +320,6 @@ window.DH = window.DH || {};
       this.ui.setDiamonds(this.state.diamonds, bump !== false);
     }
 
-    addAmmo(n) {
-      this.state.ammo += n;
-    }
-
     saveProgress() {
       if (!this.level || !this.state.hero) return;
       // The completion save is authoritative; leaving the results screen must
@@ -336,7 +334,7 @@ window.DH = window.DH || {};
         clearedEnemies: Array.from(this.level.cleared),
         collectedPickups: Array.from(this.level.collected),
         companionRescued: this.state.companionRescued,
-        ammo: { blaster: this.state.ammo }
+        ammo: { blaster: this.level.player.ammo }
       });
     }
 

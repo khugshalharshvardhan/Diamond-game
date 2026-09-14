@@ -17,9 +17,13 @@ window.DH = window.DH || {};
   const LOW_HEALTH = 0.25;   // fraction at which the hero calls it out
 
   class Player extends DH.Entity {
-    constructor(x, y, hero, upgrades) {
+    constructor(x, y, hero, upgrades, ammo) {
       super(x, y, 34, 52);
       this.hero = hero;
+      /* null means "a fresh run", so take the hero's own reserve. A saved
+         number is carried across a death or a reload. */
+      this.maxAmmo = hero.maxAmmo;
+      this.ammo = (ammo === null || ammo === undefined) ? hero.ammo : Math.min(ammo, hero.maxAmmo);
       /* Shop upgrades are resolved once here, never re-read mid-run, so a
          purchase cannot change a hero already in the field. */
       this.mods = DH.upgradeEffect(upgrades);
@@ -63,6 +67,13 @@ window.DH = window.DH || {};
       this.powerCool = 0;
       this.hurtPose = 0;
       this.warnedLow = false;
+      /* Respawning with an empty gun makes a checkpoint unwinnable, so top up
+         to a third of capacity if the run is dry. */
+      this.ammo = Math.max(this.ammo, Math.ceil(this.maxAmmo / 3));
+    }
+
+    addAmmo(n) {
+      this.ammo = Math.min(this.maxAmmo, this.ammo + n);
     }
 
     /* ---- current stats, after whatever the ability is doing. Every consumer
@@ -273,6 +284,17 @@ window.DH = window.DH || {};
 
     fire(level) {
       const h = this.hero;
+      if (this.ammo <= 0) {
+        /* Dry click, rate-limited by the normal fire delay so holding the
+           trigger on an empty gun does not machine-gun the refusal sound. */
+        this.fireTimer = this.curFireRate();
+        DH.Audio.play('uiDenied', { volume: 0.5 });
+        level.game.ui.flashAmmo();
+        return;
+      }
+      this.ammo--;
+      level.game.ui.setAmmo(this.ammo, this.maxAmmo);
+
       DH.Audio.play(h.bulletSize >= 9 ? 'shootHeavy' : 'shoot');
       this.fireTimer = this.curFireRate();
       this.muzzle = 0.06;

@@ -94,7 +94,7 @@ window.DH = window.DH || {};
       }
       this.build();
       const p = this.spawnPoint();
-      this.player = new DH.Player(p.x, p.y, hero, this.game.state.upgrades);
+      this.player = new DH.Player(p.x, p.y, hero, this.game.state.upgrades, this.game.state.ammo);
       if (this.game.state.companionRescued) {
         this.companion = new DH.Companion(p.x - 40, p.y - 20);
       }

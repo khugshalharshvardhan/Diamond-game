@@ -11,7 +11,7 @@ window.DH = window.DH || {};
     diamond: { w: 18, h: 22, color: '#7fe6ff', value: 1 },
     gem:     { w: 30, h: 38, color: '#ffd86b', value: 8 },
     health:  { w: 26, h: 26, color: '#66f0d0', value: 30 },
-    ammo:    { w: 26, h: 22, color: '#c77dff', value: 12 }
+    ammo:    { w: 26, h: 22, color: '#ffd86b', value: 20 }
   };
 
   /* One Sprite per pickup kind, keyed by the same strings as KINDS. */
@@ -84,8 +84,9 @@ window.DH = window.DH || {};
         g.ui.setHealth(level.player.health, level.player.maxHealth);
         level.fx.number(this.cx, this.y - 6, '+' + this.value, '#66f0d0');
       } else if (this.kind === 'ammo') {
-        g.addAmmo(this.value);
-        level.fx.number(this.cx, this.y - 6, '+' + this.value, '#c77dff');
+        level.player.addAmmo(this.value);
+        g.ui.setAmmo(level.player.ammo, level.player.maxAmmo);
+        level.fx.number(this.cx, this.y - 6, '+' + this.value, '#ffd86b');
       } else {
         g.addDiamonds(this.value);
         if (this.value > 1) level.fx.number(this.cx, this.y - 6, '+' + this.value, '#ffd86b');

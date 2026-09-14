@@ -11,12 +11,18 @@ No framework, no build step, no backend.
 | Action | Keys |
 | --- | --- |
 | Move | `A` `D` or arrow keys |
-| Jump | `Space` or `W` — hold for height, tap for a short hop |
+| **Fire** | **`Space`**, `J`, `K` or `Enter` |
+| Jump | `W` or up arrow — hold for height, tap for a short hop |
 | Drop through a thin platform | `S` + jump |
-| Fire | `J`, `K` or `Enter` |
 | Ability | `Shift` or `L` |
 | Pause | `Esc` or `P` |
 | Fullscreen | `F` |
+
+Space is deliberately not also bound to jump: one key doing two things means
+every shot is a hop.
+
+There are on-screen controls too — move left/right at the bottom left, fire and
+jump at the bottom right. They drive the same actions as the keys.
 
 ## Project layout
 

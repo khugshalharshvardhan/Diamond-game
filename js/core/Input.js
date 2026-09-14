@@ -5,13 +5,15 @@ window.DH = window.DH || {};
 (function (DH) {
   'use strict';
 
+  /* Space fires. It is deliberately NOT also bound to jump: one key doing two
+     things means every shot is a hop. Jump is W or the up arrow. */
   const BINDINGS = {
     left:  ['ArrowLeft', 'KeyA'],
     right: ['ArrowRight', 'KeyD'],
     up:    ['ArrowUp', 'KeyW'],
     down:  ['ArrowDown', 'KeyS'],
-    jump:  ['Space', 'KeyW', 'ArrowUp'],
-    fire:  ['KeyJ', 'KeyK', 'Enter'],
+    jump:  ['KeyW', 'ArrowUp'],
+    fire:  ['Space', 'KeyJ', 'KeyK', 'Enter'],
     ability: ['ShiftLeft', 'ShiftRight', 'KeyL'],
     pause: ['Escape', 'KeyP']
   };
@@ -22,6 +24,10 @@ window.DH = window.DH || {};
     constructor() {
       this.held = new Set();
       this.edge = new Set();
+      /* On-screen buttons push ACTIONS in here rather than fake key codes, so
+         a touch control never has to pretend to be a keyboard. */
+      this.touch = new Set();
+      this.touchEdge = new Set();
       this.enabled = true;
 
       window.addEventListener('keydown', (e) => {
@@ -38,18 +44,33 @@ window.DH = window.DH || {};
 
     down(action) {
       if (!this.enabled) return false;
+      if (this.touch.has(action)) return true;
       return BINDINGS[action].some((code) => this.held.has(code));
     }
 
     pressed(action) {
       if (!this.enabled) return false;
+      if (this.touchEdge.has(action)) return true;
       return BINDINGS[action].some((code) => this.edge.has(code));
     }
 
-    /* Called at the end of every fixed step. */
-    flush() { this.edge.clear(); }
+    /* An on-screen button going down or up. */
+    setTouch(action, on) {
+      if (on) {
+        if (!this.touch.has(action)) this.touchEdge.add(action);
+        this.touch.add(action);
+      } else {
+        this.touch.delete(action);
+      }
+    }
 
-    release() { this.held.clear(); this.edge.clear(); }
+    /* Called at the end of every fixed step. */
+    flush() { this.edge.clear(); this.touchEdge.clear(); }
+
+    release() {
+      this.held.clear(); this.edge.clear();
+      this.touch.clear(); this.touchEdge.clear();
+    }
   }
 
   DH.Input = Input;

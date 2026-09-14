@@ -26,22 +26,30 @@
 
   <!-- ============ HUD ============ -->
   <div id="hud" class="hidden">
-    <div class="hud-row">
-      <div class="vitals">
-        <div class="crest" id="hud-crest"><span id="hud-initial">A</span></div>
-        <div class="vitals-body">
-          <div class="vitals-name" id="hud-name">Assault</div>
-          <div class="track">
-            <div class="track-fill" id="hud-hp"></div>
-            <div class="track-ghost" id="hud-hp-ghost"></div>
-          </div>
-        </div>
+    <div class="hud-left">
+      <div class="level-tag" id="level-tag">Level 1 &mdash; The Ruins</div>
+
+      <div class="gauge" id="gauge-health">
+        <span class="gauge-icon"><img id="icon-heart" alt="" aria-hidden="true"></span>
+        <span class="gauge-track">
+          <i class="gauge-fill" id="hud-hp"></i>
+          <i class="gauge-ghost" id="hud-hp-ghost"></i>
+          <b class="gauge-text" id="hud-hp-text">100/100</b>
+        </span>
       </div>
 
-      <div class="purse">
-        <img class="gem" id="hud-gem" alt="" aria-hidden="true">
-        <span id="hud-diamonds">100</span>
+      <div class="gauge" id="gauge-ammo">
+        <span class="gauge-icon"><img id="icon-ammo" alt="" aria-hidden="true"></span>
+        <span class="gauge-track">
+          <i class="gauge-fill" id="hud-ammo"></i>
+          <b class="gauge-text" id="hud-ammo-text">40/60</b>
+        </span>
       </div>
+    </div>
+
+    <div class="purse">
+      <img class="gem" id="hud-gem" alt="" aria-hidden="true">
+      <span id="hud-diamonds">100</span>
     </div>
 
     <div id="boss-bar" class="hidden">
@@ -58,8 +66,25 @@
       <div class="ability-state" id="ability-state">Ready</div>
     </div>
 
+    <!-- On-screen controls. Real buttons, so they are keyboard reachable and
+         announced; they drive the same actions the keys do. -->
+    <div id="touch">
+      <div class="touch-group touch-move">
+        <button class="touch-btn" type="button" data-hold="left" aria-label="Move left">
+          <img alt="" aria-hidden="true"></button>
+        <button class="touch-btn" type="button" data-hold="right" aria-label="Move right">
+          <img alt="" aria-hidden="true"></button>
+      </div>
+      <div class="touch-group touch-act">
+        <button class="touch-btn" type="button" data-hold="fire" aria-label="Fire">
+          <img alt="" aria-hidden="true"></button>
+        <button class="touch-btn" type="button" data-hold="jump" aria-label="Jump">
+          <img alt="" aria-hidden="true"></button>
+      </div>
+    </div>
+
     <div id="toast" class="hidden"></div>
-    <div id="hint">Move <b>A</b> <b>D</b> &nbsp;·&nbsp; Jump <b>Space</b> &nbsp;·&nbsp; Fire <b>J</b> &nbsp;·&nbsp; Ability <b>Shift</b> &nbsp;·&nbsp; Pause <b>Esc</b></div>
+    <div id="hint">Move <b>A</b> <b>D</b> &nbsp;&middot;&nbsp; Jump <b>W</b> &nbsp;&middot;&nbsp; Fire <b>Space</b> &nbsp;&middot;&nbsp; Ability <b>Shift</b> &nbsp;&middot;&nbsp; Pause <b>Esc</b></div>
   </div>
 
   <!-- ============ TITLE ============ -->

@@ -120,6 +120,8 @@ window.DH = window.DH || {};
       .concat(row(1060, 430, 3, 46))
       .concat(arc(1470, 268, 4, 46, 28))
       .concat([{ x: 1900, y: 372, kind: 'health' }])
+      .concat([{ x: 1300, y: 438, kind: 'ammo' }])
+      .concat([{ x: 2400, y: 438, kind: 'ammo' }])
       .concat(row(2230, 360, 3, 56))
       .concat(arc(2790, 198, 4, 48, 30))
       .concat(row(3030, 372, 3, 56))
@@ -127,6 +129,8 @@ window.DH = window.DH || {};
       /* the hidden gem: only reachable off the high shelf */
       .concat([{ x: 4010, y: 186, kind: 'gem' }])
       .concat([{ x: 4180, y: 438, kind: 'health' }])
+      .concat([{ x: 3560, y: 438, kind: 'ammo' }])
+      .concat([{ x: 4400, y: 438, kind: 'ammo' }])
       .concat(row(4740, 358, 3, 52))
       .concat(row(5240, 358, 3, 52)),
 
