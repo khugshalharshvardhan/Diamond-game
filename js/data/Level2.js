@@ -93,25 +93,32 @@ window.DH = window.DH || {};
       shelf(5200, 410)
     ],
 
+    stages: [
+      { x: 420,  label: 'The Outer Wall' },
+      { x: 2100, label: 'The Foundry' },
+      { x: 3280, label: 'The Keep' }
+    ],
+
     enemies: [
-      { x: 500,  y: 410 - 38 },
-      { x: 820,  y: GROUND - 38 },
+      /* -- harder mix from the start: this is the second level */
+      { kind: 'grunt',  x: 500,  y: 410 },
+      { kind: 'gunner', x: 820,  y: GROUND },
 
-      { x: 1120, y: GROUND - 38 },
-      { x: 1250, y: 400 - 38 },
-      { x: 1520, y: 320 - 38 },
-      { x: 1760, y: GROUND - 38 },
+      { kind: 'grunt',  x: 1120, y: GROUND },
+      { kind: 'gunner', x: 1250, y: 400 },
+      { kind: 'drone',  x: 1520, y: 240 },
+      { kind: 'grunt',  x: 1760, y: GROUND },
 
-      { x: 2150, y: GROUND - 38 },
-      { x: 2300, y: 410 - 38 },
-      { x: 2580, y: 330 - 38 },
-      { x: 2840, y: 250 - 38 },
+      { kind: 'brute',  x: 2150, y: GROUND },
+      { kind: 'gunner', x: 2300, y: 410 },
+      { kind: 'drone',  x: 2580, y: 220 },
+      { kind: 'grunt',  x: 2840, y: 250 },
 
-      { x: 3300, y: GROUND - 38 },
-      { x: 3480, y: 410 - 38 },
-      { x: 3780, y: 330 - 38 },
-      { x: 4020, y: GROUND - 38 },
-      { x: 4160, y: GROUND - 38 }
+      { kind: 'brute',  x: 3300, y: GROUND },
+      { kind: 'gunner', x: 3480, y: 410 },
+      { kind: 'drone',  x: 3780, y: 200 },
+      { kind: 'brute',  x: 4020, y: GROUND },
+      { kind: 'gunner', x: 4160, y: GROUND }
     ],
 
     pickups: []

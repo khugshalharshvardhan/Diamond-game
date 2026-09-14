@@ -63,7 +63,7 @@ with no bundler. Each file maps one-to-one onto what would be an ES module.
 | `core/` | Loop, input, physics, camera, particles, sprite |
 | `entities/` | Player, enemy, boss, bullet, pickup, companion, hero art |
 | `world/` | Level, checkpoint, background |
-| `data/` | Heroes, levels, upgrades, art manifest, palettes, sounds — **pure data, no logic** |
+| `data/` | Heroes, enemies, levels, terrain, upgrades, art manifest, palettes, sounds — **pure data, no logic** |
 | `systems/` | Save, audio, interface |
 | `vendor/` | GSAP, vendored rather than linked from a CDN |
 
@@ -93,3 +93,23 @@ renaming art means editing that one file.
   add sprite sheets
 - `docs/asset-pack/` — the original asset pack's manifest, catalogue, browser
   and source boards. Reference only; the game does not read from it.
+
+## Enemies
+
+Four types, each a different fight rather than the same one with new numbers.
+Defined in `js/data/Enemies.js`; `behaviour` picks the state machine.
+
+| Type | Behaviour | What makes it different |
+| --- | --- | --- |
+| Goblin | `melee` | Patrols, telegraphs, charges. Contact damage — counter is spacing |
+| Sniper | `ranged` | Holds a standoff and shoots; **backs away** if you close |
+| Robot | `brute` melee | 130 HP and slow. Soaks a magazine |
+| Flying Drone | `flyer` | Ignores gravity and geometry, hovers above you and fires down |
+
+Level data places them by the **surface** they stand on; `Level` derives the
+box from the type's height, so moving one never means recomputing an offset.
+Flyers take their `y` as an altitude instead.
+
+Levels declare `stages` — an x position and a label — which announce as the
+player crosses them, so a level reads as a sequence of fights. Purely
+presentational; nothing gates on it.

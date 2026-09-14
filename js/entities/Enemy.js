@@ -8,10 +8,6 @@ window.DH = window.DH || {};
 
   const U = DH.Utils;
 
-  const PATROL_SPEED = 74;
-  const CHARGE_SPEED = 215;
-  const SIGHT_X = 330;
-  const SIGHT_Y = 90;
 
   /* One Sprite per enemy kind, built on first use. `kind` is data, so Phase 6
      adds enemy types by naming a different key rather than by new draw code. */
@@ -29,19 +25,25 @@ window.DH = window.DH || {};
   function drawArt(ctx, e) {
     const sheet = sheetFor(e.kind);
     if (!sheet) return false;
+    const flying = e.def.behaviour === 'flyer';
+
+    /* Nothing airborne gets a contact shadow under its feet. */
+    if (!flying) {
+      ctx.save();
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(e.cx, e.bottom + 2, e.w * 0.42, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
 
     ctx.save();
-    ctx.globalAlpha = 0.3;
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.ellipse(e.cx, e.bottom + 2, e.w * 0.42, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-    ctx.translate(e.cx, e.bottom);
+    /* The drone's sprite is centre-anchored in the manifest, so it has to be
+       translated to its centre rather than its feet. */
+    ctx.translate(e.cx, flying ? e.cy + Math.sin(e.bob) * 3 : e.bottom);
     ctx.scale(e.facing, 1);
-    if (e.state === 'alert') ctx.translate(U.rand(-1.2, 1.2), 0);
+    if (e.state === 'alert' || e.state === 'aim') ctx.translate(U.rand(-1.2, 1.2), 0);
     const ok = sheet.draw(ctx, 'idle', 0);
     ctx.restore();
 
@@ -60,19 +62,25 @@ window.DH = window.DH || {};
 
   class Enemy extends DH.Entity {
     constructor(x, y, id, kind) {
-      super(x, y, 40, 38);
+      const def = DH.enemyDef(kind);
+      super(x, y, def.w, def.h);
       this.id = id;
       this.kind = kind || 'grunt';
-      this.maxHealth = 40;
-      this.health = 40;
-      this.damage = 13;
+      this.def = def;
+      this.maxHealth = def.health;
+      this.health = def.health;
+      this.damage = def.contact;
       this.state = 'patrol';
       this.timer = 0;
+      this.shotClock = U.rand(0, (def.shot && def.shot.cooldown) || 1);
       this.facing = -1;
       this.onGround = false;
       this.hitFlash = 0;
       this.step = U.rand(0, 6);
       this.hurtShow = 0;
+      this.bob = U.rand(0, Math.PI * 2);
+      /* Flyers wander around where they were placed until they see you. */
+      this.spawnX = x;
     }
 
     hurt(amount, fromX, level) {
@@ -112,52 +120,148 @@ window.DH = window.DH || {};
 
     update(dt, level) {
       const player = level.player;
+      const d = this.def;
       this.hitFlash -= dt;
       this.hurtShow -= dt;
       this.timer -= dt;
+      this.shotClock -= dt;
 
       const dx = player.cx - this.cx;
-      const dy = Math.abs(player.cy - this.cy);
-      const sees = !player.dead && Math.abs(dx) < SIGHT_X && dy < SIGHT_Y;
+      const dy = player.cy - this.cy;
+      const sees = !player.dead &&
+                   Math.abs(dx) < d.sight.x && Math.abs(dy) < d.sight.y;
 
-      switch (this.state) {
-        case 'patrol': {
-          this.vx = U.approach(this.vx, PATROL_SPEED * this.facing, 900 * dt);
-          if (sees) { this.state = 'alert'; this.timer = 0.36; this.facing = Math.sign(dx) || 1; }
-          break;
+      if (d.behaviour === 'flyer') this._flyer(dt, level, dx, dy, sees);
+      else if (d.behaviour === 'ranged') this._ranged(dt, level, dx, sees);
+      else this._melee(dt, level, dx, sees);
+
+      /* Flyers are not subject to the world; everything else is. */
+      if (d.behaviour !== 'flyer') {
+        DH.Physics.applyGravity(this, dt);
+        const hit = DH.Physics.move(this, level.solids, dt);
+        this.onGround = hit.ground;
+
+        // Turn at walls, and at ledges: probe one step past the front foot.
+        if (hit.wallLeft || hit.wallRight) this.facing *= -1;
+        if (this.onGround) {
+          const probeX = this.facing > 0 ? this.x + this.w + 6 : this.x - 6;
+          if (!DH.Physics.solidAt(probeX, this.bottom + 8, level.solids)) {
+            if (this.state === 'charge') { this.vx = 0; this.state = 'patrol'; }
+            this.facing *= -1;
+          }
         }
-        case 'alert': {
-          this.vx = U.approach(this.vx, 0, 1400 * dt);
-          this.facing = Math.sign(dx) || this.facing;
-          if (this.timer <= 0) { this.state = 'charge'; this.timer = 1.0; }
-          break;
-        }
-        case 'charge': {
-          this.vx = U.approach(this.vx, CHARGE_SPEED * this.facing, 1600 * dt);
-          if (this.timer <= 0) { this.state = 'patrol'; this.timer = 0; }
-          break;
-        }
+        this.step += Math.abs(this.vx) * dt * 0.05;
+      } else {
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.bob += dt * 3;
       }
-
-      DH.Physics.applyGravity(this, dt);
-      const hit = DH.Physics.move(this, level.solids, dt);
-      this.onGround = hit.ground;
-
-      // Turn at walls, and at ledges: probe one step past the front foot.
-      if (hit.wallLeft || hit.wallRight) this.facing *= -1;
-      if (this.onGround) {
-        const probeX = this.facing > 0 ? this.x + this.w + 6 : this.x - 6;
-        if (!DH.Physics.solidAt(probeX, this.bottom + 8, level.solids)) {
-          if (this.state === 'charge') { this.vx = 0; this.state = 'patrol'; }
-          this.facing *= -1;
-        }
-      }
-
-      this.step += Math.abs(this.vx) * dt * 0.05;
 
       if (!player.dead && this.overlaps(player)) {
         player.hurt(this.damage, this.cx, level);
       }
+    }
+
+    /* Patrol, notice, telegraph, charge. Contact damage only. */
+    _melee(dt, level, dx, sees) {
+      const d = this.def;
+      switch (this.state) {
+        case 'patrol':
+          this.vx = U.approach(this.vx, d.patrol * this.facing, 900 * dt);
+          if (sees) { this.state = 'alert'; this.timer = d.windup; this.facing = Math.sign(dx) || 1; }
+          break;
+        case 'alert':
+          this.vx = U.approach(this.vx, 0, 1400 * dt);
+          this.facing = Math.sign(dx) || this.facing;
+          if (this.timer <= 0) { this.state = 'charge'; this.timer = 1.0; }
+          break;
+        case 'charge':
+          this.vx = U.approach(this.vx, d.charge * this.facing, 1600 * dt);
+          if (this.timer <= 0) { this.state = 'patrol'; this.timer = 0; }
+          break;
+      }
+    }
+
+    /* Holds a standoff and shoots. Walks BACKWARDS if you close the gap, which
+       is what makes it a different problem from the goblin. */
+    _ranged(dt, level, dx, sees) {
+      const d = this.def;
+      const gap = Math.abs(dx);
+
+      switch (this.state) {
+        case 'patrol':
+          this.vx = U.approach(this.vx, d.patrol * this.facing, 700 * dt);
+          if (sees) { this.state = 'aim'; this.timer = d.windup; }
+          break;
+
+        case 'aim':
+          this.facing = Math.sign(dx) || this.facing;
+          /* Keep the gap open while lining the shot up. */
+          if (gap < d.standoff * 0.72) {
+            this.vx = U.approach(this.vx, -d.patrol * 1.5 * this.facing, 900 * dt);
+          } else if (gap > d.standoff * 1.35) {
+            this.vx = U.approach(this.vx, d.patrol * this.facing, 700 * dt);
+          } else {
+            this.vx = U.approach(this.vx, 0, 1200 * dt);
+          }
+          if (!sees) { this.state = 'patrol'; break; }
+          if (this.timer <= 0 && this.shotClock <= 0) this._shoot(level);
+          break;
+      }
+    }
+
+    /* Ignores gravity and geometry: drifts to a point above the player and
+       fires down at them. */
+    _flyer(dt, level, dx, dy, sees) {
+      const d = this.def;
+      const player = level.player;
+
+      if (!sees && this.state === 'patrol') {
+        this.vx = U.approach(this.vx, d.patrol * this.facing * 0.45, 400 * dt);
+        this.vy = U.approach(this.vy, Math.sin(this.bob) * 22, 300 * dt);
+        if (Math.abs(this.x - this.spawnX) > 220) this.facing *= -1;
+        return;
+      }
+
+      this.state = 'aim';
+      this.facing = Math.sign(dx) || this.facing;
+
+      /* Aim for a spot above and slightly behind, so it does not sit exactly
+         on top of the player where it cannot be shot. */
+      const wantX = player.cx - this.w / 2 - this.facing * 40;
+      const wantY = player.cy - d.hover;
+      this.vx = U.approach(this.vx, U.clamp((wantX - this.x) * 2.2, -d.patrol * 2, d.patrol * 2), 700 * dt);
+      this.vy = U.approach(this.vy, U.clamp((wantY - this.y) * 2.2, -d.patrol * 2, d.patrol * 2), 700 * dt);
+
+      if (this.shotClock <= 0 && Math.abs(dx) < d.sight.x) this._shoot(level);
+    }
+
+    _shoot(level) {
+      const d = this.def;
+      const s = d.shot;
+      if (!s) return;
+
+      const player = level.player;
+      const ox = this.cx + this.facing * (this.w * 0.5);
+      const oy = this.cy;
+      const ang = Math.atan2(player.cy - oy, player.cx - ox);
+
+      this.shotClock = s.cooldown;
+      DH.Audio.play('shoot', { volume: 0.55, rate: 0.85 });
+
+      level.bullets.push(new DH.Bullet({
+        x: ox, y: oy,
+        vx: Math.cos(ang) * s.speed,
+        vy: Math.sin(ang) * s.speed,
+        owner: 'enemy',
+        damage: s.damage,
+        size: s.size,
+        color: s.color,
+        life: s.life
+      }));
+      level.fx.burst(ox, oy, 4, {
+        speed: 120, life: 0.16, size: 3, color: s.color, gravity: 0
+      });
     }
 
     draw(ctx) {

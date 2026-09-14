@@ -46,7 +46,12 @@ window.DH = window.DH || {};
 
       this.enemies = [];
       d.enemies.forEach((e, i) => {
-        if (!this.cleared.has(i)) this.enemies.push(new DH.Enemy(e.x, e.y, i, e.kind));
+        if (this.cleared.has(i)) return;
+        /* Level data gives the SURFACE an enemy stands on, so an entry never
+           has to know the type's height. Flyers take their y as an altitude. */
+        const def = DH.enemyDef(e.kind);
+        const top = def.behaviour === 'flyer' ? e.y : e.y - def.h;
+        this.enemies.push(new DH.Enemy(e.x, top, i, e.kind));
       });
 
       this.pickups = [];
@@ -58,6 +63,9 @@ window.DH = window.DH || {};
       for (let i = 0; i <= this.checkpointIndex; i++) this.checkpoints[i].active = true;
 
       this.bullets = [];
+      /* Stage announcements fire once per run through, and reset on a rebuild so
+         a checkpoint restart re-announces the stage you are standing in. */
+      this.stageIndex = -1;
       this.boss = null;
       this.bossActive = false;
       this.clearedPending.clear();
@@ -145,6 +153,7 @@ window.DH = window.DH || {};
         if (!c.active && !player.dead && U.overlaps(c.trigger, player)) this._reachCheckpoint(c);
       }
 
+      this._maybeStage();
       this._maybeStartBoss();
 
       if (this.completeTimer > 0) {
@@ -195,6 +204,20 @@ window.DH = window.DH || {};
       this.cam.shake(4, 0.18);
       this.game.ui.toast(c.label);
       this.game.saveProgress();
+    }
+
+    /* Announce a stage as the player crosses into it. Purely presentational —
+       nothing gates on it — so a level with no `stages` simply says nothing. */
+    _maybeStage() {
+      const list = this.data.stages;
+      if (!list) return;
+      let i = this.stageIndex;
+      while (i + 1 < list.length && this.player.cx >= list[i + 1].x) i++;
+      if (i === this.stageIndex) return;
+      this.stageIndex = i;
+      const stage = list[i];
+      if (!stage) return;
+      this.game.ui.toast(stage.label);
     }
 
     _maybeStartBoss() {

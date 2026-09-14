@@ -125,25 +125,41 @@ window.DH = window.DH || {};
       shelf(5180, 410, false)
     ],
 
+    /* Three encounter stages before the gate, each introducing a new enemy.
+       Crossing a stage's x announces it, so the level reads as a sequence of
+       fights rather than one long corridor. */
+    stages: [
+      { x: 520,  label: 'The Approach' },
+      { x: 2440, label: 'The Aqueduct' },
+      { x: 3660, label: 'The Gatehouse' }
+    ],
+
+    /* `y` is the SURFACE an enemy stands on; Level works out the box from the
+       type's height. Flyers take y as an altitude. */
     enemies: [
-      { x: 700,  y: 410 - 38 },
-      { x: 1080, y: GROUND - 38 },
+      /* -- Stage 1, The Approach: goblins only. Learn to shoot and jump. */
+      { kind: 'grunt', x: 700,  y: 410 },
+      { kind: 'grunt', x: 1080, y: GROUND },
+      { kind: 'grunt', x: 1400, y: GROUND },
+      { kind: 'grunt', x: 1560, y: 400 },
+      { kind: 'grunt', x: 1880, y: 320 },
+      { kind: 'grunt', x: 2100, y: GROUND },
 
-      { x: 1400, y: GROUND - 38 },
-      { x: 1560, y: 400 - 38 },
-      { x: 1880, y: 320 - 38 },
-      { x: 2100, y: GROUND - 38 },
+      /* -- Stage 2, The Aqueduct: snipers add ranged pressure, so standing
+         still on the stairs stops being free. */
+      { kind: 'gunner', x: 2520, y: GROUND },
+      { kind: 'grunt',  x: 2700, y: 410 },
+      { kind: 'gunner', x: 2980, y: 330 },
+      { kind: 'grunt',  x: 3200, y: 250 },
+      { kind: 'gunner', x: 3330, y: GROUND },
 
-      { x: 2520, y: GROUND - 38 },
-      { x: 2700, y: 410 - 38 },
-      { x: 2980, y: 330 - 38 },
-      { x: 3200, y: 250 - 38 },
-      { x: 3320, y: GROUND - 38 },
-
-      { x: 3720, y: GROUND - 38 },
-      { x: 3950, y: 410 - 38 },
-      { x: 4260, y: 330 - 38 },
-      { x: 4400, y: GROUND - 38 }
+      /* -- Stage 3, The Gatehouse: a robot that soaks a magazine, and drones
+         that ignore the platforms entirely. */
+      { kind: 'brute',  x: 3760, y: GROUND },
+      { kind: 'drone',  x: 3980, y: 250 },
+      { kind: 'grunt',  x: 4060, y: 410 },
+      { kind: 'drone',  x: 4280, y: 210 },
+      { kind: 'brute',  x: 4400, y: GROUND }
     ],
 
     pickups: []
