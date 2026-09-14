@@ -1,0 +1,133 @@
+/* Diamond Heroes — Character select cards
+   Part of css/. Loaded in the order listed in index.html; only
+   tokens-and-base.css defines custom properties, everything else
+   consumes them. */
+
+/* ---------------------------------------------------------- roster */
+
+.roster{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  gap:1.1em;
+  width:min(100%, 58rem);
+}
+@media (max-width:760px){ .roster{ grid-template-columns:1fr; gap:.6em; } }
+
+.hero-card{
+  position:relative;
+  display:flex; flex-direction:column; align-items:stretch; gap:.55em;
+  padding:1.1em 1.1em 1.25em;
+  text-align:left;
+  background:linear-gradient(170deg, rgba(23,35,74,.92), rgba(10,16,36,.95));
+  border:2px solid rgba(127,230,255,.26);
+  border-radius:10px;
+  color:inherit; font:inherit;
+  cursor:pointer;
+  transition:border-color .18s, transform .18s, box-shadow .18s;
+}
+/* Tint the resting border toward the hero. Declared separately so a browser
+   without color-mix keeps the plain border above instead of losing it. */
+@supports (color:color-mix(in srgb, red 50%, blue)){
+  .hero-card{ border-color:color-mix(in srgb, var(--accent) 38%, transparent); }
+  .hero-portrait{
+    background:
+      radial-gradient(60% 70% at 50% 78%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
+      linear-gradient(180deg, rgba(6,10,23,.25), rgba(6,10,23,.7));
+  }
+}
+.hero-card:hover{ transform:translateY(-5px); border-color:var(--accent); }
+.hero-card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+.hero-card[aria-pressed="true"]{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent), 0 0 34px -6px var(--accent), 0 18px 50px rgba(0,0,0,.55);
+}
+
+/* ---- portrait */
+
+.hero-portrait{
+  display:grid; place-items:center;
+  height:128px;
+  border-radius:8px;
+  background:linear-gradient(180deg, rgba(6,10,23,.25), rgba(6,10,23,.7));
+  border:1px solid rgba(127,230,255,.10);
+}
+.hero-portrait canvas{ width:116px; height:128px; }
+
+/* ---- identity */
+
+.hero-card h3{
+  font-size:1.22rem; font-weight:800; letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+.hero-role{
+  color:var(--muted); font-size:.72rem; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase;
+  margin-top:-.35em;
+}
+
+/* ---- stats. Three columns: label, bar, number. The number is not optional —
+   the bar alone would put the whole comparison in one visual channel. */
+
+.stats{ display:grid; gap:.34em; margin-top:.3em; }
+.stat{
+  display:grid; grid-template-columns:1.15em 4.5em 1fr 2.9em;
+  align-items:center; gap:.45em;
+  font-size:.72rem; color:var(--muted);
+}
+/* Decorative only — the label and the number carry the meaning, so a missing
+   icon costs nothing. The art is small native pixels; never upscale it hard. */
+.stat-icon{
+  width:1.15em; height:1.15em;
+  object-fit:contain;
+}
+.stat-name{ letter-spacing:.02em; }
+.stat-val{
+  text-align:right; font-variant-numeric:tabular-nums;
+  font-weight:700; color:var(--paper);
+}
+.bar{
+  height:.44em; border-radius:2px;
+  background:rgba(127,230,255,.12);
+  overflow:hidden;
+}
+.bar i{
+  display:block; height:100%;
+  background:linear-gradient(90deg, var(--shade), var(--accent));
+}
+
+/* ---- ability */
+
+.hero-power{
+  display:grid; gap:.2em;
+  margin-top:.45em; padding:.6em .7em;
+  background:rgba(6,10,23,.45);
+  border-left:2px solid var(--accent);
+  border-radius:0 6px 6px 0;
+}
+.power-label{
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted);
+}
+.power-name{ font-size:.9rem; font-weight:700; color:var(--paper); }
+.power-blurb{ font-size:.72rem; line-height:1.45; color:var(--muted); }
+
+/* ---- the card's own call to action. The card itself is the button; this is
+   the affordance that says so. */
+
+.hero-pick{
+  margin-top:.65em; padding:.6em 1em;
+  text-align:center;
+  font-size:.78rem; font-weight:800;
+  letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink);
+  background:linear-gradient(140deg,#ffd86b,#f0a52c);
+  border-radius:5px;
+  transition:filter .16s;
+}
+.hero-card:hover .hero-pick{ filter:brightness(1.12); }
+.hero-card[aria-pressed="true"] .hero-pick{
+  background:linear-gradient(140deg, var(--accent), var(--shade));
+  color:var(--ink);
+}
+.hero-card[aria-pressed="true"] .hero-pick::after{ content:"ed"; }

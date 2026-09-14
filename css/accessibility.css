@@ -1,0 +1,33 @@
+/* Diamond Heroes — High contrast mode
+   Part of css/. Loaded in the order listed in index.html; only
+   tokens-and-base.css defines custom properties, everything else
+   consumes them. */
+
+/* ---------------------------------------------------------- high contrast */
+
+/* Raises every low-opacity surface and border to something solid, and drops
+   the decorative blurs. Text that was --muted becomes full-strength. */
+body.high-contrast{
+  --muted:#d6e2ff;
+  --paper:#ffffff;
+}
+body.high-contrast .screen{ background:#04070f; }
+body.high-contrast .screen.dim{ background:rgba(2,4,10,.96); backdrop-filter:none; }
+body.high-contrast .card,
+body.high-contrast .shop-row,
+body.high-contrast .hero-card,
+body.high-contrast .map-card,
+body.high-contrast .toggle{
+  background:#0b1226;
+  border-color:#8fd4ff;
+}
+body.high-contrast .hero-role,
+body.high-contrast .shop-blurb,
+body.high-contrast .fineprint,
+body.high-contrast .power-blurb{ color:#d6e2ff; }
+body.high-contrast #screen-map::after,
+body.high-contrast #screen-menu.cover #cover-art,
+body.high-contrast #map-art{ opacity:.35; }
+body.high-contrast .map-world,
+body.high-contrast .cover-icon::before{ background:#04070f; }
+body.high-contrast *{ text-shadow:none !important; }

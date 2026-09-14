@@ -22,7 +22,7 @@ window.DH = window.DH || {};
       name: 'Forgotten Ruins',
       blurb: 'Overgrown aqueducts above the falls.',
       mechanic: 'Move, jump, shoot.',
-      scene: 'ruins',                 // location 1.png
+      scene: 'ruins',                 // backgrounds/forgotten-ruins.png
       data: DH.LEVEL_1,
       map: { x: 0.140, y: 0.725 }
     },
@@ -31,7 +31,7 @@ window.DH = window.DH || {};
       name: 'Enchanted Forest',
       blurb: 'Giant trees, glowing mushrooms, hidden paths.',
       mechanic: 'Moving platforms and hidden routes.',
-      scene: 'grove',                 // location 3.png
+      scene: 'grove',                 // backgrounds/enchanted-forest.png
       data: null,
       map: { x: 0.300, y: 0.648 }
     },
@@ -51,7 +51,7 @@ window.DH = window.DH || {};
       name: 'Sky Kingdom',
       blurb: 'Floating islands and a very long way down.',
       mechanic: 'Large gaps and moving platforms.',
-      scene: 'skyward',               // level mointioring image.png
+      scene: 'skyward',               // backgrounds/sky-kingdom.png
       data: null,
       map: { x: 0.612, y: 0.497 }
     },
@@ -60,7 +60,7 @@ window.DH = window.DH || {};
       name: 'Dark Fortress',
       blurb: 'Lava, chains, and the Dark Colossus.',
       mechanic: 'Lava hazards and the boss fight.',
-      scene: 'foundry',               // location 2.png
+      scene: 'foundry',               // backgrounds/dark-fortress.png
       data: null,
       boss: true,
       map: { x: 0.775, y: 0.402 }

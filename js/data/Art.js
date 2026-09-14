@@ -2,10 +2,9 @@
 
    SOURCE
    ------
-   Paths point at the supplied pack in place, at diamond-heroes-assets/assets/.
-   The pack is not copied into the project: its own preview.html and
-   assets.json stay valid, its filenames are preserved as its CLAUDE.md asks,
-   and 123 files are not duplicated.
+   Every path is relative to assets/images/. Nothing else in the codebase
+   hard-codes an image path, so moving or renaming art means editing this file
+   and nothing else. The pack's own documentation lives in docs/asset-pack/.
 
    WHAT THIS ART IS
    ----------------
@@ -31,10 +30,10 @@ window.DH = window.DH || {};
 (function (DH) {
   'use strict';
 
-  const PACK = 'diamond-heroes-assets/assets/';
+  const IMAGES = 'assets/images/';
 
   DH.ART = {
-    base: PACK,
+    base: IMAGES,
 
     /* ---- heroes. Keys match the ids in Heroes.js. Collision box is 34x52.
 
@@ -53,7 +52,7 @@ window.DH = window.DH || {};
        most plausible walk frame. Only `run` is a real animation. */
     heroes: {
       assault: {
-        src: './assets/heroes/assault_walk.png',
+        src: 'characters/heroes/assault-walk.png',
         frameW: 220, frameH: 217, drawHeight: 66,
         anims: {
           idle: { from: 0, to: 0 },
@@ -64,7 +63,7 @@ window.DH = window.DH || {};
         }
       },
       tank: {
-        src: './assets/heroes/tank_walk.png',
+        src: 'characters/heroes/tank-walk.png',
         frameW: 220, frameH: 211, drawHeight: 72,
         anims: {
           idle: { from: 0, to: 0 },
@@ -75,7 +74,7 @@ window.DH = window.DH || {};
         }
       },
       scout: {
-        src: './assets/heroes/scout_walk.png',
+        src: 'characters/heroes/scout-walk.png',
         frameW: 220, frameH: 216, drawHeight: 63,
         anims: {
           idle: { from: 0, to: 0 },
@@ -93,39 +92,36 @@ window.DH = window.DH || {};
       grunt:    { src: 'characters/enemies/goblin.png',        pad: 4, drawHeight: 48 },
       gunner:   { src: 'characters/enemies/sniper.png',        pad: 4, drawHeight: 52 },
       brute:    { src: 'characters/enemies/robot.png',         pad: 4, drawHeight: 56 },
-      drone:    { src: 'characters/enemies/flying_drone.png',  pad: 4, drawHeight: 40, anchor: 'center' },
+      drone:    { src: 'characters/enemies/flying-drone.png',  pad: 4, drawHeight: 40, anchor: 'center' },
       assassin: { src: 'characters/enemies/sniper.png',        pad: 4, drawHeight: 50 }
     },
 
     /* ---- boss. Collision box is 104x118. The spec wants the Warden at 3-4x
        the player's height; reaching that means growing the hitbox and the
        arena together, which is boss-polish work, not an art number. */
-    boss: { src: 'characters/enemies/dark_colossus.png', pad: 4, drawHeight: 132 },
+    boss: { src: 'characters/enemies/dark-colossus.png', pad: 4, drawHeight: 132 },
 
-    companion: { src: 'characters/companion/companion_idle_small.png', pad: 4, drawHeight: 36 },
+    companion: { src: 'characters/companion/nova.png', pad: 4, drawHeight: 36 },
 
     /* ---- world pickups, keyed by Pickup kind. */
     pickups: {
       diamond: { src: 'items/diamond.png',     pad: 4, drawHeight: 26, anchor: 'center' },
-      gem:     { src: 'items/power_up.png',    pad: 4, drawHeight: 40, anchor: 'center' },
-      health:  { src: 'items/health_pack.png', pad: 4, drawHeight: 30, anchor: 'center' },
-      ammo:    { src: 'items/ammo_box.png',    pad: 4, drawHeight: 28, anchor: 'center' }
+      gem:     { src: 'items/power-up.png',    pad: 4, drawHeight: 40, anchor: 'center' },
+      health:  { src: 'items/health-pack.png', pad: 4, drawHeight: 30, anchor: 'center' },
+      ammo:    { src: 'items/ammo-box.png',    pad: 4, drawHeight: 28, anchor: 'center' }
     },
 
-    /* ---- full-scene plates. These live at the PROJECT ROOT, not inside the
-       pack, so each is written with a leading './' — Assets.resolve() leaves
-       rooted paths alone instead of prefixing `base`. Spaces in the filenames
-       are encoded there too.
+    /* ---- full-scene plates, one per location plus the title.
 
        All five are 1672x941, i.e. 16:9 to within 0.06%, which is the same
        aspect as the stage. That is why they can be placed by percentage and
        stay aligned at every window size. */
     scenes: {
-      cover:   './cover page.png',
-      ruins:   './location 1.png',
-      foundry: './location 2.png',
-      grove:   './location 3.png',
-      skyward: './level mointioring image.png'
+      cover:   'branding/title-screen.png',
+      ruins:   'backgrounds/forgotten-ruins.png',
+      foundry: 'backgrounds/dark-fortress.png',
+      grove:   'backgrounds/enchanted-forest.png',
+      skyward: 'backgrounds/sky-kingdom.png'
     },
 
     scene(key) { return this.scenes[key] || null; },
@@ -138,24 +134,24 @@ window.DH = window.DH || {};
     ui: {
       diamond: 'ui/icons/diamond.png',
       heart: 'ui/icons/heart.png',
-      heartEmpty: 'ui/icons/heart_empty.png',
-      statHealth: 'ui/icons/stat_health.png',
-      statDamage: 'ui/icons/stat_damage.png',
-      statSpeed: 'ui/icons/stat_speed.png',
-      statFireRate: 'ui/icons/stat_fire_rate.png',
+      heartEmpty: 'ui/icons/heart-empty.png',
+      statHealth: 'ui/icons/stat-health.png',
+      statDamage: 'ui/icons/stat-damage.png',
+      statSpeed: 'ui/icons/stat-speed.png',
+      statFireRate: 'ui/icons/stat-fire-rate.png',
 
       /* World map. The numbered node PNGs in the pack are deliberately NOT
          used: they are flagged `reference-state`, carry cropped rings, and
          have their numbers baked in, so states and numbers could not stay
          live. These four are clean cut-outs. */
-      arrowLeft: 'ui/icons/arrow_left.png',
+      arrowLeft: 'ui/icons/arrow-left.png',
       padlock: 'ui/map/padlock.png',
-      bossMarker: 'ui/map/boss_marker.png',
-      star: 'ui/rewards/star_large.png',
+      bossMarker: 'ui/map/boss-marker.png',
+      star: 'ui/rewards/star-large.png',
 
-      upgradeDamage: 'ui/icons/upgrade_damage.png',
-      upgradeHealth: 'ui/icons/upgrade_health.png',
-      upgradeSpeed: 'ui/icons/upgrade_speed.png'
+      upgradeDamage: 'ui/icons/upgrade-damage.png',
+      upgradeHealth: 'ui/icons/upgrade-health.png',
+      upgradeSpeed: 'ui/icons/upgrade-speed.png'
     },
 
     /* ---- parallax background.

@@ -1,0 +1,195 @@
+/* Diamond Heroes — World map: route, nodes, counters
+   Part of css/. Loaded in the order listed in index.html; only
+   tokens-and-base.css defines custom properties, everything else
+   consumes them. */
+
+/* ---------------------------------------------------------- world map */
+
+/* The plate is the supplied skyward scene: a painted location, not a map
+   illustration — no nodes, paths or numbers of its own. Everything below is
+   real UI drawn on top and driven by the save, so what it says about progress
+   is always true. */
+
+#screen-map{
+  padding:0;
+  justify-content:flex-start;
+  background:var(--ink);
+  font-size:clamp(10px, min(1.85vw, 3.29vh), 21px);
+}
+#map-art{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:0;
+}
+/* Enough scrim at top and bottom for the chrome to hold up over a bright sky,
+   while the middle stays clear so the islands read. */
+#screen-map::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(6,10,23,.80) 0%, rgba(6,10,23,.18) 26%,
+                                     rgba(6,10,23,.18) 68%, rgba(6,10,23,.82) 100%);
+  z-index:1;
+  pointer-events:none;
+}
+#screen-map > *:not(#map-art){ position:relative; z-index:2; }
+
+/* ---- top bar: back, title, counters */
+
+.map-top{
+  width:100%;
+  display:flex; align-items:center; gap:.7em;
+  padding:.85em 1em;
+  padding-right:3.4em;              /* clears the fullscreen control */
+}
+.map-back{
+  flex:none;
+  width:2.35em; height:2.35em;
+  display:grid; place-items:center;
+  padding:0;
+  background:linear-gradient(180deg,#2b6fd6,#164a9c);
+  border:2px solid rgba(255,255,255,.75);
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow:0 .15em .5em rgba(0,0,0,.6);
+  transition:transform .14s, filter .14s;
+}
+.map-back:hover{ transform:scale(1.07); filter:brightness(1.12); }
+.map-back:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+.map-back img{ width:1.15em; height:1.15em; object-fit:contain; }
+
+.map-title{
+  flex:1;
+  font-size:1.15em; font-weight:800;
+  letter-spacing:.08em; text-transform:uppercase;
+  text-align:left;
+  text-shadow:0 .12em .5em rgba(0,0,0,.95);
+}
+
+.map-counts{ display:flex; align-items:center; gap:.9em; flex:none; }
+.map-count{
+  display:flex; align-items:center; gap:.32em;
+  font-weight:800; font-size:.92em;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 .12em .5em rgba(0,0,0,.95);
+}
+.map-count img{ width:1.25em; height:1.25em; object-fit:contain; }
+
+/* ---- the route */
+
+#map-path{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  z-index:2;
+  pointer-events:none;
+  overflow:visible;
+}
+.map-link{
+  stroke:rgba(226,238,255,.66);
+  stroke-width:4.5;
+  stroke-dasharray:1 12;
+  stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
+}
+.map-link.on{ stroke:rgba(255,255,255,.9); }
+
+/* ---- nodes */
+
+#map-nodes{ position:absolute; inset:0; z-index:3; }
+
+.map-node{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  display:grid; place-items:center;
+  padding:0; font:inherit; color:inherit;
+  background:none; border:0;
+  cursor:pointer;
+}
+.map-node:disabled{ cursor:default; }
+
+.map-disc{
+  width:2.5em; height:2.5em;
+  display:grid; place-items:center;
+  border-radius:50%;
+  border:.14em solid rgba(255,255,255,.9);
+  box-shadow:0 .22em .55em rgba(0,0,0,.65);
+  transition:transform .15s, filter .15s;
+}
+.map-node:not(:disabled):hover .map-disc{ transform:scale(1.12); filter:brightness(1.12); }
+.map-node:focus-visible{ outline:none; }
+.map-node:focus-visible .map-disc{ outline:.16em solid #fff; outline-offset:.2em; }
+
+.map-num{
+  font-size:1.05em; font-weight:800;
+  color:#fff;
+  text-shadow:0 .08em .18em rgba(0,0,0,.6);
+}
+
+/* Cleared — green with a drawn tick. */
+.map-node[data-state="done"] .map-disc{ background:linear-gradient(180deg,#62d64a,#2f9b2a); }
+.map-tick{
+  width:.85em; height:.5em;
+  border-left:.2em solid #fff;
+  border-bottom:.2em solid #fff;
+  transform:rotate(-45deg) translate(.06em,-.1em);
+}
+
+/* Open and current — blue. Current also gets the pointer beneath it. */
+.map-node[data-state="current"] .map-disc,
+.map-node[data-state="open"] .map-disc,
+.map-node[data-state="soon"] .map-disc{
+  background:linear-gradient(180deg,#3f96ec,#1c5ec0);
+}
+.map-node[data-state="current"] .map-disc{ animation:map-pulse 2.1s ease-in-out infinite; }
+@keyframes map-pulse{ 50%{ box-shadow:0 .22em .55em rgba(0,0,0,.65), 0 0 1.1em rgba(120,200,255,.95); } }
+
+/* "You are here": a chevron under the current node, matching the map's
+   pointer. A second cue beyond the pulse, so it survives reduced motion. */
+.map-here{
+  position:absolute; top:calc(100% + .1em); left:50%;
+  width:.72em; height:.72em;
+  transform:translateX(-50%) rotate(45deg);
+  background:linear-gradient(135deg,#3f96ec,#1c5ec0);
+  border-right:.12em solid rgba(255,255,255,.9);
+  border-bottom:.12em solid rgba(255,255,255,.9);
+  border-radius:.1em;
+}
+
+/* Locked — grey, with the pack's padlock. */
+.map-node[data-state="locked"] .map-disc{
+  background:linear-gradient(180deg,#4a5266,#242a38);
+  border-color:rgba(255,255,255,.55);
+}
+.map-lock-img{ width:1.05em; height:1.05em; object-fit:contain; }
+
+/* Boss — the pack's marker, larger, no disc behind it. */
+.map-node[data-boss="true"] .map-disc{
+  width:3.3em; height:3.3em;
+  background:none; border:0; box-shadow:none;
+}
+.map-boss-img{ width:100%; height:100%; object-fit:contain;
+  filter:drop-shadow(0 .16em .4em rgba(0,0,0,.75)); }
+.map-node[data-boss="true"][data-state="locked"] .map-boss-img{ filter:grayscale(.75) brightness(.6); }
+.map-boss-label{
+  position:absolute; top:calc(100% - .05em); left:50%;
+  transform:translateX(-50%);
+  font-size:.66em; font-weight:800; letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#ffd86b;
+  text-shadow:0 .12em .3em rgba(0,0,0,.95);
+}
+
+/* ---- world banner */
+
+.map-world{
+  position:absolute; left:1em; bottom:1em;
+  z-index:3;
+  padding:.5em 1em;
+  font-size:.82em; font-weight:700;
+  background:rgba(6,10,23,.8);
+  border:1px solid rgba(127,230,255,.22);
+  border-radius:4px;
+  text-shadow:0 .1em .3em rgba(0,0,0,.9);
+}
+
+.cover-resume-row{ display:flex; gap:.5em; flex-wrap:wrap; }

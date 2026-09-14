@@ -20,18 +20,12 @@ window.DH = window.DH || {};
     settled: 0,
     missing: [],
 
-    /* Turn a manifest path into a real URL.
-
-       Paths are resolved against `base` — EXCEPT ones that begin with './',
-       '/' or a scheme, which are already rooted and are left alone. That is
-       what lets pack art ('items/diamond.png') and project-root art
-       ('./cover page.png') live in the same manifest.
-
-       Spaces are percent-encoded because several of the supplied filenames
-       contain them, and a raw space in a URL is not reliable from file://. */
+    /* Turn a manifest path into a real URL. Every asset now lives under one
+       base, so this is just a prefix — but it stays the single place that
+       knows the rule, which is what lets the whole tree move by editing
+       Art.js alone. */
     resolve(src) {
-      const rooted = /^(\.\/|\/|[a-z]+:)/i.test(src);
-      return (rooted ? src : Assets.base + src).replace(/ /g, '%20');
+      return Assets.base + src;
     },
 
     /* Start loading `src` if it is not already in flight. Safe to call every

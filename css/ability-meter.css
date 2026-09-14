@@ -1,0 +1,58 @@
+/* Diamond Heroes — Ability cooldown meter
+   Part of css/. Loaded in the order listed in index.html; only
+   tokens-and-base.css defines custom properties, everything else
+   consumes them. */
+
+/* ---------------------------------------------------------- ability meter */
+
+#ability{
+  position:absolute; left:1.6em; bottom:1.5em;
+  display:flex; align-items:center; gap:.6em;
+  padding:.5em .7em;
+  background:rgba(6,10,23,.72);
+  border:1px solid rgba(127,230,255,.16);
+  border-left:var(--edge) solid var(--accent, var(--facet));
+  border-radius:4px;
+  font-size:.92em;
+}
+.ability-key{
+  padding:.2em .5em;
+  font-size:.72em; font-weight:700; letter-spacing:.06em;
+  color:var(--muted);
+  background:rgba(39,53,95,.7);
+  border-bottom:1px solid rgba(127,230,255,.25);
+  border-radius:3px;
+}
+.ability-body{ display:grid; gap:.3em; }
+.ability-name{ font-size:.78em; font-weight:600; letter-spacing:.04em; }
+.ability-track{
+  width:8.5em; height:.44em;
+  background:rgba(6,10,23,.8);
+  border:1px solid rgba(127,230,255,.2);
+  overflow:hidden;
+}
+.ability-fill{
+  height:100%; width:100%;
+  background:var(--accent, var(--facet));
+  transition:width .12s linear;
+}
+.ability-state{
+  min-width:3.4em; text-align:right;
+  font-size:.76em; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Mode is carried by a data attribute rather than colour alone: the word in
+   .ability-state changes too, so the state survives any colour-vision gap. */
+#ability[data-mode="ready"]  .ability-state{ color:var(--accent, var(--facet)); }
+#ability[data-mode="ready"]  .ability-fill{ animation:ready-pulse 1.8s ease-in-out infinite; }
+#ability[data-mode="active"] .ability-state{ color:#ffd86b; }
+#ability[data-mode="active"] .ability-fill{ background:#ffd86b; }
+#ability[data-mode="cooling"] .ability-state{ color:var(--muted); }
+#ability[data-mode="cooling"] .ability-fill{ background:var(--steel); }
+@keyframes ready-pulse{ 50%{ opacity:.55; } }
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+}

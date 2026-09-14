@@ -1,0 +1,26 @@
+/* Diamond Heroes — Fullscreen toggle
+   Part of css/. Loaded in the order listed in index.html; only
+   tokens-and-base.css defines custom properties, everything else
+   consumes them. */
+
+/* ---------------------------------------------------------- fullscreen */
+
+#btn-fullscreen{
+  position:absolute; top:.6em; right:.6em;
+  z-index:40;
+  width:2.1em; height:2.1em;
+  display:grid; place-items:center;
+  padding:0; font-size:clamp(11px, min(1.5vw, 2.66vh), 18px);
+  color:var(--paper);
+  background:rgba(6,10,23,.55);
+  border:1px solid rgba(127,230,255,.22);
+  border-radius:5px;
+  cursor:pointer;
+  opacity:.35;
+  transition:opacity .18s, background .18s;
+}
+#btn-fullscreen:hover{ opacity:1; background:rgba(6,10,23,.9); }
+#btn-fullscreen:focus-visible{ opacity:1; outline:2px solid var(--facet); outline-offset:2px; }
+#btn-fullscreen svg{ width:1.2em; height:1.2em; fill:currentColor; }
+/* Once fullscreen, the exit glyph flips inward. */
+#btn-fullscreen[data-on="true"] svg{ transform:rotate(180deg); }
