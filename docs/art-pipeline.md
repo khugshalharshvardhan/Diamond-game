@@ -84,11 +84,37 @@ assault: {
 
 ## Terrain pieces
 
-`assets/images/terrain/level-01/` holds cut-out platform and prop art —
-`ground-strip`, `ledge-wide`, `ledge-short`, `pillar-ledge`, `tower-arch`,
-`tower-balcony`, `bridge-rope`. All are transparent PNGs.
+`assets/images/terrain/level-01/` holds the cut-out art Level 1 is built from:
+`ground-strip`, `ledge-wide`, `ledge-short`, `bridge-rope`, `pillar-ledge`,
+`tower-arch`, `tower-balcony`.
 
-**They are not wired up yet.** Level 1's platforms are still drawn from the
-colour palette in `js/data/Palettes.js`. Using these instead means rebuilding
-Level 1's geometry around the art rather than the other way round, which is
-level-design work, not a manifest change.
+Each is described in `js/data/Terrain.js` by where its **walkable surface**
+sits inside the image:
+
+| Field | Meaning |
+| --- | --- |
+| `deck` | how far down the image the walking surface is, 0..1 |
+| `span` | the horizontal slice that is actually standable — not the mossy overhang |
+
+Both were measured by profiling the longest opaque run per row, not guessed.
+The files were also cropped to their `alpha > 8` bounds first: every one
+carried a large invisible halo (`ground-strip` was 1672x896 with only 222 rows
+of real content).
+
+**Collision stays authoritative.** A platform in the level data keeps its own
+box and names a piece; the engine scales the art so its deck lands on the box's
+top edge, tiles it horizontally to fill the width, and clips it to the box so
+it cannot bleed across a gap. Art conforms to the level, never the reverse. If
+a piece has not loaded, the palette in `js/data/Palettes.js` draws instead, so
+the level stays playable.
+
+`props` in the level data are the same pieces with no collision — scenery to
+stand in front of. They are scaled down and faded so the play space stays
+readable.
+
+### Reachability
+
+The Tank is the constraint: 107px of jump height and only **128px of flat
+reach**. Every gap in Level 1 is 110px or less, or crossed by the bridge or the
+pillar shelf, and every shelf-to-shelf step is 90px or under. Verified by
+walking the platform graph for all three heroes.

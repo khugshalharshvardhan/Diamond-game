@@ -34,7 +34,10 @@ window.DH = window.DH || {};
     build() {
       const d = this.data;
 
-      this.solids = d.platforms.map((p) => ({ x: p.x, y: p.y, w: p.w, h: p.h, oneWay: !!p.oneWay }));
+      this.solids = d.platforms.map((p) => ({
+        x: p.x, y: p.y, w: p.w, h: p.h, oneWay: !!p.oneWay,
+        piece: p.piece || null, pieceScale: p.scale || 1
+      }));
       /* Invisible walls at both ends. Without these the player can simply run
          off the last slab, which reads as a bug rather than a hazard. */
       this.solids.push({ x: -160, y: -1400, w: 160, h: 3200 });
@@ -61,6 +64,18 @@ window.DH = window.DH || {};
       this.companion = null;
 
       this.palette = DH.paletteFor(d.scene);
+
+      /* Decorative art with no collision. Drawn behind everything so the
+         player passes in front of towers and arches. */
+      this.props = (d.props || []).map((p) => Object.assign({}, p));
+      (d.props || []).forEach((p) => {
+        const t = DH.TERRAIN[p.piece];
+        if (t) DH.Assets.request(t.src);
+      });
+      this.solids.forEach((sl) => {
+        const t = sl.piece && DH.TERRAIN[sl.piece];
+        if (t) DH.Assets.request(t.src);
+      });
       this.cam.setBounds(0, d.width, -420, d.height + 220);
     }
 
@@ -221,6 +236,7 @@ window.DH = window.DH || {};
       ctx.save();
       cam.apply(ctx);
 
+      this._drawProps(ctx);
       this._drawPlatforms(ctx);
       if (this.gate) this._drawGate(ctx);
 
@@ -255,6 +271,11 @@ window.DH = window.DH || {};
         if (s.x < 0 || s.x >= this.data.width) continue;   // boundary walls
         if (!cam.sees(s, 80)) continue;
 
+        /* Art wins when the platform names a piece and it has loaded; the
+           painted palette below is the fallback, so a slow or missing file
+           still leaves a playable, readable platform. */
+        if (s.piece && this._drawPiece(ctx, s)) continue;
+
         if (s.oneWay) {
           ctx.fillStyle = P.ledge;
           U.roundRect(ctx, s.x, s.y, s.w, s.h, 5);
@@ -281,6 +302,67 @@ window.DH = window.DH || {};
 
         this._drawSurfaceDetail(ctx, s, P);
       }
+    }
+
+    /* Scenery. No collision, no clipping — just art placed by its deck point
+       so a tower's ledge lines up with whatever platform sits beside it. */
+    _drawProps(ctx) {
+      const cam = this.cam;
+      for (let i = 0; i < this.props.length; i++) {
+        const p = this.props[i];
+        const t = DH.TERRAIN[p.piece];
+        const img = t && DH.Assets.image(t.src);
+        if (!img) continue;
+
+        const sc = p.scale || 1;
+        const w = t.w * sc, h = t.h * sc;
+        const x = p.x - t.span[0] * w;
+        const y = p.y - t.deck * h;
+        if (!cam.sees({ x: x, y: y, w: w, h: h }, 200)) continue;
+
+        ctx.save();
+        if (p.fade) ctx.globalAlpha = p.fade;
+        if (p.flip) {
+          ctx.translate(x + w / 2, 0);
+          ctx.scale(-1, 1);
+          ctx.drawImage(img, -w / 2, y, w, h);
+        } else {
+          ctx.drawImage(img, x, y, w, h);
+        }
+        ctx.restore();
+      }
+    }
+
+    /* Tile a piece across a platform. The art is scaled so its deck sits on
+       the platform's top edge, repeated to cover the width, and clipped to the
+       platform so it can never spill into the gap next door.
+
+       Returns false if the image has not loaded, so the caller falls back. */
+    _drawPiece(ctx, s) {
+      const t = DH.TERRAIN[s.piece];
+      const img = t && DH.Assets.image(t.src);
+      if (!img) return false;
+
+      const sc = s.pieceScale;
+      const w = t.w * sc, h = t.h * sc;
+      const run = (t.span[1] - t.span[0]) * w;      // walkable width of one tile
+      if (run <= 0) return false;
+
+      const left = s.x - t.span[0] * w;             // where the image starts
+      const top = s.y - t.deck * h;                 // deck on the platform edge
+
+      ctx.save();
+      /* Clip generously above and below: the art overhangs its deck in both
+         directions and that overhang should show, just not sideways. */
+      ctx.beginPath();
+      ctx.rect(s.x, top - 4, s.w, h + 8);
+      ctx.clip();
+
+      for (let k = 0; k * run < s.w; k++) {
+        ctx.drawImage(img, left + k * run, top, w, h);
+      }
+      ctx.restore();
+      return true;
     }
 
     /* Block courses across a solid face. Without these the ground is one flat
