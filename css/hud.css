@@ -80,6 +80,33 @@
   60%{ transform:translateX(.2em); }
 }
 
+/* ---- equipped weapon */
+
+.loadout{
+  display:flex; align-items:center; gap:.45em;
+  padding:.3em .7em;
+  background:rgba(10,18,38,.82);
+  border:1px solid rgba(127,230,255,.2);
+  border-radius:.42em;
+  font-size:.85em;
+}
+.weapon-slot{
+  display:grid; place-items:center;
+  width:1.5em; height:1.5em;
+  font-size:.82em; font-weight:800;
+  color:var(--ink);
+  background:var(--facet);
+  border-radius:.25em;
+}
+.weapon-name{ font-weight:700; letter-spacing:.02em; }
+.medkits{
+  display:flex; align-items:center; gap:.25em;
+  margin-left:.4em; padding-left:.6em;
+  border-left:1px solid rgba(127,230,255,.22);
+  font-weight:800; font-variant-numeric:tabular-nums;
+}
+.medkits img{ width:1.1em; height:1.1em; object-fit:contain; }
+
 /* ---- top-right purse */
 
 .purse{

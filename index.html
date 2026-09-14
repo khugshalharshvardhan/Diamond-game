@@ -45,6 +45,14 @@
           <b class="gauge-text" id="hud-ammo-text">40/60</b>
         </span>
       </div>
+
+      <div class="loadout">
+        <span class="weapon-slot" id="weapon-slot" hidden>1</span>
+        <span class="weapon-name" id="weapon-name">Basic Blaster</span>
+        <span class="medkits" hidden>
+          <img id="icon-medkit" alt="" aria-hidden="true"><span id="medkit-count">0</span>
+        </span>
+      </div>
     </div>
 
     <div class="purse">
@@ -201,13 +209,15 @@
       </span>
     </div>
 
-    <div class="shop-tabs" id="shop-tabs">
-      <button class="shop-tab" type="button" data-tab="upgrades" aria-pressed="true">Upgrades</button>
+    <div class="shop-tabs" id="shop-tabs" role="tablist">
+      <button class="shop-tab" type="button" data-tab="weapons"  role="tab" aria-selected="true">Weapons</button>
+      <button class="shop-tab" type="button" data-tab="ammo"     role="tab" aria-selected="false">Ammo</button>
+      <button class="shop-tab" type="button" data-tab="health"   role="tab" aria-selected="false">Health</button>
+      <button class="shop-tab" type="button" data-tab="upgrades" role="tab" aria-selected="false">Upgrades</button>
     </div>
 
     <div class="shop-list" id="shop-list"></div>
 
-    <p class="panel-note">Weapons and ammo arrive with the weapon system.</p>
     <p class="shop-flash" id="shop-flash" role="status" aria-live="polite"></p>
   </section>
 
@@ -327,6 +337,7 @@
 <script src="js/systems/SaveManager.js"></script>
 <script src="js/data/Heroes.js"></script>
 <script src="js/data/Art.js"></script>
+<script src="js/data/Weapons.js"></script>
 <script src="js/data/Enemies.js"></script>
 <script src="js/data/Terrain.js"></script>
 <script src="js/data/Level1.js"></script>

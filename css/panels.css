@@ -34,15 +34,31 @@
 
 /* ---- shop */
 
-.shop-tabs{ display:flex; gap:.4em; padding:0 1.2em; width:100%; }
+.shop-tabs{
+  display:flex; gap:.45em;
+  width:min(100%,44rem);
+  padding:0 1.2em;
+}
 .shop-tab{
-  font:inherit; font-size:.8rem; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase;
-  padding:.6em 1.4em;
+  flex:1;
+  font:inherit; font-size:.76rem; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:.75em .6em;
+  color:var(--muted);
+  background:rgba(16,26,54,.9);
+  border:1px solid rgba(127,230,255,.18);
+  border-radius:5px;
+  cursor:pointer;
+  transition:background .16s, color .16s, border-color .16s;
+}
+.shop-tab:hover{ color:var(--paper); border-color:rgba(127,230,255,.45); }
+.shop-tab:focus-visible{ outline:2px solid var(--facet); outline-offset:2px; }
+/* The selected tab is filled AND carries aria-selected, so the state is not
+   only a colour. */
+.shop-tab[aria-selected="true"]{
   color:var(--ink);
   background:linear-gradient(180deg,#4fb8ff,#2a87d6);
-  border:0; border-radius:4px 4px 0 0;
-  cursor:pointer;
+  border-color:transparent;
 }
 
 .shop-list{
@@ -97,10 +113,19 @@
 /* Unaffordable is dimmed but still pressable, so the refusal can explain
    itself rather than the button just looking broken. */
 .shop-buy[data-poor="true"]{ filter:grayscale(.75) brightness(.7); }
-.shop-maxed{
-  font-size:.72rem; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase;
+.shop-state{
+  font-size:.72rem; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:.5em .9em;
+  border-radius:5px;
+  background:rgba(127,230,255,.1);
+  border:1px solid rgba(127,230,255,.3);
   color:var(--facet);
+}
+.shop-state[data-kind="full"]{
+  background:rgba(255,216,107,.1);
+  border-color:rgba(255,216,107,.35);
+  color:#ffd86b;
 }
 
 .shop-flash{

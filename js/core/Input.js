@@ -15,6 +15,7 @@ window.DH = window.DH || {};
     jump:  ['KeyW', 'ArrowUp'],
     fire:  ['Space', 'KeyJ', 'KeyK', 'Enter'],
     ability: ['ShiftLeft', 'ShiftRight', 'KeyL'],
+    slot1: ['Digit1'], slot2: ['Digit2'], slot3: ['Digit3'], slot4: ['Digit4'],
     pause: ['Escape', 'KeyP']
   };
 

@@ -158,7 +158,16 @@ window.DH = window.DH || {};
       padLeft: 'ui/controls/gameplay-left.png',
       padRight: 'ui/controls/gameplay-right.png',
       padJump: 'ui/controls/gameplay-jump.png',
-      padFire: 'ui/controls/gameplay-aim.png'
+      padFire: 'ui/controls/gameplay-aim.png',
+
+      /* Shop rows. */
+      wpnPistol: 'weapons/pistol.png',
+      wpnShotgun: 'weapons/shotgun.png',
+      wpnRifle: 'weapons/assault-rifle.png',
+      ammoPistol: 'items/pistol-ammo.png',
+      ammoShotgun: 'items/shotgun-ammo.png',
+      ammoRifle: 'items/rifle-ammo.png',
+      itemHealth: 'items/health-pack.png'
     },
 
     /* ---- parallax background.

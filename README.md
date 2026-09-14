@@ -12,6 +12,7 @@ No framework, no build step, no backend.
 | --- | --- |
 | Move | `A` `D` or arrow keys |
 | **Fire** | **`Space`**, `J`, `K` or `Enter` |
+| Switch weapon | `1` `2` `3` `4` |
 | Jump | `W` or up arrow — hold for height, tap for a short hop |
 | Drop through a thin platform | `S` + jump |
 | Ability | `Shift` or `L` |
@@ -113,3 +114,28 @@ Flyers take their `y` as an altitude instead.
 Levels declare `stages` — an x position and a label — which announce as the
 player crosses them, so a level reads as a sequence of fights. Purely
 presentational; nothing gates on it.
+
+## Weapons and the shop
+
+Weapons are **multipliers on the hero**, not replacements for them — a Scout
+with a rifle is still fast, fragile and high rate of fire. That keeps the hero
+choice meaningful after the first purchase.
+
+    final damage = hero.damage   x weapon.damageMul   x upgrades x ability
+    final delay  = hero.fireRate x weapon.fireRateMul x ability
+
+| Weapon | Price | Identity |
+| --- | ---: | --- |
+| Basic Blaster | free | The baseline everything else is measured against |
+| Basic Pistol | 40 | Better across the board, ~+32% DPS |
+| Shotgun | 80 | Five pellets in a cone, short-lived — devastating point blank, useless at range |
+| Assault Rifle | 120 | Half the delay, ~+60% DPS, burns ammo fastest |
+
+Each draws from its own ammo pool, sold separately. In-level ammo boxes refill
+**the pool you are holding**, so a box is never a refill for a gun you do not
+own. The free blaster's pool tops up on respawn; bought ammo never does.
+
+Medkits spend themselves to stop a killing blow and revive you at half health,
+so they are worth buying before a boss rather than a heal you forget to press.
+
+Defined in `js/data/Weapons.js`.

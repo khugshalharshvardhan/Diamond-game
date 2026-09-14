@@ -37,8 +37,8 @@ window.DH = window.DH || {};
       this.pendingLevel = 1;
 
       this.state = {
-        hero: null, diamonds: 100, upgrades: {}, level: 1, checkpoint: -1,
-        cleared: [], collected: [], companionRescued: false, ammo: null
+        hero: null, diamonds: 100, upgrades: {}, kit: null, level: 1, checkpoint: -1,
+        cleared: [], collected: [], companionRescued: false
       };
 
       this._resize();
@@ -102,6 +102,12 @@ window.DH = window.DH || {};
       if (!s.updatedAt) return;
       this.state.diamonds = s.diamonds;
       this.state.upgrades = s.upgrades || {};
+      this.state.kit = {
+        weapons: s.weapons || ['blaster'],
+        equipped: s.equipped || 'blaster',
+        ammo: s.ammo && !s.ammo.blaster ? s.ammo : null,
+        medkits: s.medkits || 0
+      };
     }
 
     openShop() {
@@ -117,6 +123,63 @@ window.DH = window.DH || {};
       this.ui.refreshSettings();
     }
 
+    /* One place that takes the money, so nothing can spend without recording
+       it. Returns a reason string the UI turns into a message. */
+    _spend(cost) {
+      if (this.state.diamonds < cost) return false;
+      this.state.diamonds -= cost;
+      return true;
+    }
+
+    _persistShop() {
+      DH.SaveManager.save({
+        diamonds: this.state.diamonds,
+        upgrades: this.state.upgrades,
+        weapons: this.state.kit.weapons,
+        equipped: this.state.kit.equipped,
+        ammo: this.state.kit.ammo,
+        medkits: this.state.kit.medkits
+      });
+      this.ui.setDiamonds(this.state.diamonds, true);
+    }
+
+    buyWeapon(id) {
+      const w = DH.weaponDef(id);
+      if (!w || w.starter) return 'owned';
+      if (this.state.kit.weapons.indexOf(id) >= 0) return 'owned';
+      if (!this._spend(w.price)) return 'poor';
+      this.state.kit.weapons.push(id);
+      this._persistShop();
+      return 'ok';
+    }
+
+    buyAmmo(packId) {
+      let pack = null;
+      DH.AMMO_PACKS.forEach((p) => { if (p.id === packId) pack = p; });
+      if (!pack) return 'unknown';
+
+      const cap = DH.AMMO_TYPES[pack.type].max;
+      const kit = this.state.kit;
+      kit.ammo = kit.ammo || DH.startingAmmo();
+      if ((kit.ammo[pack.type] || 0) >= cap) return 'full';
+      if (!this._spend(pack.price)) return 'poor';
+      kit.ammo[pack.type] = Math.min(cap, (kit.ammo[pack.type] || 0) + pack.amount);
+      this._persistShop();
+      return 'ok';
+    }
+
+    buySupply(id) {
+      let def = null;
+      DH.SUPPLIES.forEach((x) => { if (x.id === id) def = x; });
+      if (!def) return 'unknown';
+      const kit = this.state.kit;
+      if ((kit.medkits || 0) >= def.max) return 'full';
+      if (!this._spend(def.price)) return 'poor';
+      kit.medkits = (kit.medkits || 0) + 1;
+      this._persistShop();
+      return 'ok';
+    }
+
     /* Spend on an upgrade. Returns why it failed so the UI can say so rather
        than just refusing. */
     buyUpgrade(key) {
@@ -126,11 +189,7 @@ window.DH = window.DH || {};
 
       this.state.diamonds -= next.step.cost;
       this.state.upgrades[key] = next.level;
-      DH.SaveManager.save({
-        diamonds: this.state.diamonds,
-        upgrades: this.state.upgrades
-      });
-      this.ui.setDiamonds(this.state.diamonds, true);
+      this._persistShop();
       return 'ok';
     }
 
@@ -157,9 +216,16 @@ window.DH = window.DH || {};
 
       this.state = {
         hero: heroId,
-        ammo: null,          // null = start from the hero's own reserve
         diamonds: first ? 100 : prior.diamonds,
         upgrades: prior.upgrades || {},
+        /* Weapons and medkits are account-level like diamonds; ammo is not
+           carried between runs, so a fresh run starts on a full free pool. */
+        kit: {
+          weapons: prior.weapons || ['blaster'],
+          equipped: (prior.weapons && prior.weapons[0]) || 'blaster',
+          ammo: null,
+          medkits: prior.medkits || 0
+        },
         level: id, checkpoint: -1,
         cleared: [], collected: [], companionRescued: false
       };
@@ -179,10 +245,15 @@ window.DH = window.DH || {};
         level: s.level,
         checkpoint: s.checkpoint,
         upgrades: s.upgrades || {},
+        kit: {
+          weapons: s.weapons || ['blaster'],
+          equipped: s.equipped || 'blaster',
+          ammo: s.ammo && !s.ammo.blaster ? s.ammo : null,
+          medkits: s.medkits || 0
+        },
         cleared: s.clearedEnemies || [],
         collected: s.collectedPickups || [],
-        companionRescued: s.companionRescued,
-        ammo: (s.ammo && typeof s.ammo.blaster === 'number') ? s.ammo.blaster : null
+        companionRescued: s.companionRescued
       };
       /* Resume the level that was saved. Falling back to level 1 would
          silently throw away progress the moment level 2 exists. */
@@ -209,7 +280,9 @@ window.DH = window.DH || {};
       this.ui.setHudVisible(true);
       this.ui.setAbilityHero(hero);
       this.ui.setHealth(this.level.player.maxHealth, this.level.player.maxHealth);
-      this.ui.setAmmo(this.level.player.ammo, this.level.player.maxAmmo);
+      this.ui.setAmmo(this.level.player.shots, this.level.player.shotsMax);
+      this.ui.setWeapon(this.level.player);
+      this.ui.setMedkits(this.level.player.medkits);
       this.ui.setLevelName(data.name);
       this.ui.setDiamonds(this.state.diamonds, false);
       this.ui.hideBoss();
@@ -271,12 +344,15 @@ window.DH = window.DH || {};
         level: this.state.level,
         checkpoint: -1,
         upgrades: this.state.upgrades,
+        weapons: this.level.player.weapons,
+        equipped: this.level.player.equipped,
+        ammo: this.level.player.ammo,
+        medkits: this.level.player.medkits,
         clearedEnemies: [],
         collectedPickups: [],
         unlockedLevels: this._unlockedAfter(this.state.level),
         completedLevels: this._completedWith(this.state.level),
-        companionRescued: this.state.companionRescued,
-        ammo: { blaster: this.level.player.ammo }
+        companionRescued: this.state.companionRescued
       });
 
       this.ui.showTally([
@@ -331,10 +407,13 @@ window.DH = window.DH || {};
         level: this.state.level,
         checkpoint: this.level.checkpointIndex,
         upgrades: this.state.upgrades,
+        weapons: this.level.player.weapons,
+        equipped: this.level.player.equipped,
+        ammo: this.level.player.ammo,
+        medkits: this.level.player.medkits,
         clearedEnemies: Array.from(this.level.cleared),
         collectedPickups: Array.from(this.level.collected),
-        companionRescued: this.state.companionRescued,
-        ammo: { blaster: this.level.player.ammo }
+        companionRescued: this.state.companionRescued
       });
     }
 

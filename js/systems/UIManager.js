@@ -36,6 +36,9 @@ window.DH = window.DH || {};
         ammoText: $('#hud-ammo-text'),
         gaugeAmmo: $('#gauge-ammo'),
         levelTag: $('#level-tag'),
+        weaponName: $('#weapon-name'),
+        weaponSlot: $('#weapon-slot'),
+        medkits: $('#medkit-count'),
         touch: $('#touch'),
         purse: $('.purse'),
         diamonds: $('#hud-diamonds'),
@@ -59,6 +62,7 @@ window.DH = window.DH || {};
         mapStars: $('#map-stars'),
         mapStarsWrap: $('#map-stars-wrap'),
         shopList: $('#shop-list'),
+        shopTabs: $('#shop-tabs'),
         shopDiamonds: $('#shop-diamonds'),
         shopFlash: $('#shop-flash'),
         settingsToggles: $('#settings-toggles'),
@@ -83,6 +87,7 @@ window.DH = window.DH || {};
         complete: $('#screen-complete')
       };
       this.picked = null;
+      this.shopTab = 'weapons';
       this._bossPct = -1;
       this._abilityKey = '';
       this._portraitRAF = 0;
@@ -266,6 +271,22 @@ window.DH = window.DH || {};
       g.classList.remove('shake');
       void g.offsetWidth;
       g.classList.add('shake');
+    }
+
+    setWeapon(player) {
+      if (!this.el.weaponName) return;
+      this.el.weaponName.textContent = player.weapon.name;
+      /* Slot numbers only mean anything once there is more than one gun. */
+      const many = player.weapons.length > 1;
+      this.el.weaponSlot.textContent = many
+        ? String(player.weapons.indexOf(player.equipped) + 1) : '';
+      this.el.weaponSlot.hidden = !many;
+    }
+
+    setMedkits(n) {
+      if (!this.el.medkits) return;
+      this.el.medkits.textContent = n;
+      this.el.medkits.parentNode.hidden = n <= 0;
     }
 
     setLevelName(name) {
@@ -484,50 +505,111 @@ window.DH = window.DH || {};
 
     /* ------------------------------------------------ shop */
 
-    /* Rebuilt on every open from the save, so what it offers and what it costs
-       can never drift from what the player actually owns. */
+    /* Rebuilt on every open and after every purchase, straight from state, so
+       what it offers and what it costs can never drift from what is owned. */
     refreshShop() {
       const g = this.game;
       this.el.shopDiamonds.textContent = g.state.diamonds;
-      this.el.shopFlash.textContent = '';
 
-      this.el.shopList.innerHTML = DH.UPGRADE_ORDER.map((key) => {
+      const tabs = this.el.shopTabs.querySelectorAll('.shop-tab');
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].setAttribute('aria-selected', String(tabs[i].dataset.tab === this.shopTab));
+      }
+
+      this.el.shopList.innerHTML = this['_shop_' + this.shopTab]().join('');
+      this._iconAll('#shop-list .gem-icon', 'diamond');
+      this._pop('#shop-list .shop-row', 0.04);
+    }
+
+    /* One row shape for every tab: icon, name and line, then either a price
+       with a buy button or a state word. Keeping it uniform is what makes four
+       different catalogues read as one shop. */
+    _shopRow(o) {
+      const icon = o.icon && DH.ART.ui[o.icon];
+      const art = icon
+        ? '<img class="shop-icon" src="' + DH.ART.url(icon) + '" alt="">'
+        : '<span class="shop-icon"></span>';
+
+      const right = o.state
+        ? '<span class="shop-state" data-kind="' + (o.stateKind || 'owned') + '">' + o.state + '</span>'
+        : '<span class="shop-price"><img class="gem-icon" alt="" aria-hidden="true">' + o.price + '</span>' +
+          '<button class="shop-buy" type="button" data-buy="' + o.action + '" data-id="' + o.id + '"' +
+          (o.afford ? '' : ' data-poor="true"') + '>Buy</button>';
+
+      return '<div class="shop-row">' + art +
+        '<div class="shop-info">' +
+          '<span class="shop-name">' + o.name + '</span>' +
+          '<span class="shop-blurb">' + o.blurb + '</span>' +
+          (o.extra || '') +
+        '</div>' + right + '</div>';
+    }
+
+    _shop_weapons() {
+      const g = this.game;
+      const owned = g.state.kit.weapons;
+      return DH.WEAPON_ORDER.map((id) => {
+        const w = DH.WEAPONS[id];
+        const have = w.starter || owned.indexOf(id) >= 0;
+        return this._shopRow({
+          id: id, action: 'weapon', icon: w.icon, name: w.name, blurb: w.blurb,
+          price: w.price, afford: g.state.diamonds >= w.price,
+          state: have ? (w.starter ? 'Standard' : 'Owned') : null
+        });
+      });
+    }
+
+    _shop_ammo() {
+      const g = this.game;
+      const ammo = g.state.kit.ammo || DH.startingAmmo();
+      return DH.AMMO_PACKS.map((p) => {
+        const t = DH.AMMO_TYPES[p.type];
+        const held = ammo[p.type] || 0;
+        return this._shopRow({
+          id: p.id, action: 'ammo', icon: p.icon,
+          name: t.name + ' (x' + p.amount + ')',
+          blurb: 'Refills ' + t.name.toLowerCase() + '.',
+          extra: '<span class="shop-level">Held ' + held + ' of ' + t.max + '</span>',
+          price: p.price, afford: g.state.diamonds >= p.price,
+          state: held >= t.max ? 'Full' : null, stateKind: 'full'
+        });
+      });
+    }
+
+    _shop_health() {
+      const g = this.game;
+      return DH.SUPPLIES.map((x) => {
+        const held = g.state.kit.medkits || 0;
+        return this._shopRow({
+          id: x.id, action: 'supply', icon: x.icon, name: x.name, blurb: x.blurb,
+          extra: '<span class="shop-level">Carrying ' + held + ' of ' + x.max + '</span>',
+          price: x.price, afford: g.state.diamonds >= x.price,
+          state: held >= x.max ? 'Full' : null, stateKind: 'full'
+        });
+      });
+    }
+
+    _shop_upgrades() {
+      const g = this.game;
+      return DH.UPGRADE_ORDER.map((key) => {
         const track = DH.UPGRADES[key];
         const level = g.state.upgrades[key] || 0;
         const next = DH.nextUpgrade(key, g.state.upgrades);
-        const maxed = !next;
-        const afford = next && g.state.diamonds >= next.step.cost;
-        const icon = DH.ART.ui[track.icon];
 
-        /* Owned levels are shown as filled pips AND as "Level n of 3", so the
-           state does not live only in a row of dots. */
         let pips = '';
         for (let i = 0; i < track.levels.length; i++) {
           pips += '<span class="pip' + (i < level ? ' on' : '') + '"></span>';
         }
 
-        return '' +
-          '<div class="shop-row" data-key="' + key + '">' +
-            (icon ? '<img class="shop-icon" src="' + DH.ART.url(icon) + '" alt="">'
-                  : '<span class="shop-icon"></span>') +
-            '<div class="shop-info">' +
-              '<span class="shop-name">' + track.name + '</span>' +
-              '<span class="shop-blurb">' +
-                (maxed ? 'Fully upgraded.' : next.step.label + ' \u00b7 ' + track.blurb) +
-              '</span>' +
-              '<span class="shop-level"><span class="pips">' + pips + '</span>' +
-                'Level ' + level + ' of ' + track.levels.length + '</span>' +
-            '</div>' +
-            (maxed
-              ? '<span class="shop-maxed">Maxed</span>'
-              : '<span class="shop-price"><img class="gem-icon" alt="" aria-hidden="true">' +
-                  next.step.cost + '</span>' +
-                '<button class="shop-buy" type="button" data-buy="' + key + '"' +
-                  (afford ? '' : ' data-poor="true"') + '>Buy</button>') +
-          '</div>';
-      }).join('');
-
-      this._iconAll('#shop-list .gem-icon', 'diamond');
+        return this._shopRow({
+          id: key, action: 'upgrade', icon: track.icon, name: track.name,
+          blurb: next ? next.step.label + ' \u00b7 ' + track.blurb : 'Fully upgraded.',
+          extra: '<span class="shop-level"><span class="pips">' + pips + '</span>' +
+                 'Level ' + level + ' of ' + track.levels.length + '</span>',
+          price: next ? next.step.cost : 0,
+          afford: !!next && g.state.diamonds >= next.step.cost,
+          state: next ? null : 'Maxed'
+        });
+      });
     }
 
     /* Purchase feedback. Never an alert(): a message in the panel that the
@@ -570,6 +652,7 @@ window.DH = window.DH || {};
       this._icon('#map-back-icon', 'arrowLeft');
       this._icon('#icon-heart', 'heart');
       this._icon('#icon-ammo', 'ammoIcon');
+      this._icon('#icon-medkit', 'itemHealth');
       this._touchIcons();
       this._iconAll('.back-icon', 'arrowLeft');
       this._iconAll('.gem-icon', 'diamond');
@@ -800,20 +883,39 @@ window.DH = window.DH || {};
         if (card) this.pickHero(card.dataset.hero);
       });
 
+      this.el.shopTabs.addEventListener('click', (e) => {
+        const tab = e.target.closest('.shop-tab');
+        if (!tab || tab.dataset.tab === this.shopTab) return;
+        this.shopTab = tab.dataset.tab;
+        this.el.shopFlash.textContent = '';
+        DH.Audio.play('uiClick');
+        this.refreshShop();
+      });
+
       this.el.shopList.addEventListener('click', (e) => {
         const buy = e.target.closest('[data-buy]');
         if (!buy) return;
-        const key = buy.dataset.buy;
-        const result = g.buyUpgrade(key);
+        const id = buy.dataset.id;
+        const kind = buy.dataset.buy;
+        let result, label;
+
+        if (kind === 'weapon')      { result = g.buyWeapon(id);  label = DH.weaponDef(id).name; }
+        else if (kind === 'ammo')   { result = g.buyAmmo(id);    label = 'Ammo'; }
+        else if (kind === 'supply') { result = g.buySupply(id);  label = 'Medkit'; }
+        else                        { result = g.buyUpgrade(id); label = DH.UPGRADES[id].name; }
+
         if (result === 'ok') {
           DH.Audio.play('uiSelect');
-          this._shopFlash(DH.UPGRADES[key].name + ' upgraded', false);
+          this._shopFlash(label + ' purchased', false);
         } else if (result === 'poor') {
           DH.Audio.play('uiDenied');
           this._shopFlash('Not enough diamonds', true);
+        } else if (result === 'full') {
+          DH.Audio.play('uiDenied');
+          this._shopFlash('You are already carrying the maximum', true);
         } else {
           DH.Audio.play('uiDenied');
-          this._shopFlash(DH.UPGRADES[key].name + ' is already at maximum', true);
+          this._shopFlash(label + ' is already yours', true);
         }
         this.refreshShop();
       });

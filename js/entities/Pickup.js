@@ -84,8 +84,10 @@ window.DH = window.DH || {};
         g.ui.setHealth(level.player.health, level.player.maxHealth);
         level.fx.number(this.cx, this.y - 6, '+' + this.value, '#66f0d0');
       } else if (this.kind === 'ammo') {
-        level.player.addAmmo(this.value);
-        g.ui.setAmmo(level.player.ammo, level.player.maxAmmo);
+        /* Fills the pool the player is actually holding, so a box is never a
+           refill for a gun they do not own. */
+        level.player.addAmmoPool(level.player.pool, this.value);
+        g.ui.setAmmo(level.player.shots, level.player.shotsMax);
         level.fx.number(this.cx, this.y - 6, '+' + this.value, '#ffd86b');
       } else {
         g.addDiamonds(this.value);

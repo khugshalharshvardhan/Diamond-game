@@ -17,13 +17,17 @@ window.DH = window.DH || {};
   const LOW_HEALTH = 0.25;   // fraction at which the hero calls it out
 
   class Player extends DH.Entity {
-    constructor(x, y, hero, upgrades, ammo) {
+    constructor(x, y, hero, upgrades, kit) {
       super(x, y, 34, 52);
       this.hero = hero;
-      /* null means "a fresh run", so take the hero's own reserve. A saved
-         number is carried across a death or a reload. */
-      this.maxAmmo = hero.maxAmmo;
-      this.ammo = (ammo === null || ammo === undefined) ? hero.ammo : Math.min(ammo, hero.maxAmmo);
+      /* Loadout. `kit` carries owned weapons, per-pool ammo, the equipped
+         weapon and any medkits across a death or a reload; null means a fresh
+         run, so fall back to the starter blaster with a full cell pool. */
+      const k = kit || {};
+      this.weapons = (k.weapons && k.weapons.length) ? k.weapons.slice() : ['blaster'];
+      this.equipped = this.weapons.indexOf(k.equipped) >= 0 ? k.equipped : this.weapons[0];
+      this.ammo = Object.assign(DH.startingAmmo(), k.ammo || {});
+      this.medkits = k.medkits || 0;
       /* Shop upgrades are resolved once here, never re-read mid-run, so a
          purchase cannot change a hero already in the field. */
       this.mods = DH.upgradeEffect(upgrades);
@@ -68,12 +72,9 @@ window.DH = window.DH || {};
       this.hurtPose = 0;
       this.warnedLow = false;
       /* Respawning with an empty gun makes a checkpoint unwinnable, so top up
-         to a third of capacity if the run is dry. */
-      this.ammo = Math.max(this.ammo, Math.ceil(this.maxAmmo / 3));
-    }
-
-    addAmmo(n) {
-      this.ammo = Math.min(this.maxAmmo, this.ammo + n);
+         the free starter pool. Bought ammo is never granted back. */
+      const cap = DH.AMMO_TYPES.cell.max;
+      this.ammo.cell = Math.max(this.ammo.cell || 0, Math.ceil(cap / 3));
     }
 
     /* ---- current stats, after whatever the ability is doing. Every consumer
@@ -92,13 +93,51 @@ window.DH = window.DH || {};
 
     curDamage() {
       const p = this.power;
-      return this.hero.damage * this.mods.damageMul *
+      return this.hero.damage * this.weapon.damageMul * this.mods.damageMul *
              (this.powerTimer > 0 && p.damageMul ? p.damageMul : 1);
     }
 
     curFireRate() {
       const p = this.power;
-      return this.hero.fireRate * (this.powerTimer > 0 && p.fireRateMul ? p.fireRateMul : 1);
+      return this.hero.fireRate * this.weapon.fireRateMul *
+             (this.powerTimer > 0 && p.fireRateMul ? p.fireRateMul : 1);
+    }
+
+    /* ---- loadout */
+
+    get weapon() { return DH.weaponDef(this.equipped); }
+    get pool() { return this.weapon.ammoType; }
+    get shots() { return this.ammo[this.pool] || 0; }
+    get shotsMax() { return DH.AMMO_TYPES[this.pool].max; }
+
+    /* Switch by index into the OWNED list, which is what the number keys and
+       the HUD both count in. Refuses a slot that is not owned. */
+    selectSlot(i, level) {
+      const id = this.weapons[i];
+      if (!id || id === this.equipped) return false;
+      this.equipped = id;
+      this.fireTimer = Math.max(this.fireTimer, 0.12);
+      DH.Audio.play('uiSelect', { volume: 0.5 });
+      if (level) {
+        level.game.ui.setWeapon(this);
+        level.game.ui.toast(DH.weaponDef(id).name);
+      }
+      return true;
+    }
+
+    addAmmoPool(type, n) {
+      const cap = DH.AMMO_TYPES[type] ? DH.AMMO_TYPES[type].max : 60;
+      this.ammo[type] = Math.min(cap, (this.ammo[type] || 0) + n);
+    }
+
+    /* What gets written to the save. */
+    loadout() {
+      return {
+        weapons: this.weapons.slice(),
+        equipped: this.equipped,
+        ammo: Object.assign({}, this.ammo),
+        medkits: this.medkits
+      };
     }
 
     usePower(level) {
@@ -154,7 +193,24 @@ window.DH = window.DH || {};
         speed: 240, life: 0.4, size: 4,
         color: shielded ? this.hero.trim : '#ff5d9e', gravity: 500
       });
+      /* A medkit spends itself rather than letting the blow land. Checked
+         before the death test so it is a genuine save, not a revive. */
+      if (this.health <= 0 && this.medkits > 0) {
+        this.medkits--;
+        this.health = Math.ceil(this.maxHealth / 2);
+        this.invuln = 1.6;
+        this.warnedLow = false;
+        DH.Audio.play('health');
+        DH.Audio.say('lowHealth');
+        level.cam.shake(10, 0.4);
+        level.fx.burst(this.cx, this.cy, 24, {
+          speed: 280, life: 0.7, size: 4, color: '#66f0d0', gravity: 200, shape: 'shard'
+        });
+        level.game.ui.toast('Medkit used');
+      }
+
       level.game.ui.setHealth(this.health, this.maxHealth);
+      level.game.ui.setMedkits(this.medkits);
 
       /* Warn once per trip below the line, not once per hit taken under it. */
       if (this.health > 0 && this.health / this.maxHealth <= LOW_HEALTH && !this.warnedLow) {
@@ -194,6 +250,12 @@ window.DH = window.DH || {};
       this.powerCool -= dt;
 
       if (this.control && input.pressed('ability')) this.usePower(level);
+
+      if (this.control) {
+        for (let i = 0; i < 4; i++) {
+          if (input.pressed('slot' + (i + 1))) { this.selectSlot(i, level); break; }
+        }
+      }
 
       let dir = 0;
       if (this.control) {
@@ -284,7 +346,9 @@ window.DH = window.DH || {};
 
     fire(level) {
       const h = this.hero;
-      if (this.ammo <= 0) {
+      const w = this.weapon;
+
+      if (this.shots <= 0) {
         /* Dry click, rate-limited by the normal fire delay so holding the
            trigger on an empty gun does not machine-gun the refusal sound. */
         this.fireTimer = this.curFireRate();
@@ -292,32 +356,41 @@ window.DH = window.DH || {};
         level.game.ui.flashAmmo();
         return;
       }
-      this.ammo--;
-      level.game.ui.setAmmo(this.ammo, this.maxAmmo);
 
-      DH.Audio.play(h.bulletSize >= 9 ? 'shootHeavy' : 'shoot');
+      this.ammo[this.pool]--;
+      level.game.ui.setAmmo(this.shots, this.shotsMax);
+
+      DH.Audio.play(w.sound || 'shoot');
       this.fireTimer = this.curFireRate();
       this.muzzle = 0.06;
-      this.vx -= this.facing * 28;
+      this.vx -= this.facing * (w.pellets > 1 ? 74 : 28);
 
       const ox = this.cx + this.facing * 20;
       const oy = this.y + 22;
+      const speed = h.bulletSpeedPx * w.speedMul;
+      const damage = this.curDamage();
 
-      level.bullets.push(new DH.Bullet({
-        x: ox, y: oy,
-        vx: this.facing * h.bulletSpeedPx,
-        vy: 0,
-        owner: 'player',
-        damage: this.curDamage(),
-        size: h.bulletSize,
-        color: h.accent,
-        life: 1.1
-      }));
+      /* One pellet or a cone of them. Spread is applied per pellet and
+         symmetrically, so the middle of the cone always goes where you aimed. */
+      for (let i = 0; i < w.pellets; i++) {
+        const t = w.pellets > 1 ? (i / (w.pellets - 1)) * 2 - 1 : 0;
+        const ang = t * w.spread + U.rand(-w.spread * 0.15, w.spread * 0.15);
+        level.bullets.push(new DH.Bullet({
+          x: ox, y: oy,
+          vx: Math.cos(ang) * speed * this.facing,
+          vy: Math.sin(ang) * speed,
+          owner: 'player',
+          damage: damage,
+          size: h.bulletSize * w.sizeMul,
+          color: w.color,
+          life: w.life || 1.1
+        }));
+      }
 
-      level.fx.burst(ox + this.facing * 6, oy, 4, {
+      level.fx.burst(ox + this.facing * 6, oy, w.pellets > 1 ? 8 : 4, {
         speed: 130, life: 0.14, size: 3, color: '#ffffff', gravity: 0
       });
-      level.cam.shake(h.bulletSize * 0.35, 0.07);
+      level.cam.shake(h.bulletSize * w.sizeMul * (w.pellets > 1 ? 0.8 : 0.35), 0.07);
     }
 
     draw(ctx) {
