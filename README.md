@@ -42,6 +42,18 @@ The play area itself stays a fixed 16:9 frame and letterboxes rather than
 reflowing — the canvas is a fixed 960x540 world, and stretching it would change
 what the player can see.
 
+## Tests
+
+```bash
+node tools/test/suite.js
+```
+
+28 checks covering physics, combat, progression, the economy, long-run
+stability and both levels. No dependencies and no build step — the harness
+loads `index.html`'s scripts into a minimal DOM shim and drives the real game
+loop, so it tests the shipping code rather than a copy. See
+`tools/test/README.md`.
+
 ## Project layout
 
 ```
@@ -50,6 +62,7 @@ css/                  one stylesheet per area of the interface
 js/                   all game code, one concern per folder
 assets/               everything the game loads at runtime
 docs/                 specs and source material — not shipped
+tools/test/           headless regression suite
 ```
 
 ### css/
