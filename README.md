@@ -22,8 +22,25 @@ No framework, no build step, no backend.
 Space is deliberately not also bound to jump: one key doing two things means
 every shot is a hop.
 
-There are on-screen controls too — move left/right at the bottom left, fire and
-jump at the bottom right. They drive the same actions as the keys.
+## Phone and tablet
+
+The game plays in **landscape**. Portrait on a small screen shows a
+"turn your device" prompt and pauses, because a 390x219 play area is not a
+game.
+
+**On-screen controls** appear automatically on any touch device — move left and
+right at the bottom left, fire and jump at the bottom right. They drive the
+same actions as the keys, and are sized in pixels rather than proportionally so
+they never fall below a comfortable finger target (56px) however small the
+screen gets. Settings has a toggle to force them on with a mouse.
+
+Everything else reflows: hero cards stack, shop rows drop their price and
+button onto a second line, map labels shrink, and menus scroll rather than
+being cut off. Layout rules live in `css/responsive.css`, loaded last.
+
+The play area itself stays a fixed 16:9 frame and letterboxes rather than
+reflowing — the canvas is a fixed 960x540 world, and stretching it would change
+what the player can see.
 
 ## Project layout
 

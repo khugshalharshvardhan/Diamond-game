@@ -1,0 +1,143 @@
+/* Diamond Heroes — Phone and tablet
+   Part of css/. Loaded LAST so it can override the desktop layout.
+
+   The play area is a fixed 16:9 frame, so it letterboxes rather than
+   reflowing — that is deliberate, because the canvas is a fixed 960x540 world
+   and stretching it would change what the player can see. What does need to
+   change on a small screen is everything around it: touch targets big enough
+   to hit, menus that fit, and content that scrolls instead of being cut off. */
+
+/* ---------------------------------------------------------- portrait */
+
+/* A side-scroller in a 390x219 window is not playable, so portrait asks for a
+   turn rather than pretending. Only on small screens: a portrait tablet is
+   fine, and a desktop window that happens to be tall should be left alone. */
+#rotate{
+  position:fixed; inset:0;
+  z-index:200;
+  display:none;
+  place-items:center;
+  padding:2em;
+  text-align:center;
+  background:#04070f;
+}
+#rotate .rotate-icon{
+  width:4.5rem; height:7rem;
+  margin:0 auto 1.4em;
+  border:.28rem solid var(--facet);
+  border-radius:.7rem;
+  animation:rotate-hint 2.4s ease-in-out infinite;
+}
+#rotate p{ color:var(--muted); max-width:22ch; margin:.6em auto 0; line-height:1.5; }
+@keyframes rotate-hint{
+  40%, 60%{ transform:rotate(-90deg); }
+  0%, 25%, 75%, 100%{ transform:rotate(0deg); }
+}
+
+@media (orientation:portrait) and (max-height:820px){
+  #rotate{ display:grid; }
+}
+
+/* ---------------------------------------------------------- touch controls */
+
+/* Shown wherever the pointer is coarse — a finger — or forced on from
+   Settings. Hidden for a mouse, where they would just be clutter. */
+#touch{ display:none; }
+@media (pointer:coarse){ #touch{ display:flex; } }
+body.show-touch #touch{ display:flex; }
+
+/* A finger needs a real target no matter how small the stage gets, so these
+   are sized in px with an em preference rather than purely proportionally.
+   56px is comfortably above the 44px minimum. */
+.touch-btn{
+  width:clamp(56px, 3.6em, 76px);
+  height:clamp(56px, 3.6em, 76px);
+  touch-action:none;
+}
+.touch-group{ gap:clamp(.5rem, 2vw, 1rem); }
+
+/* Clear of notches and the home indicator. */
+#touch{
+  padding-left:max(1.2em, env(safe-area-inset-left));
+  padding-right:max(1.2em, env(safe-area-inset-right));
+  padding-bottom:max(1.2em, env(safe-area-inset-bottom));
+}
+.hud-left{ left:max(1.1em, env(safe-area-inset-left)); }
+.purse{ right:max(3.6em, calc(env(safe-area-inset-right) + 3.6em)); }
+
+/* The hint line is keyboard advice, so it is noise on a touch device. */
+@media (pointer:coarse){ #hint{ display:none; } }
+
+/* ---------------------------------------------------------- screens */
+
+/* Menus must never cut content off at the bottom of a short screen. */
+.screen{
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.shop-list{ touch-action:pan-y; }
+
+/* Taps should act immediately and not zoom the page. */
+button, .btn, .toggle, .hero-card, .map-node, .shop-buy, .shop-tab{
+  touch-action:manipulation;
+}
+canvas{ touch-action:none; }
+
+/* ---------------------------------------------------------- tablet */
+
+@media (max-width:1024px){
+  .shop-list, .shop-tabs{ width:100%; }
+  .settings-body{ width:min(100%,30rem); }
+}
+
+/* ---------------------------------------------------------- phone */
+
+@media (max-width:760px){
+  /* Hero cards stack, so trim them to what actually decides the choice. */
+  .hero-portrait{ height:96px; }
+  .hero-portrait canvas{ width:87px; height:96px; }
+  .hero-card{ padding:.9em; gap:.4em; }
+  .hero-card h3{ font-size:1.05rem; }
+  .power-blurb{ display:none; }
+
+  /* Shop rows reflow to two lines: the price and button drop below the name
+     rather than squeezing four columns into 375px. */
+  .shop-row{
+    grid-template-columns:2.4em 1fr;
+    grid-template-areas:
+      "icon info"
+      "buy  buy";
+    row-gap:.6em;
+  }
+  .shop-icon{ grid-area:icon; width:2.4em; height:2.4em; }
+  .shop-info{ grid-area:info; }
+  .shop-price, .shop-buy, .shop-state{ grid-area:buy; }
+  .shop-price{ justify-self:start; align-self:center; }
+  .shop-buy, .shop-state{ justify-self:end; }
+  .shop-tab{ font-size:.66rem; letter-spacing:.06em; padding:.7em .3em; }
+
+  /* Map nodes stay tappable and their labels stop colliding. */
+  .map-disc{ width:clamp(44px,9vw,56px); height:clamp(44px,9vw,56px); }
+  .map-name{ display:none; }
+  .map-card{ padding:.25em .5em; }
+  .map-title{ font-size:.95rem; }
+
+  /* The cover plate's controls are placed on the artwork, so they shrink with
+     it — but the resume cluster needs room to breathe. */
+  .cover-resume{ max-width:52%; }
+  .cover-resume-row{ gap:.35em; }
+
+  .panel-title{ font-size:1.1rem; }
+  .tally dd, .tally dt{ font-size:.85rem; }
+}
+
+/* Very short landscape — a phone held sideways. Give the play area every
+   pixel by dropping decoration the game does not need. */
+@media (max-height:420px) and (orientation:landscape){
+  .level-tag{ font-size:.92em; padding:.3em .7em; }
+  .gauge-track{ width:8.5em; height:1.35em; }
+  .loadout{ font-size:.75em; }
+  #ability{ transform:scale(.85); transform-origin:left bottom; }
+  .screen{ padding:3% 4%; gap:1em; }
+  .title-block{ gap:.6em; }
+}

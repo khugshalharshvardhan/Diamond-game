@@ -21,7 +21,8 @@ window.DH = window.DH || {};
     musicVolume: 0.45,
     sfxVolume: 0.8,
     screenShake: true,
-    highContrast: false
+    highContrast: false,
+    touchControls: false   // forced on; touch devices get them anyway
   };
 
   const DEFAULTS = {

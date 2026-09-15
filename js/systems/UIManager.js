@@ -366,13 +366,19 @@ window.DH = window.DH || {};
       });
 
       this._applySideEffects('highContrast');
+      this._applySideEffects('touchControls');
       this.refreshToggles();
     }
 
     /* Settings that change something outside the audio graph. */
     _applySideEffects(key) {
-      if (key !== 'highContrast') return;
-      document.body.classList.toggle('high-contrast', !!DH.Audio.settings.highContrast);
+      if (key === 'highContrast') {
+        document.body.classList.toggle('high-contrast', !!DH.Audio.settings.highContrast);
+      } else if (key === 'touchControls') {
+        /* Coarse pointers get the pad from CSS regardless; this only forces it
+           on for someone who wants it with a mouse. */
+        document.body.classList.toggle('show-touch', !!DH.Audio.settings.touchControls);
+      }
     }
 
     refreshToggles() {
@@ -459,6 +465,33 @@ window.DH = window.DH || {};
       }, true);
     }
 
+    /* Drop every pad button back to its resting look. The input side is
+       cleared by Input.release(); this is the visual half. */
+    clearTouch() {
+      const box = this.el.touch;
+      if (!box) return;
+      const btns = box.querySelectorAll('.touch-btn');
+      for (let i = 0; i < btns.length; i++) btns[i].dataset.on = 'false';
+    }
+
+    /* Portrait on a phone leaves a play area too small to use, so the game
+       pauses rather than carrying on behind the prompt. Releasing every held
+       input matters too: a finger that was on the move button when the device
+       turned would otherwise stay pressed. */
+    _bindOrientation() {
+      const check = () => {
+        const portrait = window.innerHeight > window.innerWidth;
+        const small = window.innerHeight <= 820;
+        if (portrait && small) {
+          this.game.input.release();
+          if (this.game.mode === 'playing') this.game.pause();
+        }
+      };
+      window.addEventListener('resize', check);
+      window.addEventListener('orientationchange', check);
+      check();
+    }
+
     /* Fullscreen. Kept in UIManager because it is presentation, not gameplay,
        and because the browser only grants it from a real user gesture. */
     _bindFullscreen() {
@@ -475,7 +508,16 @@ window.DH = window.DH || {};
           if (on) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
           else {
             const el = document.documentElement;
-            (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+            const req = (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+            /* Ask for landscape on the way in. Most desktops and iOS refuse,
+               which is fine — it is an improvement, not a requirement. */
+            if (req && req.then) {
+              req.then(() => {
+                if (screen.orientation && screen.orientation.lock) {
+                  screen.orientation.lock('landscape').catch(() => {});
+                }
+              }).catch(() => {});
+            }
           }
         } catch (err) { /* denied by the browser; the game is unaffected */ }
       };
@@ -978,6 +1020,7 @@ window.DH = window.DH || {};
       this._bindFullscreen();
       this._bindToggles();
       this._bindTouch();
+      this._bindOrientation();
 
       // Number keys on the select screen; the roster is a real toolbar, so
       // Tab and Enter already work without extra handling.

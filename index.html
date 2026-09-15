@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#04070f">
 <title>Diamond Heroes</title>
 <link rel="stylesheet" href="css/tokens-and-base.css">
 <link rel="stylesheet" href="css/screens.css">
@@ -15,8 +19,19 @@
 <link rel="stylesheet" href="css/world-map.css">
 <link rel="stylesheet" href="css/panels.css">
 <link rel="stylesheet" href="css/accessibility.css">
+<link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
+<!-- Portrait on a phone gives a 390x219 play area, which is not a game.
+     Shown by css/responsive.css only on short screens. -->
+<div id="rotate" role="alertdialog" aria-live="assertive">
+  <div>
+    <div class="rotate-icon" aria-hidden="true"></div>
+    <h2>Turn your device</h2>
+    <p>Diamond Heroes plays in landscape. Rotate to continue &mdash; the game is paused.</p>
+  </div>
+</div>
+
 <div id="stage">
   <canvas id="game" width="960" height="540"></canvas>
 
@@ -247,6 +262,9 @@
         </button>
         <button class="toggle" type="button" data-toggle="highContrast" aria-pressed="false">
           <span class="toggle-name">High contrast</span><span class="toggle-state">Off</span>
+        </button>
+        <button class="toggle" type="button" data-toggle="touchControls" aria-pressed="false">
+          <span class="toggle-name">On-screen controls</span><span class="toggle-state">Off</span>
         </button>
       </div>
 

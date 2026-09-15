@@ -298,7 +298,10 @@ window.DH = window.DH || {};
       if (this.mode !== 'playing') return;
       this.mode = 'paused';
       this.ui.show('pause');
+      /* release() clears touch holds too, so a finger still down on the pad
+         when the menu opens does not keep the player running underneath it. */
       this.input.release();
+      this.ui.clearTouch();
     }
 
     resume() {
